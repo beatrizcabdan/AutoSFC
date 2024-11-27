@@ -1,3 +1,5 @@
+// noinspection TypeScriptValidateTypes
+
 import './App.css'
 
 import React from 'react';
@@ -7,11 +9,11 @@ import {
     PointElement,
     LineElement,
     Tooltip,
-    Legend,
+    Legend, CategoryScale, BarElement,
 } from 'chart.js';
-import { Scatter } from 'react-chartjs-2';
+import {Bar, Chart} from 'react-chartjs-2';
 
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, CategoryScale, BarElement);
 
 export const options = {
     scales: {
@@ -22,31 +24,24 @@ export const options = {
 };
 
 export const data = {
-    datasets: [
-        {
-            label: 'A dataset',
-            data: [{
-                x: 10,
-                y: 20
-            }, {
-                x: 15,
-                y: 10
-            }, {
-                x: 18,
-                y: 14
-                },
-            ],
-            backgroundColor: 'rgba(255, 99, 132, 1)',
-
-        },
-    ],
-};
+        datasets: [{
+            type: 'bar',
+            label: 'Bar Dataset',
+            data: [10, 20, 30, 40]
+        }, {
+            type: 'line',
+            label: 'Line Dataset',
+            data: [50, 50, 50, 50],
+        }],
+        labels: ['January', 'February', 'March', 'April'],
+    options: options
+}
 
 function App() {
   return (
       <>
           <div>
-              <Scatter options={options} data={data} />
+              <Chart options={options} data={data} type={'mixed'}/>
           </div>
           <div>
               Original signals plot
