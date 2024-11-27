@@ -32,7 +32,7 @@ export const data = {
             label: 'Bar Dataset',
             data: xData
         }, {
-            type: 'line',
+            type: 'scatter',
             label: 'Line Dataset',
             data: xData.map((x, i) => {
                 return {x: x, y: yData[i]}
