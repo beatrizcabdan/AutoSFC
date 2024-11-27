@@ -23,17 +23,22 @@ export const options = {
     },
 };
 
+const xData = [2, 5, 7, 9, 11, 14]
+const yData = [3, 2, 8, 7, 2.5, 6.5]
+
 export const data = {
         datasets: [{
             type: 'bar',
             label: 'Bar Dataset',
-            data: [10, 20, 30, 40]
+            data: xData
         }, {
             type: 'line',
             label: 'Line Dataset',
-            data: [50, 50, 50, 50],
+            data: xData.map((x, i) => {
+                return {x: x, y: yData[i]}
+            }),
         }],
-        labels: ['January', 'February', 'March', 'April'],
+        labels: xData,
     options: options
 }
 
@@ -41,12 +46,10 @@ function App() {
   return (
       <>
           <div>
-              <Chart options={options} data={data} type={'mixed'}/>
-          </div>
-          <div>
               Original signals plot
           </div>
           <div>
+              <Chart options={options} data={data} type={'mixed'}/>
               Morton plot (with bars)
           </div>
       </>
