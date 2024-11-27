@@ -1,64 +1,52 @@
-import { useState } from 'react'
 import './App.css'
 
 import React from 'react';
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Filler,
-  Legend,
+    Chart as ChartJS,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Tooltip,
+    Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Scatter } from 'react-chartjs-2';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Filler,
-  Legend
-);
+ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
 export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
+    scales: {
+        y: {
+            beginAtZero: true,
+        },
     },
-    title: {
-      display: true,
-      text: 'Chart.js Line Chart',
-    },
-  },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
 export const data = {
-  labels,
-  datasets: [
-    {
-      fill: true,
-      label: 'Dataset 2',
-      data: labels.map(() => [1,2,3,4,5]),
-      borderColor: 'rgb(53, 162, 235)',
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-    },
-  ],
+    datasets: [
+        {
+            label: 'A dataset',
+            data: [{
+                x: 10,
+                y: 20
+            }, {
+                x: 15,
+                y: 10
+            }, {
+                x: 18,
+                y: 14
+                },
+            ],
+            backgroundColor: 'rgba(255, 99, 132, 1)',
+
+        },
+    ],
 };
 
 function App() {
   return (
       <>
           <div>
-              <Line options={options} data={data} />
+              <Scatter options={options} data={data} />
           </div>
           <div>
               Original signals plot
