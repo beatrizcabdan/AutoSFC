@@ -2,7 +2,10 @@
 
 import './App.scss'
 
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
+import {Chart} from "./Chart.tsx";
+import {Button} from "./Button.tsx";
+import {Slider} from "./Slider.tsx";
 /*import {
     Chart as ChartJS,
     LinearScale,
@@ -23,8 +26,8 @@ export const options = {
     },
 };*/
 
-const xData = [2, 5, 7, 9, 11, 14]
-const yData = [3, 2, 8, 7, 2.5, 6.5]
+/*const xData = [2, 5, 7, 9, 11, 14]
+const yData = [3, 2, 8, 7, 2.5, 6.5]*/
 
 /*export const data = {
         datasets: [{
@@ -43,47 +46,44 @@ const yData = [3, 2, 8, 7, 2.5, 6.5]
     options: options
 }*/
 
-function Chart(props: {name: string}) {
-    const canvasRef = useRef<HTMLCanvasElement>()
-    let ctx: CanvasRenderingContext2D
-
-    function drawAxes(canvas: HTMLCanvasElement) {
-        ctx.lineWidth = 4
-
-        ctx.beginPath()
-        ctx.moveTo(0, canvas.height)
-        ctx.lineTo(canvas.width, canvas.height)
-        ctx.closePath()
-        ctx.stroke()
-
-        ctx.beginPath()
-        ctx.moveTo(0, canvas.height)
-        ctx.lineTo(0, 0)
-        ctx.closePath()
-        ctx.stroke()
-    }
+function App() {
+    const [data, setData] = useState<number[]>()
 
     useEffect(() => {
-        if (canvasRef.current) {
-            const canvas = canvasRef.current!
-            ctx = canvas.getContext('2d')
-            drawAxes(canvas);
-        }
-    }, [canvasRef]);
+        fetch('src/assets/example-data.csv').then(r => {
+            r.text().then(t => {
+                const lines = t
+                    .split(/\n/)
+                    .slice(1)
+                const speeds = lines.map(l => l
+                    .split(/;/)
+                    .slice(0, -1)
+                    .reduce((_, c, i, arr) => {
+                        if (i == arr.length - 1) {
+                            return Number(c)
+                        }
+                    }))
+                setData(speeds)
+            })
+        })
+    }, []);
 
-    return <div className={'chart'}>
-        <canvas ref={canvasRef}>
+    function uploadData() {
 
-        </canvas>
-        {props.name}
-    </div>;
-}
+    }
 
-function App() {
+    const onSliderDrag = () => {
+
+    }
+
     return (
       <>
-          <Chart name={'Original signals plot'}/>
-          <Chart name={'Morton plot (with bars)'}/>
+          <div className={'charts'}>
+              <Chart name={'Original signals plot'} data={data} type={'line'}/>
+              <Chart name={'Morton plot (with bars)'} data={[]} type={'scatter'}/>
+          </div>
+          <Slider min={0} max={data?.length} onDrag={onSliderDrag}/>
+          <Button label={'Upload data'} onClick={() => uploadData()}/>
           {/*<div>
               <Chart options={options} data={data} type={'mixed'}/>
           </div>*/}

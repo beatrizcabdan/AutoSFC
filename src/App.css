@@ -9,12 +9,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10rem;
+  gap: 3rem;
   box-sizing: border-box;
   width: 100%;
+  flex-direction: column;
+  font-family: sans-serif;
 }
 
-.chart {
+.charts {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 5rem;
+}
+.charts .chart {
   justify-content: center;
   align-items: center;
   display: flex;
@@ -23,9 +32,18 @@
   height: 15rem;
   gap: 0.5rem;
 }
-.chart canvas {
+.charts .chart canvas {
   height: 100%;
   width: 100%;
+}
+
+.button {
+  padding: 0.15rem 0.3rem;
+  /*text-transform: uppercase;*/
+}
+
+.slider {
+  width: 20rem;
 }
 
 /*# sourceMappingURL=App.css.map */
