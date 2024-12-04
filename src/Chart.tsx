@@ -1,11 +1,13 @@
 import React, {useEffect, useRef} from "react";
 
-export function Chart(props: { name: string, data: number[], type: string }) {
+export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string }) {
     const canvasRef = useRef(null)
     let ctx: CanvasRenderingContext2D
 
     function drawAxes(canvas: HTMLCanvasElement) {
-        ctx.lineWidth = 4
+        ctx.lineWidth = 3
+
+        ctx.strokeStyle = 'black'
 
         ctx.beginPath()
         ctx.moveTo(0, canvas.height)
@@ -26,18 +28,18 @@ export function Chart(props: { name: string, data: number[], type: string }) {
 
             const canvas: HTMLCanvasElement = canvasRef.current!
             ctx = canvas.getContext('2d')
+            const padding = canvas.height * 0.05
 
             if (props.type == 'line') {
                 const minSpeed = sortedData[0]
                 const maxSpeed = sortedData[sortedData.length - 1]
-                const xOffset = canvas.width * 0.1
-                const yOffset = canvas.height * 0.1
 
+                ctx.strokeStyle = "blue"
                 ctx.beginPath()
-                ctx.lineWidth = 1
+                ctx.lineWidth = 1.5
                 props.data.forEach((point, i) => {
-                    const x = (i / props.data.length) * canvas.width
-                    const y = canvas.height * (point - minSpeed) / (maxSpeed - minSpeed)
+                    const x = (i / props.data.length) * (canvas.width - padding * 2) + padding
+                    const y = (canvas.height - padding * 2) * (point - minSpeed) / (maxSpeed - minSpeed) + padding
                     if (i === 0) {
                         ctx.moveTo(x, y)
                     } else {
@@ -52,13 +54,21 @@ export function Chart(props: { name: string, data: number[], type: string }) {
     useEffect(() => {
         if (canvasRef.current) {
             const canvas: HTMLCanvasElement = canvasRef.current!
+            canvas.width = Number(getComputedStyle(canvas).width.replace('px', ''))
+            canvas.height = Number(getComputedStyle(canvas).height.replace('px', ''))
             ctx = canvas.getContext('2d')
             drawAxes(canvas);
         }
     }, [canvasRef]);
 
     return <div className={'chart'}>
-        <canvas ref={canvasRef}></canvas>
+        <div className={'canvas-container'}>
+            <p className={'y-axis-label'}>{props.yAxisName}</p>
+            <div className={'canvas-wrapper'}>
+                <canvas ref={canvasRef}></canvas>
+                <p>{props.xAxisName}</p>
+            </div>
+        </div>
         {props.name}
     </div>;
 }
