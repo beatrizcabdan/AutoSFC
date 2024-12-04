@@ -1,9 +1,9 @@
 // noinspection TypeScriptValidateTypes
 
-import './App.css'
+import './App.scss'
 
-import React from 'react';
-import {
+import React, {useEffect, useRef} from 'react';
+/*import {
     Chart as ChartJS,
     LinearScale,
     PointElement,
@@ -11,9 +11,9 @@ import {
     Tooltip,
     Legend, CategoryScale, BarElement,
 } from 'chart.js';
-import {Bar, Chart} from 'react-chartjs-2';
+import {Bar, Chart} from 'react-chartjs-2';*/
 
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, CategoryScale, BarElement);
+/*ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, CategoryScale, BarElement);
 
 export const options = {
     scales: {
@@ -21,12 +21,12 @@ export const options = {
             beginAtZero: true,
         },
     },
-};
+};*/
 
 const xData = [2, 5, 7, 9, 11, 14]
 const yData = [3, 2, 8, 7, 2.5, 6.5]
 
-export const data = {
+/*export const data = {
         datasets: [{
             type: 'bar',
             label: 'Bar Dataset',
@@ -41,18 +41,52 @@ export const data = {
         }],
         labels: xData,
     options: options
+}*/
+
+function Chart(props: {name: string}) {
+    const canvasRef = useRef<HTMLCanvasElement>()
+    let ctx: CanvasRenderingContext2D
+
+    function drawAxes(canvas: HTMLCanvasElement) {
+        ctx.lineWidth = 4
+
+        ctx.beginPath()
+        ctx.moveTo(0, canvas.height)
+        ctx.lineTo(canvas.width, canvas.height)
+        ctx.closePath()
+        ctx.stroke()
+
+        ctx.beginPath()
+        ctx.moveTo(0, canvas.height)
+        ctx.lineTo(0, 0)
+        ctx.closePath()
+        ctx.stroke()
+    }
+
+    useEffect(() => {
+        if (canvasRef.current) {
+            const canvas = canvasRef.current!
+            ctx = canvas.getContext('2d')
+            drawAxes(canvas);
+        }
+    }, [canvasRef]);
+
+    return <div className={'chart'}>
+        <canvas ref={canvasRef}>
+
+        </canvas>
+        {props.name}
+    </div>;
 }
 
 function App() {
-  return (
+    return (
       <>
-          <div>
-              Original signals plot
-          </div>
-          <div>
+          <Chart name={'Original signals plot'}/>
+          <Chart name={'Morton plot (with bars)'}/>
+          {/*<div>
               <Chart options={options} data={data} type={'mixed'}/>
-              Morton plot (with bars)
-          </div>
+          </div>*/}
       </>
   )
 }
