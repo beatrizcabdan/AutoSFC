@@ -30,7 +30,8 @@ export const data = {
         datasets: [{
             type: 'bar',
             label: 'Bar Dataset',
-            data: xData
+            data: xData,
+            options
         }, {
             type: 'scatter',
             label: 'Line Dataset',
