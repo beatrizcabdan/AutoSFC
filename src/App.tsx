@@ -41,7 +41,7 @@ function App() {
       <>
           <div className={'charts'}>
               <Chart name={'Original signals plot'} data={data} type={'line'} xAxisName={'Time steps'} yAxisName={'Velocity'}/>
-              <Chart name={'Morton plot (with bars)'} data={[]} type={'scatter'} xAxisName={'Morton'} yAxisName={'ts'}/>
+              <Chart name={'Morton plot (with bars)'} data={data} type={'scatter'} xAxisName={'Morton'} yAxisName={'ts'}/>
           </div>
           <Slider min={0} max={data?.length} onDrag={onSliderDrag}/>
           <Button label={'Upload data'} onClick={() => uploadData()}/>

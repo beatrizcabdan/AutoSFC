@@ -1,4 +1,15 @@
 import React, {useEffect, useRef} from "react";
+import {ZCurve} from "@thi.ng/morton";
+
+function mortonEncode2D(xData: number[], yData: number[]) {
+    // noinspection TypeScriptValidateTypes
+    const z = new ZCurve(2, 32);
+    return xData.map((x, i) => {
+        const m = z.encode([x, yData[i]])
+        // console.log(m.toString())
+        return m
+    })
+}
 
 export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string }) {
     const canvasRef = useRef(null)
@@ -47,6 +58,10 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                     }
                 })
                 ctx.stroke()
+            } else {
+                // Morton scatterplot
+                const xData = [...Array(props.data.length).keys()]
+                const data = mortonEncode2D(xData, props.data)
             }
         }
     }, [props.data, canvasRef]);
