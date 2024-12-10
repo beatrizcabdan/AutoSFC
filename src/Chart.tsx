@@ -27,22 +27,82 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
     const canvasRef = useRef(null)
     let ctx: CanvasRenderingContext2D
 
-    function drawAxes(canvas: HTMLCanvasElement) {
-        ctx.lineWidth = 5
+    function drawAxis(canvas: HTMLCanvasElement, padding: number, position: string,
+                      tickMarks?: number[]) {
+        const ulCorner = {x: padding, y: padding}
+        const urCorner = {x: canvas.width - padding, y: padding}
+        const blCorner = {x: padding, y: canvas.height - padding}
+        const brCorner = {x: canvas.width - padding, y: canvas.height - padding}
 
+        ctx.lineWidth = 2
         ctx.strokeStyle = 'black'
 
         ctx.beginPath()
-        ctx.moveTo(0, canvas.height)
-        ctx.lineTo(canvas.width, canvas.height)
-        ctx.closePath()
+
+        let startPos: {x: number, y: number} = {}
+        let endPos: {x: number, y: number} = {}
+
+        switch (position) {
+            case 'left': {
+                startPos = {x: blCorner.x, y: blCorner.y}
+                endPos = {x: ulCorner.x, y: ulCorner.y}
+                break
+            }
+            case 'bottom': {
+                startPos = {x: blCorner.x, y: blCorner.y}
+                endPos = {x: brCorner.x, y: brCorner.y}
+                break
+            }
+            case 'right': {
+                startPos = {x: urCorner.x, y: urCorner.y}
+                endPos = {x: brCorner.x, y: brCorner.y}
+                break
+            }
+            case 'top': {
+                startPos = {x: ulCorner.x, y: ulCorner.y}
+                endPos = {x: urCorner.x, y: urCorner.y}
+                break
+            }
+        }
+
+        ctx.moveTo(startPos.x, startPos.y)
+        ctx.lineTo(endPos.x, endPos.y)
         ctx.stroke()
 
-        ctx.beginPath()
-        ctx.moveTo(0, canvas.height)
-        ctx.lineTo(0, 0)
-        ctx.closePath()
-        ctx.stroke()
+        if (position && tickMarks) {
+            const markLength = 10
+            const lineVec = {x: startPos.x - endPos.x, y: startPos.y - endPos.y}
+            tickMarks.forEach((v, i) => {
+                const startPos = {x: i * lineVec.x / tickMarks.length, y: i * lineVec.y / tickMarks.length}
+                const endPos = {x: startPos.x, y: startPos.y}
+                switch (position) {
+                    case 'left': {
+                        endPos.x += markLength
+                        break
+                    }
+                    case 'bottom': {
+                        endPos.y += markLength
+                        break
+                    }
+                    case 'right': {
+                        endPos.x += markLength
+                        break
+                    }
+                    case 'top': {
+                        endPos.y -= markLength
+                    }
+                }
+
+                ctx.lineWidth = 1
+                ctx.strokeStyle = 'black'
+
+                ctx.beginPath()
+                ctx.moveTo(startPos.x, startPos.y)
+                ctx.lineTo(endPos.x, endPos.y)
+                ctx.closePath()
+                ctx.stroke()
+            })
+        }
     }
 
     function getX(i: number, canvas: HTMLCanvasElement, padding: number) {
@@ -50,12 +110,13 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
     }
 
     useEffect(() => {
+        console.log(props.data, canvasRef.current)
         if (props.data && canvasRef.current) {
             const sortedData = [...props.data].sort()
 
             const canvas: HTMLCanvasElement = canvasRef.current!
             ctx = canvas.getContext('2d')
-            const padding = canvas.height * 0.05
+            const padding = canvas.height * 0.06
 
             if (props.type == 'line') {
                 const minSpeed = sortedData[0]
@@ -78,7 +139,6 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 // Morton scatterplot
                 const timeSteps = [...Array(props.data.length).keys()]
                 const mortonData = mortonEncode2D(timeSteps, props.data).map(m => Number(m.toString()))
-                console.log(mortonData)
                 const mortonSorted = [...mortonData].sort((a, b) => a - b)
                 const minMorton = mortonSorted[0] /*30*/
                 const maxMorton = mortonSorted[mortonSorted.length - 1] /*86000*/
@@ -102,18 +162,22 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             const canvas: HTMLCanvasElement = canvasRef.current!
             canvas.width = Number(getComputedStyle(canvas).width.replace('px', '') * 2)
             canvas.height = Number(getComputedStyle(canvas).height.replace('px', '') * 2)
+            const padding = canvas.height * 0.03
             ctx = canvas.getContext('2d')
-            drawAxes(canvas);
+            drawAxis(canvas, padding, 'left', props.type === 'scatter' ? [0, 0.2, 0.4, 0.6, 0.8, 1.0] : undefined)
+            drawAxis(canvas,padding, 'bottom')
+            drawAxis(canvas,padding, 'right')
+            drawAxis(canvas,padding, 'top')
         }
     }, [canvasRef]);
 
     return <div className={'chart'}>
         <div className={'canvas-container'}>
-            <p className={'y-axis-label'}>{props.yAxisName}</p>
             <div className={'canvas-wrapper'}>
-                <canvas ref={canvasRef}></canvas>
+                <canvas ref={canvasRef} className={props.type}></canvas>
                 <p>{props.xAxisName}</p>
             </div>
+            <p className={'y-axis-label'}>{props.yAxisName}</p>
         </div>
         {props.name}
     </div>;
