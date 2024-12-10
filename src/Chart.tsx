@@ -28,7 +28,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
     let ctx: CanvasRenderingContext2D
 
     function drawAxes(canvas: HTMLCanvasElement) {
-        ctx.lineWidth = 3
+        ctx.lineWidth = 5
 
         ctx.strokeStyle = 'black'
 
@@ -88,9 +88,9 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                     const y = (canvas.width - padding * 2) * (m - minMorton) / (maxMorton - minMorton) + padding
 
                     ctx.beginPath();
-                    ctx.lineWidth = 1
+                    ctx.lineWidth = 0.5
                     // noinspection JSSuspiciousNameCombination
-                    ctx.arc(y, x, 1, 0, 2 * Math.PI);
+                    ctx.arc(y, x, 0.5, 0, 2 * Math.PI);
                     ctx.stroke();
                 })
             }
