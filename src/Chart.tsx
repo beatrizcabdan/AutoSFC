@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from "react";
-import {mortonEncode2D} from "./tools.ts";
+import {mortonEncode2D} from "./utils.ts";
 
 export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string, yAxisLabelPos: string }) {
     const linePlotNumYValues = 8
@@ -9,7 +9,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
     let ctx: CanvasRenderingContext2D
 
     function drawAxis(canvas: HTMLCanvasElement, padding: number, position: string,
-                      tickMarks?: string[], numDecimals?: number) {
+                      tickMarks?: string[]) {
         const ulCorner = {x: padding, y: padding / 2}
         const urCorner = {x: canvas.width - padding, y: padding / 2}
         const blCorner = {x: padding, y: canvas.height - padding * 0.7}
@@ -37,8 +37,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 break
             }
             case 'right': {
-                startPos = {x: urCorner.x, y: urCorner.y}
-                endPos = {x: brCorner.x, y: brCorner.y}
+                startPos = {x: brCorner.x, y: brCorner.y}
+                endPos = {x: urCorner.x, y: urCorner.y}
                 break
             }
             case 'top': {
@@ -76,11 +76,13 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                         tickStartPos = {x: startPos.x + intervalLen * i, y: startPos.y}
                         tickEndPos = {x: tickStartPos.x, y: tickStartPos.y + tickLength}
                         textPos = {x: tickEndPos.x, y: tickEndPos.y + tickTextMargin}
-                        // TODO: Implement
                         break
                     }
                     case 'right': {
-                        // TODO: Implement
+                        const intervalLen = (endPos.y - startPos.y) / (tickMarks.length - 1)
+                        tickStartPos = {x: startPos.x, y: startPos.y + intervalLen * i}
+                        tickEndPos = {x: tickStartPos.x + tickLength, y: tickStartPos.y}
+                        textPos = {x: tickEndPos.x + tickTextMargin, y: tickEndPos.y}
                         break
                     }
                     case 'top': {
@@ -88,7 +90,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                     }
                 }
 
-                ctx.fillText(tickMarks[i]/*.toFixed(numDecimals ?? 1)*/, textPos.x, textPos.y)
+                ctx.fillText(tickMarks[i], textPos.x, textPos.y)
 
                 ctx.lineWidth = 1
                 ctx.strokeStyle = axisColor
@@ -157,18 +159,20 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
 
             padding = canvas.height * 0.1
             ctx = canvas.getContext('2d')
-            const mortonYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
+            const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
             const mortonXValues = [...Array(plotNumXValues).keys()]
                 .map(i => (i * (maxMorton - minMorton) / (plotNumXValues - 1) + minMorton).toExponential(1))
+            const mortonRightYValues = [...Array(linePlotNumYValues).keys()]
+                .map(i => Math.floor(i * props.data.length / (linePlotNumYValues - 1)).toString())
             const lineYValues = [...Array(linePlotNumYValues).keys()].map(i => i * maxData / linePlotNumYValues)
             const lineXValues = [...Array(plotNumXValues).keys()]
                 .map(i => Math.floor(i * props.data.length / (plotNumXValues - 1)).toString())
-            const yTickMarks = props.type === 'scatter' ? mortonYValues : lineYValues
+            const yTickMarks = props.type === 'scatter' ? mortonLeftYValues : lineYValues
             const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
             const numDecimals = 1
-            drawAxis(canvas, padding, 'left', yTickMarks.map(n => n.toFixed(1)), numDecimals)
-            drawAxis(canvas, padding, 'bottom', xTickMarks, 0)
-            drawAxis(canvas, padding, 'right')
+            drawAxis(canvas, padding, 'left', yTickMarks.map(n => n.toFixed(1)))
+            drawAxis(canvas, padding, 'bottom', xTickMarks)
+            drawAxis(canvas, padding, 'right', props.type === 'scatter' ? mortonRightYValues : [])
             drawAxis(canvas, padding, 'top')
         }
     }, [canvasRef.current, props.data]);
