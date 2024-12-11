@@ -11,8 +11,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                       tickMarks?: number[], numDecimals?: number) {
         const ulCorner = {x: padding, y: padding / 2}
         const urCorner = {x: canvas.width - padding, y: padding / 2}
-        const blCorner = {x: padding, y: canvas.height - padding * 0.6}
-        const brCorner = {x: canvas.width - padding, y: canvas.height - padding * 0.6}
+        const blCorner = {x: padding, y: canvas.height - padding * 0.7}
+        const brCorner = {x: canvas.width - padding, y: canvas.height - padding * 0.7}
 
         ctx.lineWidth = 2
         const rootElem = document.querySelector('#root');
