@@ -3,12 +3,13 @@ import {mortonEncode2D} from "./tools.ts";
 
 export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string, yAxisLabelPos: string }) {
     const linePlotNumYValues = 8
+    const plotNumXValues = 9
 
     const canvasRef = useRef(null)
     let ctx: CanvasRenderingContext2D
 
     function drawAxis(canvas: HTMLCanvasElement, padding: number, position: string,
-                      tickMarks?: number[], numDecimals?: number) {
+                      tickMarks?: string[], numDecimals?: number) {
         const ulCorner = {x: padding, y: padding / 2}
         const urCorner = {x: canvas.width - padding, y: padding / 2}
         const blCorner = {x: padding, y: canvas.height - padding * 0.7}
@@ -87,7 +88,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                     }
                 }
 
-                ctx.fillText(tickMarks[i].toFixed(numDecimals ?? 1), textPos.x, textPos.y)
+                ctx.fillText(tickMarks[i]/*.toFixed(numDecimals ?? 1)*/, textPos.x, textPos.y)
 
                 ctx.lineWidth = 1
                 ctx.strokeStyle = axisColor
@@ -118,6 +119,14 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             const minData = sortedData[0]
             const maxData = sortedData[sortedData.length - 1]
 
+            // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
+            const timeSteps = [...Array(props.data.length).keys()]
+            const mortonData = mortonEncode2D(timeSteps, props.data)
+            const mortonSorted = [...mortonData].sort((a, b) => a - b)
+            const minMorton = mortonSorted[0]
+            const maxMorton = mortonSorted[mortonSorted.length - 1]
+            console.log(mortonSorted)
+
             if (props.type == 'line') {
                 ctx.strokeStyle = "blue"
                 ctx.beginPath()
@@ -134,13 +143,6 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 ctx.stroke()
             } else {
                 // Morton scatterplot
-                // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
-                const timeSteps = [...Array(props.data.length).keys()]
-                const mortonData = mortonEncode2D(timeSteps, props.data).map(m => Number(m.toString()))
-                const mortonSorted = [...mortonData].sort((a, b) => a - b)
-                const minMorton = mortonSorted[0]
-                const maxMorton = mortonSorted[mortonSorted.length - 1]
-
                 mortonData.forEach((m, i) => {
                     const x = getX(i, canvas, padding)
                     const y = (canvas.width - padding * 2) * (m - minMorton) / (maxMorton - minMorton) + padding
@@ -156,12 +158,15 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             padding = canvas.height * 0.1
             ctx = canvas.getContext('2d')
             const mortonYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
+            const mortonXValues = [...Array(plotNumXValues).keys()]
+                .map(i => (i * (maxMorton - minMorton) / (plotNumXValues - 1) + minMorton).toExponential(1))
             const lineYValues = [...Array(linePlotNumYValues).keys()].map(i => i * maxData / linePlotNumYValues)
-            const lineXValues = [...Array(9).keys()].map(i => i * props.data.length / 8)
+            const lineXValues = [...Array(plotNumXValues).keys()]
+                .map(i => Math.floor(i * props.data.length / (plotNumXValues - 1)).toString())
             const yTickMarks = props.type === 'scatter' ? mortonYValues : lineYValues
-            const xTickMarks = props.type === 'scatter' ? [] : lineXValues
+            const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
             const numDecimals = 1
-            drawAxis(canvas, padding, 'left', yTickMarks, numDecimals)
+            drawAxis(canvas, padding, 'left', yTickMarks.map(n => n.toFixed(1)), numDecimals)
             drawAxis(canvas, padding, 'bottom', xTickMarks, 0)
             drawAxis(canvas, padding, 'right')
             drawAxis(canvas, padding, 'top')
