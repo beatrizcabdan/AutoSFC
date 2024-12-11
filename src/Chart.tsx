@@ -70,26 +70,34 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
         ctx.stroke()
 
         if (position && tickMarks) {
-            const markLength = 10
-            const lineVec = {x: startPos.x - endPos.x, y: startPos.y - endPos.y}
+            const tickLength = 10
+            const tickTextMargin = 15
+            let tickStartPos: {x: number, y: number} = {}
+            let tickEndPos: {x: number, y: number} = {}
+            let textPos: {x: number, y: number} = {}
+            ctx.font = "16px sans-serif"
+            ctx.textAlign = 'center'
+            ctx.textBaseline = 'middle'
             tickMarks.forEach((v, i) => {
-                const startPos = {x: i * lineVec.x / tickMarks.length, y: i * lineVec.y / tickMarks.length}
-                const endPos = {x: startPos.x, y: startPos.y}
                 switch (position) {
                     case 'left': {
-                        endPos.x += markLength
+                        const intervalLen = (endPos.y - startPos.y) / (tickMarks.length - 1)
+                        tickStartPos = {x: startPos.x, y: startPos.y + intervalLen * i}
+                        tickEndPos = {x: tickStartPos.x - tickLength, y: tickStartPos.y}
+                        textPos = {x: tickEndPos.x - tickTextMargin, y: tickEndPos.y}
+                        ctx.fillText(String(tickMarks[i]), textPos.x, textPos.y)
                         break
                     }
                     case 'bottom': {
-                        endPos.y += markLength
+                        // TODO: Implement
                         break
                     }
                     case 'right': {
-                        endPos.x += markLength
+                        // TODO: Implement
                         break
                     }
                     case 'top': {
-                        endPos.y -= markLength
+                        // TODO: Implement
                     }
                 }
 
@@ -97,8 +105,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 ctx.strokeStyle = 'black'
 
                 ctx.beginPath()
-                ctx.moveTo(startPos.x, startPos.y)
-                ctx.lineTo(endPos.x, endPos.y)
+                ctx.moveTo(tickStartPos.x, tickStartPos.y)
+                ctx.lineTo(tickEndPos.x, tickEndPos.y)
                 ctx.closePath()
                 ctx.stroke()
             })
@@ -116,7 +124,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
 
             const canvas: HTMLCanvasElement = canvasRef.current!
             ctx = canvas.getContext('2d')
-            const padding = canvas.height * 0.06
+            const padding = canvas.height * 0.13
 
             if (props.type == 'line') {
                 const minSpeed = sortedData[0]
@@ -140,8 +148,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 const timeSteps = [...Array(props.data.length).keys()]
                 const mortonData = mortonEncode2D(timeSteps, props.data).map(m => Number(m.toString()))
                 const mortonSorted = [...mortonData].sort((a, b) => a - b)
-                const minMorton = mortonSorted[0] /*30*/
-                const maxMorton = mortonSorted[mortonSorted.length - 1] /*86000*/
+                const minMorton = mortonSorted[0]
+                const maxMorton = mortonSorted[mortonSorted.length - 1]
 
                 mortonData.forEach((m, i) => {
                     const x = getX(i, canvas, padding)
@@ -162,7 +170,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             const canvas: HTMLCanvasElement = canvasRef.current!
             canvas.width = Number(getComputedStyle(canvas).width.replace('px', '') * 2)
             canvas.height = Number(getComputedStyle(canvas).height.replace('px', '') * 2)
-            const padding = canvas.height * 0.03
+            const padding = canvas.height * 0.1
             ctx = canvas.getContext('2d')
             drawAxis(canvas, padding, 'left', props.type === 'scatter' ? [0, 0.2, 0.4, 0.6, 0.8, 1.0] : undefined)
             drawAxis(canvas,padding, 'bottom')
