@@ -24,11 +24,13 @@ function mortonEncode2D(xData: number[], yData: number[]) {
 }
 
 export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string }) {
+    const linePlotNumYValues = 8
+
     const canvasRef = useRef(null)
     let ctx: CanvasRenderingContext2D
 
     function drawAxis(canvas: HTMLCanvasElement, padding: number, position: string,
-                      tickMarks?: number[]) {
+                      tickMarks?: number[], numDecimals?: number) {
         const ulCorner = {x: padding, y: padding}
         const urCorner = {x: canvas.width - padding, y: padding}
         const blCorner = {x: padding, y: canvas.height - padding}
@@ -71,7 +73,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
 
         if (position && tickMarks) {
             const tickLength = 10
-            const tickTextMargin = 15
+            const tickTextMargin = 20
             let tickStartPos: {x: number, y: number} = {}
             let tickEndPos: {x: number, y: number} = {}
             let textPos: {x: number, y: number} = {}
@@ -85,7 +87,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                         tickStartPos = {x: startPos.x, y: startPos.y + intervalLen * i}
                         tickEndPos = {x: tickStartPos.x - tickLength, y: tickStartPos.y}
                         textPos = {x: tickEndPos.x - tickTextMargin, y: tickEndPos.y}
-                        ctx.fillText(String(tickMarks[i]), textPos.x, textPos.y)
+                        ctx.fillText(tickMarks[i].toFixed(numDecimals ?? 1), textPos.x, textPos.y)
                         break
                     }
                     case 'bottom': {
@@ -118,13 +120,14 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
     }
 
     useEffect(() => {
-        console.log(props.data, canvasRef.current)
-        if (props.data && canvasRef.current) {
+        if (props.data?.length > 0 && canvasRef.current) {
             const sortedData = [...props.data].sort()
 
             const canvas: HTMLCanvasElement = canvasRef.current!
+            canvas.width = Number(getComputedStyle(canvas).width.replace('px', '') * 2)
+            canvas.height = Number(getComputedStyle(canvas).height.replace('px', '') * 2)
             ctx = canvas.getContext('2d')
-            const padding = canvas.height * 0.13
+            let padding = canvas.height * 0.13
 
             if (props.type == 'line') {
                 const minSpeed = sortedData[0]
@@ -162,22 +165,20 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                     ctx.stroke();
                 })
             }
-        }
-    }, [props.data, canvasRef.current]);
 
-    useEffect(() => {
-        if (canvasRef.current) {
-            const canvas: HTMLCanvasElement = canvasRef.current!
-            canvas.width = Number(getComputedStyle(canvas).width.replace('px', '') * 2)
-            canvas.height = Number(getComputedStyle(canvas).height.replace('px', '') * 2)
-            const padding = canvas.height * 0.1
+            padding = canvas.height * 0.1
             ctx = canvas.getContext('2d')
-            drawAxis(canvas, padding, 'left', props.type === 'scatter' ? [0, 0.2, 0.4, 0.6, 0.8, 1.0] : undefined)
-            drawAxis(canvas,padding, 'bottom')
-            drawAxis(canvas,padding, 'right')
-            drawAxis(canvas,padding, 'top')
+            const mortonYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
+            const lineYValues = sortedData
+                .filter((v, i) => i % (Math.floor(props.data.length / linePlotNumYValues)) === 0)
+            const tickMarks = props.type === 'scatter' ? mortonYValues : lineYValues
+            const numDecimals = props.type === 'scatter' ? 1 : 2
+            drawAxis(canvas, padding, 'left', tickMarks, numDecimals)
+            drawAxis(canvas, padding, 'bottom')
+            drawAxis(canvas, padding, 'right')
+            drawAxis(canvas, padding, 'top')
         }
-    }, [canvasRef]);
+    }, [canvasRef.current, props.data]);
 
     return <div className={'chart'}>
         <div className={'canvas-container'}>
