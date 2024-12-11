@@ -1,27 +1,5 @@
 import React, {useEffect, useRef} from "react";
-
-function mortonEncode2D(xData: number[], yData: number[]) {
-    const resultArr: number[] = []
-    xData.forEach((x, i) => {
-        let xn = BigInt(x)
-        xn = (xn | (xn << 16n)) & 0x0000FFFF0000FFFFn
-        xn = (xn | (xn << 8n)) & 0x00FF00FF00FF00FFn
-        xn = (xn | (xn << 4n)) & 0x0F0F0F0F0F0F0F0Fn
-        xn = (xn | (xn << 2n)) & 0x3333333333333333n
-        xn = (xn | (xn << 1n)) & 0x5555555555555555n
-
-        let yn = BigInt(Math.round(yData[i] * 10000))
-        yn = (yn | (yn << 16n)) & 0x0000FFFF0000FFFFn
-        yn = (yn | (yn << 8n)) & 0x00FF00FF00FF00FFn
-        yn = (yn | (yn << 4n)) & 0x0F0F0F0F0F0F0F0Fn
-        yn = (yn | (yn << 2n)) & 0x3333333333333333n
-        yn = (yn | (yn << 1n)) & 0x5555555555555555n
-
-        const result = xn | (yn << 1n)
-        resultArr.push(Number(result))
-    })
-    return resultArr
-}
+import {mortonEncode2D} from "./tools.ts";
 
 export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string, yAxisLabelPos: string }) {
     const linePlotNumYValues = 8
@@ -33,8 +11,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                       tickMarks?: number[], numDecimals?: number) {
         const ulCorner = {x: padding, y: padding / 2}
         const urCorner = {x: canvas.width - padding, y: padding / 2}
-        const blCorner = {x: padding, y: canvas.height - padding / 2}
-        const brCorner = {x: canvas.width - padding, y: canvas.height - padding / 2}
+        const blCorner = {x: padding, y: canvas.height - padding * 0.6}
+        const brCorner = {x: canvas.width - padding, y: canvas.height - padding * 0.6}
 
         ctx.lineWidth = 2
         const rootElem = document.querySelector('#root');
@@ -90,10 +68,13 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                         tickStartPos = {x: startPos.x, y: startPos.y + intervalLen * i}
                         tickEndPos = {x: tickStartPos.x - tickLength, y: tickStartPos.y}
                         textPos = {x: tickEndPos.x - tickTextMargin, y: tickEndPos.y}
-                        ctx.fillText(tickMarks[i].toFixed(numDecimals ?? 1), textPos.x, textPos.y)
                         break
                     }
                     case 'bottom': {
+                        const intervalLen = (endPos.x - startPos.x) / (tickMarks.length - 1)
+                        tickStartPos = {x: startPos.x + intervalLen * i, y: startPos.y}
+                        tickEndPos = {x: tickStartPos.x, y: tickStartPos.y + tickLength}
+                        textPos = {x: tickEndPos.x, y: tickEndPos.y + tickTextMargin}
                         // TODO: Implement
                         break
                     }
@@ -105,6 +86,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                         // TODO: Implement
                     }
                 }
+
+                ctx.fillText(tickMarks[i].toFixed(numDecimals ?? 1), textPos.x, textPos.y)
 
                 ctx.lineWidth = 1
                 ctx.strokeStyle = axisColor
@@ -151,6 +134,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 ctx.stroke()
             } else {
                 // Morton scatterplot
+                // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
                 const timeSteps = [...Array(props.data.length).keys()]
                 const mortonData = mortonEncode2D(timeSteps, props.data).map(m => Number(m.toString()))
                 const mortonSorted = [...mortonData].sort((a, b) => a - b)
@@ -173,10 +157,12 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             ctx = canvas.getContext('2d')
             const mortonYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
             const lineYValues = [...Array(linePlotNumYValues).keys()].map(i => i * maxData / linePlotNumYValues)
-            const tickMarks = props.type === 'scatter' ? mortonYValues : lineYValues
+            const lineXValues = [...Array(9).keys()].map(i => i * props.data.length / 8)
+            const yTickMarks = props.type === 'scatter' ? mortonYValues : lineYValues
+            const xTickMarks = props.type === 'scatter' ? [] : lineXValues
             const numDecimals = 1
-            drawAxis(canvas, padding, 'left', tickMarks, numDecimals)
-            drawAxis(canvas, padding, 'bottom')
+            drawAxis(canvas, padding, 'left', yTickMarks, numDecimals)
+            drawAxis(canvas, padding, 'bottom', xTickMarks, 0)
             drawAxis(canvas, padding, 'right')
             drawAxis(canvas, padding, 'top')
         }
