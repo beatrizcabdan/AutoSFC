@@ -31,13 +31,15 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
 
     function drawAxis(canvas: HTMLCanvasElement, padding: number, position: string,
                       tickMarks?: number[], numDecimals?: number) {
-        const ulCorner = {x: padding, y: padding}
-        const urCorner = {x: canvas.width - padding, y: padding}
-        const blCorner = {x: padding, y: canvas.height - padding}
-        const brCorner = {x: canvas.width - padding, y: canvas.height - padding}
+        const ulCorner = {x: padding, y: padding / 2}
+        const urCorner = {x: canvas.width - padding, y: padding / 2}
+        const blCorner = {x: padding, y: canvas.height - padding / 2}
+        const brCorner = {x: canvas.width - padding, y: canvas.height - padding / 2}
 
         ctx.lineWidth = 2
-        ctx.strokeStyle = 'black'
+        const rootElem = document.querySelector('#root');
+        const axisColor= rootElem ? getComputedStyle(rootElem).color : 'black'
+        ctx.strokeStyle = axisColor
 
         ctx.beginPath()
 
@@ -80,6 +82,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             ctx.font = "16px sans-serif"
             ctx.textAlign = 'center'
             ctx.textBaseline = 'middle'
+            ctx.fillStyle = axisColor
             tickMarks.forEach((v, i) => {
                 switch (position) {
                     case 'left': {
@@ -104,7 +107,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 }
 
                 ctx.lineWidth = 1
-                ctx.strokeStyle = 'black'
+                ctx.strokeStyle = axisColor
 
                 ctx.beginPath()
                 ctx.moveTo(tickStartPos.x, tickStartPos.y)
@@ -133,7 +136,6 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             const maxData = sortedData[sortedData.length - 1]
 
             if (props.type == 'line') {
-
                 ctx.strokeStyle = "blue"
                 ctx.beginPath()
                 ctx.lineWidth = 3
@@ -172,7 +174,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             const mortonYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
             const lineYValues = [...Array(linePlotNumYValues).keys()].map(i => i * maxData / linePlotNumYValues)
             const tickMarks = props.type === 'scatter' ? mortonYValues : lineYValues
-            const numDecimals = props.type === 'scatter' ? 1 : 2
+            const numDecimals = 1
             drawAxis(canvas, padding, 'left', tickMarks, numDecimals)
             drawAxis(canvas, padding, 'bottom')
             drawAxis(canvas, padding, 'right')

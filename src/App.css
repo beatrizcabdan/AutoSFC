@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+html {
+  --text-color: #3d3d3d;
+  --text-color-light: #575757;
+}
+
 #root {
   margin: 0 auto;
   padding: 2rem;
@@ -16,7 +21,7 @@
   width: 100%;
   flex-direction: column;
   font-family: Inter, sans-serif;
-  color: #4d4d4d;
+  color: var(--text-color);
 }
 
 .charts {
@@ -38,8 +43,9 @@
 }
 .charts .chart h2 {
   font-size: 1.2rem;
-  font-weight: 400;
-  letter-spacing: -0.05rem;
+  font-weight: 500;
+  letter-spacing: -0.07rem;
+  color: var(--text-color-light);
 }
 .charts .chart .canvas-container {
   text-transform: uppercase;
@@ -52,7 +58,7 @@
   flex-direction: row;
   width: 100%;
   height: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: 0.3rem;
 }
 .charts .chart .canvas-container p {
   line-height: 0;
