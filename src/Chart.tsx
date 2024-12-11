@@ -189,6 +189,6 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             </div>
             {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
         </div>
-        {props.name}
+        <h2>{props.name}</h2>
     </div>;
 }

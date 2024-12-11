@@ -40,7 +40,7 @@ function App() {
     return (
       <>
           <div className={'charts'}>
-              <Chart name={'Original signals plot'} data={data} type={'line'} xAxisName={'Time steps'} yAxisName={'Velocity (m/s)'} yAxisLabelPos={'left'}/>
+              <Chart name={'Original signals plot'} data={data} type={'line'} xAxisName={'Time steps'} yAxisName={'Ground speed (m/s)'} yAxisLabelPos={'left'}/>
               <Chart name={'Morton plot (with bars)'} data={data} type={'scatter'} xAxisName={'Morton'} yAxisName={'Time steps'} yAxisLabelPos={'right'}/>
           </div>
           <Slider min={0} max={data?.length} onDrag={onSliderDrag}/>
