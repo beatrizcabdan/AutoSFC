@@ -23,7 +23,7 @@ function mortonEncode2D(xData: number[], yData: number[]) {
     return resultArr
 }
 
-export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string }) {
+export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string, yAxisLabelPos: string }) {
     const linePlotNumYValues = 8
 
     const canvasRef = useRef(null)
@@ -129,16 +129,17 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             ctx = canvas.getContext('2d')
             let padding = canvas.height * 0.13
 
+            const minData = sortedData[0]
+            const maxData = sortedData[sortedData.length - 1]
+
             if (props.type == 'line') {
-                const minSpeed = sortedData[0]
-                const maxSpeed = sortedData[sortedData.length - 1]
 
                 ctx.strokeStyle = "blue"
                 ctx.beginPath()
                 ctx.lineWidth = 3
                 props.data.forEach((point, i) => {
                     const x = getX(i, canvas, padding)
-                    const y = (canvas.height - padding * 2) * (point - minSpeed) / (maxSpeed - minSpeed) + padding
+                    const y = (canvas.height - padding * 2) * (point - minData) / (maxData - minData) + padding
                     if (i === 0) {
                         ctx.moveTo(x, y)
                     } else {
@@ -169,8 +170,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             padding = canvas.height * 0.1
             ctx = canvas.getContext('2d')
             const mortonYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
-            const lineYValues = sortedData
-                .filter((v, i) => i % (Math.floor(props.data.length / linePlotNumYValues)) === 0)
+            const lineYValues = [...Array(linePlotNumYValues).keys()].map(i => i * maxData / linePlotNumYValues)
             const tickMarks = props.type === 'scatter' ? mortonYValues : lineYValues
             const numDecimals = props.type === 'scatter' ? 1 : 2
             drawAxis(canvas, padding, 'left', tickMarks, numDecimals)
@@ -182,11 +182,12 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
 
     return <div className={'chart'}>
         <div className={'canvas-container'}>
+            {props.yAxisLabelPos === 'left' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
             <div className={'canvas-wrapper'}>
                 <canvas ref={canvasRef} className={props.type}></canvas>
                 <p>{props.xAxisName}</p>
             </div>
-            <p className={'y-axis-label'}>{props.yAxisName}</p>
+            {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
         </div>
         {props.name}
     </div>;
