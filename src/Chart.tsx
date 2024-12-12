@@ -3,7 +3,7 @@ import {mortonEncode2D,  makeGaussKernel} from "./utils.ts";
 
 const LINE_DATA_SMOOTHING = 2.3
 
-function getSmoothed(data: number[]) {
+function getSmoothedData(data: number[]) {
     const smoothedArr: number[] = []
     const kernel = makeGaussKernel(LINE_DATA_SMOOTHING)
     const tailLen = Math.floor(kernel.length / 2)
@@ -29,7 +29,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
     let ctx: CanvasRenderingContext2D
 
     function drawAxis(canvas: HTMLCanvasElement, axisPadding: number, position: string, lineWidth: number,
-                      tickMarks?: string[], tickPadding = 0) {
+                      tickMarks?: string[], paddingFactor = CURVE_PADDING_FACTOR) {
         const ulCorner = {x: axisPadding, y: axisPadding}
         const urCorner = {x: canvas.width - axisPadding, y: axisPadding}
         const blCorner = {x: axisPadding, y: canvas.height - axisPadding}
@@ -78,7 +78,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             let tickStartPos: {x: number, y: number} = {}
             let tickEndPos: {x: number, y: number} = {}
             let textPos: {x: number, y: number} = {}
-            tickPadding = canvas.height * CURVE_PADDING_FACTOR
+            const tickPadding = canvas.height * paddingFactor
             ctx.font = "16px sans-serif"
             ctx.textAlign = 'center'
             ctx.textBaseline = 'middle'
@@ -160,7 +160,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 ctx.strokeStyle = "blue"
                 ctx.beginPath()
                 ctx.lineWidth = 3
-                const smoothedData = LINE_DATA_SMOOTHING > 0 ? getSmoothed(props.data) : props.data
+                const smoothedData = LINE_DATA_SMOOTHING > 0 ? getSmoothedData(props.data) : props.data
                 smoothedData.forEach((point, i) => {
                     const x = getLineX(i, canvas, curvePadding)
                     const y = (canvas.height - curvePadding * 2) * (point - minData) / (maxData - minData) + curvePadding
@@ -196,8 +196,9 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 .map(i => Math.floor(i * props.data.length / (PLOT_NUM_X_VALUES - 1)).toString())
             const yTickMarks = props.type === 'scatter' ? mortonLeftYValues : lineYValues
             const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
+            const leftPaddingFactor = props.type === 'line' ? CURVE_PADDING_FACTOR : AXIS_PADDING_FACTOR
 
-            drawAxis(canvas, axisPadding, 'left', 2, yTickMarks.map(n => n.toFixed(1)), curvePadding)
+            drawAxis(canvas, axisPadding, 'left', 2, yTickMarks.map(n => n.toFixed(1)), leftPaddingFactor)
             drawAxis(canvas, axisPadding, 'bottom', 2, xTickMarks)
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [])
             drawAxis(canvas, axisPadding, 'top', 2)
