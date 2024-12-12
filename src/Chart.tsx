@@ -2,8 +2,8 @@ import React, {useEffect, useRef} from "react";
 import {mortonEncode2D} from "./utils.ts";
 
 export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string, yAxisLabelPos: string }) {
-    const linePlotNumYValues = 8
-    const plotNumXValues = 9
+    const PLOT_NUM_Y_VALUES = 8
+    const PLOT_NUM_X_VALUES = 9
     const AXIS_PADDING_FACTOR = 0.07
     const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.02
 
@@ -168,13 +168,13 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
 
             ctx = canvas.getContext('2d')
             const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
-            const mortonXValues = [...Array(plotNumXValues).keys()]
-                .map(i => (i * (maxMorton - minMorton) / (plotNumXValues - 1) + minMorton).toExponential(1))
-            const mortonRightYValues = [...Array(linePlotNumYValues).keys()]
-                .map(i => Math.floor(i * props.data.length / (linePlotNumYValues - 1)).toString())
-            const lineYValues = [...Array(linePlotNumYValues).keys()].map(i => i * maxData / linePlotNumYValues)
-            const lineXValues = [...Array(plotNumXValues).keys()]
-                .map(i => Math.floor(i * props.data.length / (plotNumXValues - 1)).toString())
+            const mortonXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
+                .map(i => (i * (maxMorton - minMorton) / (PLOT_NUM_X_VALUES - 1) + minMorton).toExponential(1))
+            const mortonRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
+                .map(i => Math.floor(i * props.data.length / (PLOT_NUM_Y_VALUES - 1)).toString())
+            const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()].map(i => i * maxData / PLOT_NUM_Y_VALUES)
+            const lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
+                .map(i => Math.floor(i * props.data.length / (PLOT_NUM_X_VALUES - 1)).toString())
             const yTickMarks = props.type === 'scatter' ? mortonLeftYValues : lineYValues
             const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
 
