@@ -4,18 +4,20 @@ import {mortonEncode2D} from "./utils.ts";
 export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string, yAxisLabelPos: string }) {
     const linePlotNumYValues = 8
     const plotNumXValues = 9
+    const AXIS_PADDING_FACTOR = 0.1
+    const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.02
 
     const canvasRef = useRef(null)
     let ctx: CanvasRenderingContext2D
 
-    function drawAxis(canvas: HTMLCanvasElement, padding: number, position: string,
-                      tickMarks?: string[]) {
-        const ulCorner = {x: padding, y: padding / 2}
-        const urCorner = {x: canvas.width - padding, y: padding / 2}
-        const blCorner = {x: padding, y: canvas.height - padding * 0.7}
-        const brCorner = {x: canvas.width - padding, y: canvas.height - padding * 0.7}
+    function drawAxis(canvas: HTMLCanvasElement, padding: number, position: string, lineWidth: number,
+                      tickMarks?: string[], tickPadding = 0) {
+        const ulCorner = {x: padding, y: padding /*/ 2*/}
+        const urCorner = {x: canvas.width - padding, y: padding /*/ 2*/}
+        const blCorner = {x: padding, y: canvas.height - padding /** 0.7*/}
+        const brCorner = {x: canvas.width - padding, y: canvas.height - padding /** 0.7*/}
 
-        ctx.lineWidth = 2
+        ctx.lineWidth = lineWidth
         const rootElem = document.querySelector('#root');
         const axisColor= rootElem ? getComputedStyle(rootElem).color : 'black'
         ctx.strokeStyle = axisColor
@@ -52,7 +54,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
         ctx.lineTo(endPos.x, endPos.y)
         ctx.stroke()
 
-        if (position && tickMarks) {
+        if (tickMarks) {
             const tickLength = 10
             const tickTextMargin = 20
             let tickStartPos: {x: number, y: number} = {}
@@ -65,8 +67,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             tickMarks.forEach((v, i) => {
                 switch (position) {
                     case 'left': {
-                        const intervalLen = (endPos.y - startPos.y) / (tickMarks.length - 1)
-                        tickStartPos = {x: startPos.x, y: startPos.y + intervalLen * i}
+                        const intervalLen = (endPos.y - startPos.y + tickPadding * 2) / (tickMarks.length - 1)
+                        tickStartPos = {x: startPos.x, y: startPos.y - tickPadding + intervalLen * i}
                         tickEndPos = {x: tickStartPos.x - tickLength, y: tickStartPos.y}
                         textPos = {x: tickEndPos.x - tickTextMargin, y: tickEndPos.y}
                         break
@@ -79,8 +81,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                         break
                     }
                     case 'right': {
-                        const intervalLen = (endPos.y - startPos.y) / (tickMarks.length - 1)
-                        tickStartPos = {x: startPos.x, y: startPos.y + intervalLen * i}
+                        const intervalLen = (endPos.y - startPos.y - tickPadding * 2) / (tickMarks.length - 1)
+                        tickStartPos = {x: startPos.x, y: startPos.y - tickPadding + intervalLen * i}
                         tickEndPos = {x: tickStartPos.x + tickLength, y: tickStartPos.y}
                         textPos = {x: tickEndPos.x + tickTextMargin, y: tickEndPos.y}
                         break
@@ -104,8 +106,12 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
         }
     }
 
-    function getX(i: number, canvas: HTMLCanvasElement, padding: number) {
+    function getLineX(i: number, canvas: HTMLCanvasElement, padding: number) {
         return (i / props.data.length) * (canvas.width - padding * 2) + padding;
+    }
+
+    function getScatterX(i: number, canvas: HTMLCanvasElement, padding: number) {
+        return (i / props.data.length) * (canvas.height - padding * 2) + padding;
     }
 
     useEffect(() => {
@@ -116,7 +122,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             canvas.width = Number(getComputedStyle(canvas).width.replace('px', '') * 2)
             canvas.height = Number(getComputedStyle(canvas).height.replace('px', '') * 2)
             ctx = canvas.getContext('2d')
-            let padding = canvas.height * 0.13
+            const curvePadding = canvas.height * CURVE_PADDING_FACTOR
+            const axisPadding = canvas.height * AXIS_PADDING_FACTOR
 
             const minData = sortedData[0]
             const maxData = sortedData[sortedData.length - 1]
@@ -127,15 +134,14 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
             const maxMorton = mortonSorted[mortonSorted.length - 1]
-            console.log(mortonSorted)
 
             if (props.type == 'line') {
                 ctx.strokeStyle = "blue"
                 ctx.beginPath()
                 ctx.lineWidth = 3
                 props.data.forEach((point, i) => {
-                    const x = getX(i, canvas, padding)
-                    const y = (canvas.height - padding * 2) * (point - minData) / (maxData - minData) + padding
+                    const x = getLineX(i, canvas, curvePadding)
+                    const y = (canvas.height - curvePadding * 2) * (point - minData) / (maxData - minData) + curvePadding
                     if (i === 0) {
                         ctx.moveTo(x, y)
                     } else {
@@ -146,8 +152,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             } else {
                 // Morton scatterplot
                 mortonData.forEach((m, i) => {
-                    const x = getX(i, canvas, padding)
-                    const y = (canvas.width - padding * 2) * (m - minMorton) / (maxMorton - minMorton) + padding
+                    const x = getScatterX(i, canvas, curvePadding)
+                    const y = (canvas.width - curvePadding * 2) * (m - minMorton) / (maxMorton - minMorton) + curvePadding
 
                     ctx.beginPath();
                     ctx.lineWidth = 0.5
@@ -157,7 +163,6 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 })
             }
 
-            padding = canvas.height * 0.1
             ctx = canvas.getContext('2d')
             const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
             const mortonXValues = [...Array(plotNumXValues).keys()]
@@ -170,10 +175,16 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             const yTickMarks = props.type === 'scatter' ? mortonLeftYValues : lineYValues
             const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
             const numDecimals = 1
-            drawAxis(canvas, padding, 'left', yTickMarks.map(n => n.toFixed(1)))
-            drawAxis(canvas, padding, 'bottom', xTickMarks)
-            drawAxis(canvas, padding, 'right', props.type === 'scatter' ? mortonRightYValues : [])
-            drawAxis(canvas, padding, 'top')
+            drawAxis(canvas, axisPadding, 'left', 2, yTickMarks.map(n => n.toFixed(1)))
+            drawAxis(canvas, axisPadding, 'bottom', 2, xTickMarks, curvePadding)
+            drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [])
+            drawAxis(canvas, axisPadding, 'top', 2)
+
+            // Debug axes
+            drawAxis(canvas, curvePadding, 'left', 1)
+            drawAxis(canvas, curvePadding, 'bottom', 1)
+            drawAxis(canvas, curvePadding, 'right', 1)
+            drawAxis(canvas, curvePadding, 'top', 1)
         }
     }, [canvasRef.current, props.data]);
 
