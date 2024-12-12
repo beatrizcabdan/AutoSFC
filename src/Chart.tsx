@@ -73,9 +73,6 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 switch (position) {
                     case 'left': {
                         const axisLen = canvas.height - tickPadding * 2
-                        /*console.log(`Tick padding: ${tickPadding}`)
-                        console.log(`Tick y-axis length: ${axisLen}`)*/
-                        /*console.log(`Tick y-axis length 2: ${canvas.height - tickPadding * 2}`)*/
                         const intervalLen = axisLen / (tickMarks.length - 1)
                         tickStartPos = {x: axisPadding, y: canvas.height - tickPadding - intervalLen * i}
                         tickEndPos = {x: tickStartPos.x - tickLength, y: tickStartPos.y}
@@ -83,8 +80,9 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                         break
                     }
                     case 'bottom': {
-                        const intervalLen = (endPos.x - startPos.x) / (tickMarks.length - 1)
-                        tickStartPos = {x: startPos.x + intervalLen * i, y: startPos.y}
+                        const axisWidth = canvas.width - tickPadding * 2
+                        const intervalLen = axisWidth / (tickMarks.length - 1)
+                        tickStartPos = {x: tickPadding + intervalLen * i, y: canvas.height - axisPadding}
                         tickEndPos = {x: tickStartPos.x, y: tickStartPos.y + tickLength}
                         textPos = {x: tickEndPos.x, y: tickEndPos.y + tickTextMargin}
                         break
@@ -189,12 +187,6 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             drawAxis(canvas, axisPadding, 'bottom', 2, xTickMarks)
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [])
             drawAxis(canvas, axisPadding, 'top', 2)
-
-            // Debug axes
-            drawAxis(canvas, curvePadding, 'left', 1)
-            drawAxis(canvas, curvePadding, 'bottom', 1)
-            drawAxis(canvas, curvePadding, 'right', 1)
-            drawAxis(canvas, curvePadding, 'top', 1)
         }
     }, [canvasRef.current, props.data]);
 
