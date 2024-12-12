@@ -161,8 +161,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                     ctx.beginPath();
                     ctx.lineWidth = 0.5
                     // noinspection JSSuspiciousNameCombination
-                    ctx.arc(y, x, 0.5, 0, 2 * Math.PI);
-                    ctx.stroke();
+                    ctx.arc(y, x, 1, 0, 2 * Math.PI);
+                    ctx.fill()
                 })
             }
 
