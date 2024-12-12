@@ -90,8 +90,9 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                         break
                     }
                     case 'right': {
-                        const intervalLen = (endPos.y - startPos.y - tickPadding * 2) / (tickMarks.length - 1)
-                        tickStartPos = {x: startPos.x, y: startPos.y - tickPadding + intervalLen * i}
+                        const axisLen = canvas.height - tickPadding * 2
+                        const intervalLen = axisLen / (tickMarks.length - 1)
+                        tickStartPos = {x: canvas.width - axisPadding, y: canvas.height - tickPadding - intervalLen * i}
                         tickEndPos = {x: tickStartPos.x + tickLength, y: tickStartPos.y}
                         textPos = {x: tickEndPos.x + tickTextMargin, y: tickEndPos.y}
                         break
