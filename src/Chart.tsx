@@ -4,7 +4,7 @@ import {mortonEncode2D} from "./utils.ts";
 export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string, yAxisLabelPos: string }) {
     const linePlotNumYValues = 8
     const plotNumXValues = 9
-    const AXIS_PADDING_FACTOR = 0.1
+    const AXIS_PADDING_FACTOR = 0.07
     const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.02
 
     const canvasRef = useRef(null)
@@ -31,10 +31,6 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             case 'left': {
                 startPos = {x: blCorner.x, y: blCorner.y}
                 endPos = {x: ulCorner.x, y: ulCorner.y}
-                if (lineWidth === 1) {
-                    console.log(`Correct y-axis height: ${startPos.y - endPos.y}`)
-                    console.log(`Correct tick padding: ${axisPadding}`)
-                }
                 break
             }
             case 'bottom': {
@@ -95,9 +91,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                         textPos = {x: tickEndPos.x + tickTextMargin, y: tickEndPos.y}
                         break
                     }
-                    case 'top': {
-                        // TODO: Implement
-                    }
+                    case 'top': {}
                 }
 
                 ctx.fillText(tickMarks[i], textPos.x, textPos.y)
@@ -127,6 +121,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             const sortedData = [...props.data].sort()
 
             const canvas: HTMLCanvasElement = canvasRef.current!
+            // TODO: Dynamic canvas res?
             canvas.width = Number(getComputedStyle(canvas).width.replace('px', '') * 2)
             canvas.height = Number(getComputedStyle(canvas).height.replace('px', '') * 2)
             ctx = canvas.getContext('2d')
@@ -182,7 +177,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 .map(i => Math.floor(i * props.data.length / (plotNumXValues - 1)).toString())
             const yTickMarks = props.type === 'scatter' ? mortonLeftYValues : lineYValues
             const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
-            const numDecimals = 1
+
             drawAxis(canvas, axisPadding, 'left', 2, yTickMarks.map(n => n.toFixed(1)), curvePadding)
             drawAxis(canvas, axisPadding, 'bottom', 2, xTickMarks)
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [])
