@@ -20,3 +20,25 @@ export function mortonEncode2D(xData: number[], yData: number[]) {
     })
     return resultArr
 }
+
+// https://fiveko.com/gaussian-filter-in-pure-javascript/
+export function makeGaussKernel(sigma: number){
+    const GAUSSKERN = 6.0;
+    const dim = Math.round(Math.max(3.0, GAUSSKERN * sigma))
+    const sqrtSigmaPi2 = Math.sqrt(Math.PI * 2.0) * sigma;
+    const s2 = 2.0 * sigma * sigma;
+    let sum = 0.0;
+
+    const kernel = new Float32Array(dim - !(dim & 1)); // Make it odd number
+    const half = Math.floor(kernel.length / 2)
+    for (let j = 0, i = -half; j < kernel.length; i++, j++)
+    {
+        kernel[j] = Math.exp(-(i*i)/(s2)) / sqrtSigmaPi2;
+        sum += kernel[j];
+    }
+    // Normalize the gaussian kernel to prevent image darkening/brightening
+    for (let i = 0; i < dim; i++) {
+        kernel[i] /= sum;
+    }
+    return kernel;
+}

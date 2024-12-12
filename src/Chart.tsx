@@ -1,5 +1,23 @@
 import React, {useEffect, useRef} from "react";
-import {mortonEncode2D} from "./utils.ts";
+import {mortonEncode2D,  makeGaussKernel} from "./utils.ts";
+
+const LINE_DATA_SMOOTHING = 2.3
+
+function getSmoothed(data: number[]) {
+    const smoothedArr: number[] = []
+    const kernel = makeGaussKernel(LINE_DATA_SMOOTHING)
+    const tailLen = Math.floor(kernel.length / 2)
+    const edgeMirroredData = [...data.slice(0, tailLen).reverse(), ...data,
+        ...data.slice(data.length - tailLen).reverse()]
+    for (let i = 0; i < edgeMirroredData.length - kernel.length + 1; i++) {
+        let smoothed = 0
+        for (let j = 0; j < kernel.length; j++) {
+            smoothed += edgeMirroredData[i + j] * kernel[j]
+        }
+        smoothedArr.push(smoothed)
+    }
+    return smoothedArr
+}
 
 export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string, yAxisLabelPos: string }) {
     const PLOT_NUM_Y_VALUES = 8
@@ -142,7 +160,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 ctx.strokeStyle = "blue"
                 ctx.beginPath()
                 ctx.lineWidth = 3
-                props.data.forEach((point, i) => {
+                const smoothedData = LINE_DATA_SMOOTHING > 0 ? getSmoothed(props.data) : props.data
+                smoothedData.forEach((point, i) => {
                     const x = getLineX(i, canvas, curvePadding)
                     const y = (canvas.height - curvePadding * 2) * (point - minData) / (maxData - minData) + curvePadding
                     if (i === 0) {
