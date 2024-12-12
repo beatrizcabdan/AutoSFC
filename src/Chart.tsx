@@ -10,12 +10,12 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
     const canvasRef = useRef(null)
     let ctx: CanvasRenderingContext2D
 
-    function drawAxis(canvas: HTMLCanvasElement, padding: number, position: string, lineWidth: number,
+    function drawAxis(canvas: HTMLCanvasElement, axisPadding: number, position: string, lineWidth: number,
                       tickMarks?: string[], tickPadding = 0) {
-        const ulCorner = {x: padding, y: padding /*/ 2*/}
-        const urCorner = {x: canvas.width - padding, y: padding /*/ 2*/}
-        const blCorner = {x: padding, y: canvas.height - padding /** 0.7*/}
-        const brCorner = {x: canvas.width - padding, y: canvas.height - padding /** 0.7*/}
+        const ulCorner = {x: axisPadding, y: axisPadding}
+        const urCorner = {x: canvas.width - axisPadding, y: axisPadding}
+        const blCorner = {x: axisPadding, y: canvas.height - axisPadding}
+        const brCorner = {x: canvas.width - axisPadding, y: canvas.height - axisPadding}
 
         ctx.lineWidth = lineWidth
         const rootElem = document.querySelector('#root');
@@ -31,6 +31,10 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             case 'left': {
                 startPos = {x: blCorner.x, y: blCorner.y}
                 endPos = {x: ulCorner.x, y: ulCorner.y}
+                if (lineWidth === 1) {
+                    console.log(`Correct y-axis height: ${startPos.y - endPos.y}`)
+                    console.log(`Correct tick padding: ${axisPadding}`)
+                }
                 break
             }
             case 'bottom': {
@@ -60,6 +64,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             let tickStartPos: {x: number, y: number} = {}
             let tickEndPos: {x: number, y: number} = {}
             let textPos: {x: number, y: number} = {}
+            tickPadding = canvas.height * CURVE_PADDING_FACTOR
             ctx.font = "16px sans-serif"
             ctx.textAlign = 'center'
             ctx.textBaseline = 'middle'
@@ -67,8 +72,12 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             tickMarks.forEach((v, i) => {
                 switch (position) {
                     case 'left': {
-                        const intervalLen = (endPos.y - startPos.y + tickPadding * 2) / (tickMarks.length - 1)
-                        tickStartPos = {x: startPos.x, y: startPos.y - tickPadding + intervalLen * i}
+                        const axisLen = canvas.height - tickPadding * 2
+                        /*console.log(`Tick padding: ${tickPadding}`)
+                        console.log(`Tick y-axis length: ${axisLen}`)*/
+                        /*console.log(`Tick y-axis length 2: ${canvas.height - tickPadding * 2}`)*/
+                        const intervalLen = axisLen / (tickMarks.length - 1)
+                        tickStartPos = {x: axisPadding, y: canvas.height - tickPadding - intervalLen * i}
                         tickEndPos = {x: tickStartPos.x - tickLength, y: tickStartPos.y}
                         textPos = {x: tickEndPos.x - tickTextMargin, y: tickEndPos.y}
                         break
@@ -175,8 +184,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             const yTickMarks = props.type === 'scatter' ? mortonLeftYValues : lineYValues
             const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
             const numDecimals = 1
-            drawAxis(canvas, axisPadding, 'left', 2, yTickMarks.map(n => n.toFixed(1)))
-            drawAxis(canvas, axisPadding, 'bottom', 2, xTickMarks, curvePadding)
+            drawAxis(canvas, axisPadding, 'left', 2, yTickMarks.map(n => n.toFixed(1)), curvePadding)
+            drawAxis(canvas, axisPadding, 'bottom', 2, xTickMarks)
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [])
             drawAxis(canvas, axisPadding, 'top', 2)
 
