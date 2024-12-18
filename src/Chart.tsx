@@ -25,6 +25,9 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
     const AXIS_PADDING_FACTOR = 0.07
     const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.02
 
+    const MORTON_BAR_WIDTH = 3
+    const MORTON_PIXEL_DIAM = 3
+
     const canvasRef = useRef(null)
     let ctx: CanvasRenderingContext2D
 
@@ -173,15 +176,28 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
                 ctx.stroke()
             } else {
                 // Morton scatterplot
+
+                // Draw bar
+                mortonData.forEach((m, i) => {
+                    const y = (canvas.width - curvePadding * 2) * (m - minMorton) / (maxMorton - minMorton) + curvePadding
+
+
+                    ctx.fillStyle = '#ccc'
+                    ctx.fillRect(y - MORTON_BAR_WIDTH / 2, axisPadding, MORTON_BAR_WIDTH, canvas.height - 2 * axisPadding)
+                })
+
+                // Draw points
                 mortonData.forEach((m, i) => {
                     const x = getScatterX(i, canvas, curvePadding)
                     const y = (canvas.width - curvePadding * 2) * (m - minMorton) / (maxMorton - minMorton) + curvePadding
-
-                    ctx.beginPath();
-                    ctx.lineWidth = 0.5
-                    // noinspection JSSuspiciousNameCombination
-                    ctx.arc(y, x, 1, 0, 2 * Math.PI);
-                    ctx.fill()
+                        // Draw point
+                        ctx.fillStyle = 'black'
+                        ctx.beginPath();
+                        ctx.lineWidth = 0.5
+                        // noinspection JSSuspiciousNameCombination
+                        ctx.arc(y, x, Math.floor(MORTON_PIXEL_DIAM / 2), 0, 2 * Math.PI);
+                        ctx.fill()
+                        ctx.closePath()
                 })
             }
 
