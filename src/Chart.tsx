@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from "react";
 import {mortonEncode2D,  makeGaussKernel} from "./utils.ts";
 
-const LINE_DATA_SMOOTHING = 2.3
+const LINE_DATA_SMOOTHING = /*2.3*/ 0
 
 function getSmoothedData(data: number[]) {
     const smoothedArr: number[] = []
@@ -19,7 +19,7 @@ function getSmoothedData(data: number[]) {
     return smoothedArr
 }
 
-export function Chart(props: { name: string, data: number[], type: string, xAxisName: string, yAxisName: string, yAxisLabelPos: string }) {
+export function Chart(props: { name: string, data: number[][], type: string, xAxisName: string, yAxisName: string, yAxisLabelPos: string, maxValue: number, minValue: number }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
     const AXIS_PADDING_FACTOR = 0.07
@@ -27,6 +27,8 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
 
     const MORTON_BAR_WIDTH = 3
     const MORTON_PIXEL_DIAM = 3
+
+    const LINE_COLORS = ['blue', 'orange']
 
     const canvasRef = useRef(null)
     let ctx: CanvasRenderingContext2D
@@ -130,16 +132,20 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
     }
 
     function getLineX(i: number, canvas: HTMLCanvasElement, padding: number) {
-        return (i / props.data.length) * (canvas.width - padding * 2) + padding;
+        return (i / props.data[0].length) * (canvas.width - padding * 2) + padding;
     }
 
     function getScatterX(i: number, canvas: HTMLCanvasElement, padding: number) {
-        return (i / props.data.length) * (canvas.height - padding * 2) + padding;
+        return (i / props.data[0].length) * (canvas.height - padding * 2) + padding;
     }
 
     useEffect(() => {
-        if (props.data?.length > 0 && canvasRef.current) {
-            const sortedData = [...props.data].sort()
+        if (props.data.length > 0 && canvasRef.current) {
+            const timeSteps = [...Array(props.data[0].length).keys()]
+            const mortonData = mortonEncode2D(/*timeSteps, */props.data[0], props.data[1])
+            const mortonSorted = [...mortonData].sort((a, b) => a - b)
+            const minMorton = mortonSorted[0]
+            const maxMorton = mortonSorted[mortonSorted.length - 1]
 
             const canvas: HTMLCanvasElement = canvasRef.current!
             // TODO: Dynamic canvas res?
@@ -149,38 +155,38 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             const curvePadding = canvas.height * CURVE_PADDING_FACTOR
             const axisPadding = canvas.height * AXIS_PADDING_FACTOR
 
-            const minData = sortedData[0]
-            const maxData = sortedData[sortedData.length - 1]
+            let minData = Infinity
+            let maxData = 0
 
             // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
-            const timeSteps = [...Array(props.data.length).keys()]
-            const mortonData = mortonEncode2D(timeSteps, props.data)
-            const mortonSorted = [...mortonData].sort((a, b) => a - b)
-            const minMorton = mortonSorted[0]
-            const maxMorton = mortonSorted[mortonSorted.length - 1]
-
+            /*const timeSteps = [...Array(props.data[0].length).keys()]*/
             if (props.type == 'line') {
-                ctx.strokeStyle = "blue"
-                ctx.beginPath()
-                ctx.lineWidth = 3
-                const smoothedData = LINE_DATA_SMOOTHING > 0 ? getSmoothedData(props.data) : props.data
-                smoothedData.forEach((point, i) => {
-                    const x = getLineX(i, canvas, curvePadding)
-                    const y = (canvas.height - curvePadding * 2) * (point - minData) / (maxData - minData) + curvePadding
-                    if (i === 0) {
-                        ctx.moveTo(x, y)
-                    } else {
-                        ctx.lineTo(x, y)
-                    }
+                props.data.forEach((column, i) => {
+                    const sortedData = [...column].sort((a, b) => a - b)
+                    minData = Math.min(sortedData[0], minData)
+                    maxData = Math.max(sortedData[sortedData.length - 1], maxData)
+
+                    ctx.strokeStyle = LINE_COLORS[i]
+                    ctx.beginPath()
+                    ctx.lineWidth = 3
+                    const smoothedData = LINE_DATA_SMOOTHING > 0 ? getSmoothedData(column) : column
+                    smoothedData.forEach((point, i) => {
+                        const x = getLineX(i, canvas, curvePadding)
+                        const y = (canvas.height - curvePadding * 2) * (point - props.minValue) / (props.maxValue - props.minValue) + curvePadding
+                        if (i === 0) {
+                            ctx.moveTo(x, y)
+                        } else {
+                            ctx.lineTo(x, y)
+                        }
+                    })
+                    ctx.stroke()
                 })
-                ctx.stroke()
             } else {
                 // Morton scatterplot
 
                 // Draw bar
                 mortonData.forEach((m, i) => {
                     const y = (canvas.width - curvePadding * 2) * (m - minMorton) / (maxMorton - minMorton) + curvePadding
-
 
                     ctx.fillStyle = '#ccc'
                     ctx.fillRect(y - MORTON_BAR_WIDTH / 2, axisPadding, MORTON_BAR_WIDTH, canvas.height - 2 * axisPadding)
@@ -202,16 +208,20 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             }
 
             ctx = canvas.getContext('2d')
+
             const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
             const mortonXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
                 .map(i => (i * (maxMorton - minMorton) / (PLOT_NUM_X_VALUES - 1) + minMorton).toExponential(1))
             const mortonRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
-                .map(i => Math.floor(i * props.data.length / (PLOT_NUM_Y_VALUES - 1)).toString())
-            const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()].map(i => i * maxData / PLOT_NUM_Y_VALUES)
+                .map(i => Math.floor(i * props.data[0].length / (PLOT_NUM_Y_VALUES - 1)).toString())
+
             const lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
-                .map(i => Math.floor(i * props.data.length / (PLOT_NUM_X_VALUES - 1)).toString())
-            const yTickMarks = props.type === 'scatter' ? mortonLeftYValues : lineYValues
+                .map(i => Math.floor(i * props.data[0].length / (PLOT_NUM_X_VALUES - 1)).toString())
             const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
+
+            const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()].map(i => i * /*maxData*/props.maxValue / PLOT_NUM_Y_VALUES)
+            const yTickMarks = props.type === 'scatter' ? mortonLeftYValues : lineYValues
+
             const leftPaddingFactor = props.type === 'line' ? CURVE_PADDING_FACTOR : AXIS_PADDING_FACTOR
 
             drawAxis(canvas, axisPadding, 'left', 2, yTickMarks.map(n => n.toFixed(1)), leftPaddingFactor)
@@ -219,7 +229,7 @@ export function Chart(props: { name: string, data: number[], type: string, xAxis
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [])
             drawAxis(canvas, axisPadding, 'top', 2)
         }
-    }, [canvasRef.current, props.data]);
+    }, [canvasRef.current, props.data, props.maxValue, props.minValue]);
 
     return <div className={'chart'}>
         <div className={'canvas-container'}>
