@@ -65,7 +65,7 @@ function App() {
           <div id={'main'}>
               <div className={'charts'}>
                   <Chart name={'Original signals plot'} data={data} minValue={minValue} maxValue={maxValue} type={'line'} xAxisName={'Time steps'}
-                         yAxisName={'Ground speed (m/s)'} yAxisLabelPos={'left'}/>
+                         yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={dataLabels}/>
                   <Chart name={'Morton plot (with bars)'} data={data} minValue={minValue} maxValue={maxValue} type={'scatter'} xAxisName={'Morton'}
                          yAxisName={'Time steps'} yAxisLabelPos={'right'}/>
               </div>

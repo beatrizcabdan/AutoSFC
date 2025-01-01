@@ -1,12 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 * {
-  /*border: 1px solid green;*/
   box-sizing: border-box;
 }
 
 html {
   --text-color: #3d3d3d;
   --text-color-light: #575757;
+  --legend-border: #a8a8a8;
 }
 
 #root {
@@ -33,7 +33,7 @@ html {
 .charts {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   flex-direction: row;
   gap: 0.5rem;
 }

@@ -1,5 +1,6 @@
 import React, {useEffect, useRef} from "react";
-import {mortonEncode2D,  makeGaussKernel} from "./utils.ts";
+import {makeGaussKernel, mortonEncode2D} from "./utils.ts";
+import {Legend} from "./Legend.tsx";
 
 const LINE_DATA_SMOOTHING = /*2.3*/ 0
 
@@ -19,7 +20,8 @@ function getSmoothedData(data: number[]) {
     return smoothedArr
 }
 
-export function Chart(props: { name: string, data: number[][], type: string, xAxisName: string, yAxisName: string, yAxisLabelPos: string, maxValue: number, minValue: number }) {
+export function Chart(props: { name: string, data: number[][], type: string, xAxisName: string, yAxisName: string,
+    yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels: string[] }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
     const AXIS_PADDING_FACTOR = 0.07
@@ -234,6 +236,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     }, [canvasRef.current, props.data, props.maxValue, props.minValue]);
 
     return <div className={'chart'}>
+        {props.legendLabels && <Legend labels={props.legendLabels}/>}
         <div className={'canvas-container'}>
             {props.yAxisLabelPos === 'left' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
             <div className={'canvas-wrapper'}>

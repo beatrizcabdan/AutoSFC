@@ -1,0 +1,36 @@
+.legend {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid;
+  border-radius: 3px;
+  border-color: var(--legend-border);
+  margin-bottom: -0.5rem;
+}
+.legend p {
+  margin: 0;
+  line-height: 0.5rem;
+  font-size: 0.7rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.2rem;
+  align-items: center;
+  justify-self: center;
+}
+.legend p:nth-of-type(1):before {
+  background: blue;
+}
+.legend p:nth-of-type(2):before {
+  background: orange;
+}
+.legend p:before {
+  content: " ";
+  width: 2rem;
+  height: 4px;
+  margin-top: 0.1rem;
+}
+
+/*# sourceMappingURL=Legend.css.map */
