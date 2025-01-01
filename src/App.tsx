@@ -2,7 +2,7 @@
 
 import './App.scss'
 
-import React, {useEffect, useState} from 'react';
+import React, {FormEvent, useEffect, useState} from 'react';
 import {Chart} from "./Chart.tsx";
 import {Button} from "./Button.tsx";
 import {Slider} from "./Slider.tsx";
@@ -10,11 +10,13 @@ import {Slider} from "./Slider.tsx";
 function App() {
     const FILE_PATH = 'src/assets/opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
     const DATA_POINT_INTERVAL  = 1000
+    const SLIDER_DEFAULT_VAL = 0
 
     const dataLabels = ['accel_lon', 'accel_trans']
     const [data, setData] = useState<number[][]>([])
-    const [minValue, setMinValue] = useState<number>()
-    const [maxValue, setMaxValue] = useState<number>()
+    const [minChartValue, setMinChartValue] = useState<number>()
+    const [maxChartValue, setMaxChartValue] = useState<number>()
+    const [signalMarkerPos, setSignalMarkerPos] = useState(SLIDER_DEFAULT_VAL)
 
     useEffect(() => {
         fetch(FILE_PATH).then(r => {
@@ -40,8 +42,8 @@ function App() {
                     newData.push(columns)
                 })
                 setData(newData)
-                setMinValue(minData)
-                setMaxValue(maxData)
+                setMinChartValue(minData)
+                setMaxChartValue(maxData)
             })
         })
     }, []);
@@ -50,8 +52,8 @@ function App() {
 
     }
 
-    const onSliderDrag = () => {
-
+    const onSliderDrag = (e: FormEvent<HTMLInputElement>) => {
+        setSignalMarkerPos(e.currentTarget.value)
     }
 
     return (
@@ -64,12 +66,12 @@ function App() {
           </div>
           <div id={'main'}>
               <div className={'charts'}>
-                  <Chart name={'Original signals plot'} data={data} minValue={minValue} maxValue={maxValue} type={'line'} xAxisName={'Time steps'}
-                         yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={dataLabels}/>
-                  <Chart name={'Morton plot (with bars)'} data={data} minValue={minValue} maxValue={maxValue} type={'scatter'} xAxisName={'Morton'}
+                  <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue} type={'line'} xAxisName={'Time steps'}
+                         yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={dataLabels} currentSignalXVal={signalMarkerPos}/>
+                  <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'}
                          yAxisName={'Time steps'} yAxisLabelPos={'right'}/>
               </div>
-              <Slider min={0} max={data?.length} onDrag={onSliderDrag}/>
+              <Slider min={0} max={data?.length} onDrag={onSliderDrag} initialVal={SLIDER_DEFAULT_VAL}/>
               <Button label={'Upload data'} onClick={() => uploadData()}/>
           </div>
           <div className="footer">

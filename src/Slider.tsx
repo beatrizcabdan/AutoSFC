@@ -1,5 +1,7 @@
-import React from "react";
+import React, {FormEvent} from "react";
 
-export function Slider(props: { min?: number, max?: number | undefined, onDrag: () => void }) {
-    return <input className={'slider'} type={'range'}/>
+export function Slider(props: { min?: number, max?: number | undefined, onDrag: (e: FormEvent<HTMLInputElement>) => void,
+    initialVal: number }) {
+    return <input className={'slider'} step={0.1} type={'range'} defaultValue={props.initialVal} onInput={e =>
+        props.onDrag(e)}/>
 }

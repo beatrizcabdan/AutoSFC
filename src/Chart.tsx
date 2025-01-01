@@ -21,20 +21,22 @@ function getSmoothedData(data: number[]) {
 }
 
 export function Chart(props: { name: string, data: number[][], type: string, xAxisName: string, yAxisName: string,
-    yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels: string[] }) {
+    yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[], currentSignalXVal?: number }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
     const AXIS_PADDING_FACTOR = 0.07
     const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.02
 
     const LINE_WIDTH = 4
-
+    const MARKER_RADIUS = 12
     const MORTON_BAR_WIDTH = 3
     const MORTON_PIXEL_DIAM = 3
 
     const LINE_COLORS = ['blue', 'orange']
 
-    const canvasRef = useRef(null)
+    const canvasRef = useRef<HTMLCanvasElement | null>(null)
+    const curvePaddingRef = useRef(0)
+
     let ctx: CanvasRenderingContext2D
 
     function drawAxis(canvas: HTMLCanvasElement, axisPadding: number, position: string, lineWidth: number,
@@ -143,10 +145,13 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
         return (i / props.data[0].length) * (canvas.height - padding * 2) + padding;
     }
 
+    function getLineY(canvas: HTMLCanvasElement, curvePadding: number, point: number) {
+        return (canvas.height - curvePadding * 2) * (point - props.minValue) / (props.maxValue - props.minValue) + curvePadding;
+    }
+
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
-            const timeSteps = [...Array(props.data[0].length).keys()]
-            const mortonData = mortonEncode2D(/*timeSteps, */props.data[0], props.data[1])
+            const mortonData = mortonEncode2D(props.data[0], props.data[1])
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
             const maxMorton = mortonSorted[mortonSorted.length - 1]
@@ -157,26 +162,30 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             canvas.height = Number(getComputedStyle(canvas).height.replace('px', '') * 2)
             ctx = canvas.getContext('2d')
             const curvePadding = canvas.height * CURVE_PADDING_FACTOR
+            curvePaddingRef.current = curvePadding
             const axisPadding = canvas.height * AXIS_PADDING_FACTOR
 
             let minData = Infinity
             let maxData = 0
 
             // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
-            /*const timeSteps = [...Array(props.data[0].length).keys()]*/
+            let columns: number[][] = []
+
             if (props.type == 'line') {
                 props.data.forEach((column, i) => {
                     const sortedData = [...column].sort((a, b) => a - b)
                     minData = Math.min(sortedData[0], minData)
                     maxData = Math.max(sortedData[sortedData.length - 1], maxData)
 
+                    // Draw lines
                     ctx.strokeStyle = LINE_COLORS[i]
                     ctx.beginPath()
                     ctx.lineWidth = LINE_WIDTH
                     const smoothedData = LINE_DATA_SMOOTHING > 0 ? getSmoothedData(column) : column
+                    columns.push(smoothedData)
                     smoothedData.forEach((point, i) => {
                         const x = getLineX(i, canvas, curvePadding)
-                        const y = (canvas.height - curvePadding * 2) * (point - props.minValue) / (props.maxValue - props.minValue) + curvePadding
+                        const y = getLineY(canvas, curvePadding, point)
                         if (i === 0) {
                             ctx.moveTo(x, y)
                         } else {
@@ -184,6 +193,33 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                         }
                     })
                     ctx.stroke()
+                })
+
+                // Draw markers
+                columns.forEach((column, i) => {
+                    const markerIndex = Math.floor((column.length - 1) * props.currentSignalXVal / 100)
+                    const x = getLineX(markerIndex, canvas, curvePadding)
+                    const y = getLineY(canvas, curvePadding, column[markerIndex])
+
+                    // Outline + shadow
+                    ctx.shadowColor = '#555'
+                    ctx.shadowBlur = 6
+                    ctx.fillStyle = 'white'
+                    ctx.beginPath()
+                    ctx.lineWidth = 0.5
+                    // noinspection JSSuspiciousNameCombination
+                    ctx.arc(x, y, MARKER_RADIUS, 0, 2 * Math.PI);
+                    ctx.fill()
+                    ctx.closePath()
+                    ctx.shadowBlur = 0
+
+                    // Inner circle
+                    ctx.fillStyle = LINE_COLORS[i]
+                    ctx.beginPath();
+                    // noinspection JSSuspiciousNameCombination
+                    ctx.arc(x, y, MARKER_RADIUS - 3, 0, 2 * Math.PI);
+                    ctx.fill()
+                    ctx.closePath()
                 })
             } else {
                 // Morton scatterplot
@@ -233,7 +269,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [])
             drawAxis(canvas, axisPadding, 'top', 2)
         }
-    }, [canvasRef.current, props.data, props.maxValue, props.minValue]);
+    }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal]);
 
     return <div className={'chart'}>
         {props.legendLabels && <Legend labels={props.legendLabels}/>}
