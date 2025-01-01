@@ -56,6 +56,12 @@ function App() {
 
     return (
       <>
+          <div className="topnav">
+              <a className="active" href="#demo">Demo</a>
+              <a href="#work">Previous work</a>
+              <a href="#contact">Contact</a>
+              <a href="#about">About SFCs</a>
+          </div>
           <div className={'charts'}>
               <Chart name={'Original signals plot'} data={data} minValue={minValue} maxValue={maxValue} type={'line'} xAxisName={'Time steps'}
                      yAxisName={'Ground speed (m/s)'} yAxisLabelPos={'left'}/>
@@ -64,6 +70,11 @@ function App() {
           </div>
           <Slider min={0} max={data?.length} onDrag={onSliderDrag}/>
           <Button label={'Upload data'} onClick={() => uploadData()}/>
+          <div className="footer">
+            Demo of SFCs for encoding multiple dimensions as one by Anton and Bea.
+            This is for Christian to check and rejoice.
+            More to come.
+          </div>
       </>
   )
 }

@@ -93,3 +93,38 @@ html {
   width: 20rem;
 }
 
+/* HEADER AND FOOTER */
+
+.topnav {
+  overflow: hidden;
+  background-color: var(--text-color);
+  color: white;
+  position: absolute;
+  top: 0;
+  padding: 0 50px;
+  width: 100%;
+}
+
+.topnav a {
+  float: left;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  color: white;
+}
+
+.topnav a:hover {
+  background-color: var(--text-color-light);
+}
+
+.footer {
+  background-color: var(--text-color);
+  color: white;
+  position: absolute;
+  text-align: left;
+  bottom: 0;
+  width: 100%;
+  padding: 14px 50px;
+}
+
