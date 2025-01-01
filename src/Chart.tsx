@@ -2,7 +2,7 @@ import React, {useEffect, useRef} from "react";
 import {makeGaussKernel, mortonEncode2D} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 
-const LINE_DATA_SMOOTHING = /*2.3*/ 0
+const LINE_DATA_SMOOTHING = /*0.6*/ 0
 
 function getSmoothedData(data: number[]) {
     const smoothedArr: number[] = []

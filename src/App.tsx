@@ -10,13 +10,14 @@ import {Slider} from "./Slider.tsx";
 function App() {
     const FILE_PATH = 'src/assets/opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
     const DATA_POINT_INTERVAL  = 1000
-    const SLIDER_DEFAULT_VAL = 0
+    const SLIDER_START_VAL = 0
 
+    const dataRange: {start: number, end: number} = {start: -1, end: -1}
     const dataLabels = ['accel_lon', 'accel_trans']
     const [data, setData] = useState<number[][]>([])
     const [minChartValue, setMinChartValue] = useState<number>()
     const [maxChartValue, setMaxChartValue] = useState<number>()
-    const [signalMarkerPos, setSignalMarkerPos] = useState(SLIDER_DEFAULT_VAL)
+    const [signalMarkerPos, setSignalMarkerPos] = useState(SLIDER_START_VAL)
 
     useEffect(() => {
         fetch(FILE_PATH).then(r => {
@@ -32,7 +33,8 @@ function App() {
                 let maxData = 0
                 colIndices.forEach(index => {
                     const columns: number[] = lines
-                         .slice(1)
+                         .slice(1 + (dataRange.start >= 0 ? dataRange.start : 0),
+                             dataRange.end >= 0 ? dataRange.end : undefined)
                         .map(l => l.split(/;/))
                         .map(arr => Number(arr[index]))
                         .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
@@ -71,7 +73,7 @@ function App() {
                   <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'}
                          yAxisName={'Time steps'} yAxisLabelPos={'right'}/>
               </div>
-              <Slider min={0} max={data?.length} onDrag={onSliderDrag} initialVal={SLIDER_DEFAULT_VAL}/>
+              <Slider min={0} max={data?.length} onDrag={onSliderDrag} initialVal={SLIDER_START_VAL}/>
               <Button label={'Upload data'} onClick={() => uploadData()}/>
           </div>
           <div className="footer">
