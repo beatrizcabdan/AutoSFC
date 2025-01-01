@@ -59,8 +59,8 @@ html {
       }
 
       .y-axis-label {
-        writing-mode: sideways-lr;
-        text-orientation: sideways;
+        writing-mode: tb;
+        rotate: 180deg;
       }
 
       text-transform: uppercase;
