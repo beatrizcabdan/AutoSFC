@@ -9,6 +9,7 @@ import {Slider} from "./Slider.tsx";
 
 function App() {
     const FILE_PATH = 'src/assets/opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
+    const DATA_POINT_INTERVAL  = 1000
 
     const dataLabels = ['accel_lon', 'accel_trans']
     const [data, setData] = useState<number[][]>([])
@@ -29,10 +30,10 @@ function App() {
                 let maxData = 0
                 colIndices.forEach(index => {
                     const columns: number[] = lines
-                        .slice(1)
+                         .slice(1)
                         .map(l => l.split(/;/))
                         .map(arr => Number(arr[index]))
-                        .filter((_, i) => i % 500 == 0)
+                        .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
                     const sortedData = [...columns].sort((a, b) => a - b)
                     minData = Math.min(minData, sortedData[0])
                     maxData = Math.max(maxData, sortedData[sortedData.length - 1])

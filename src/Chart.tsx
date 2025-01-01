@@ -25,6 +25,8 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     const AXIS_PADDING_FACTOR = 0.07
     const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.02
 
+    const LINE_WIDTH = 4
+
     const MORTON_BAR_WIDTH = 3
     const MORTON_PIXEL_DIAM = 3
 
@@ -168,7 +170,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
                     ctx.strokeStyle = LINE_COLORS[i]
                     ctx.beginPath()
-                    ctx.lineWidth = 3
+                    ctx.lineWidth = LINE_WIDTH
                     const smoothedData = LINE_DATA_SMOOTHING > 0 ? getSmoothedData(column) : column
                     smoothedData.forEach((point, i) => {
                         const x = getLineX(i, canvas, curvePadding)
