@@ -62,14 +62,16 @@ function App() {
               <a href="#contact">Contact</a>
               <a href="#about">About SFCs</a>
           </div>
-          <div className={'charts'}>
-              <Chart name={'Original signals plot'} data={data} minValue={minValue} maxValue={maxValue} type={'line'} xAxisName={'Time steps'}
-                     yAxisName={'Ground speed (m/s)'} yAxisLabelPos={'left'}/>
-              <Chart name={'Morton plot (with bars)'} data={data} minValue={minValue} maxValue={maxValue} type={'scatter'} xAxisName={'Morton'}
-                     yAxisName={'Time steps'} yAxisLabelPos={'right'}/>
+          <div id={'main'}>
+              <div className={'charts'}>
+                  <Chart name={'Original signals plot'} data={data} minValue={minValue} maxValue={maxValue} type={'line'} xAxisName={'Time steps'}
+                         yAxisName={'Ground speed (m/s)'} yAxisLabelPos={'left'}/>
+                  <Chart name={'Morton plot (with bars)'} data={data} minValue={minValue} maxValue={maxValue} type={'scatter'} xAxisName={'Morton'}
+                         yAxisName={'Time steps'} yAxisLabelPos={'right'}/>
+              </div>
+              <Slider min={0} max={data?.length} onDrag={onSliderDrag}/>
+              <Button label={'Upload data'} onClick={() => uploadData()}/>
           </div>
-          <Slider min={0} max={data?.length} onDrag={onSliderDrag}/>
-          <Button label={'Upload data'} onClick={() => uploadData()}/>
           <div className="footer">
             Demo of SFCs for encoding multiple dimensions as one by Anton and Bea.
             This is for Christian to check and rejoice.

@@ -12,17 +12,23 @@ html {
 
 #root {
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 3rem;
-  box-sizing: border-box;
   width: 100%;
   flex-direction: column;
   font-family: Inter, sans-serif;
   color: var(--text-color);
+}
+
+#main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
 }
 
 .charts {
@@ -99,7 +105,6 @@ html {
   overflow: hidden;
   background-color: var(--text-color);
   color: white;
-  position: absolute;
   top: 0;
   padding: 0 50px;
   width: 100%;
@@ -121,9 +126,7 @@ html {
 .footer {
   background-color: var(--text-color);
   color: white;
-  position: absolute;
   text-align: left;
-  bottom: 0;
   width: 100%;
   padding: 14px 50px;
 }
