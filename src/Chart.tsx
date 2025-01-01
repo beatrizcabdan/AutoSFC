@@ -2,11 +2,9 @@ import React, {useEffect, useRef} from "react";
 import {makeGaussKernel, mortonEncode2D} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 
-const LINE_DATA_SMOOTHING = /*0.6*/ 0
-
-function getSmoothedData(data: number[]) {
+function getSmoothedData(data: number[], smoothing: number) {
     const smoothedArr: number[] = []
-    const kernel = makeGaussKernel(LINE_DATA_SMOOTHING)
+    const kernel = makeGaussKernel(smoothing)
     const tailLen = Math.floor(kernel.length / 2)
     const edgeMirroredData = [...data.slice(0, tailLen).reverse(), ...data,
         ...data.slice(data.length - tailLen).reverse()]
@@ -21,7 +19,8 @@ function getSmoothedData(data: number[]) {
 }
 
 export function Chart(props: { name: string, data: number[][], type: string, xAxisName: string, yAxisName: string,
-    yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[], currentSignalXVal?: number }) {
+    yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[], currentSignalXVal?: number,
+    lineDataSmoothing?: number}) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
     const AXIS_PADDING_FACTOR = 0.07
@@ -181,7 +180,9 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                     ctx.strokeStyle = LINE_COLORS[i]
                     ctx.beginPath()
                     ctx.lineWidth = LINE_WIDTH
-                    const smoothedData = LINE_DATA_SMOOTHING > 0 ? getSmoothedData(column) : column
+                    const smoothedData = props.lineDataSmoothing
+                        ? getSmoothedData(column, props.lineDataSmoothing)
+                        : column
                     columns.push(smoothedData)
                     smoothedData.forEach((point, i) => {
                         const x = getLineX(i, canvas, curvePadding)

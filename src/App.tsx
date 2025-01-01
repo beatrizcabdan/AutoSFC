@@ -7,12 +7,28 @@ import {Chart} from "./Chart.tsx";
 import {Button} from "./Button.tsx";
 import {Slider} from "./Slider.tsx";
 
+const demoPreset1 = {
+    dataPointInterval: 1000,
+    dataRangeStart: -1,
+    dataRangeEnd: -1,
+    lineDataSmoothing: 0
+}
+
+const demoPreset2 = {
+    dataPointInterval: 5,
+    dataRangeStart: 13000,
+    dataRangeEnd: 14000,
+    lineDataSmoothing: 1.0
+}
+
+const preset = demoPreset2
+
 function App() {
     const FILE_PATH = 'src/assets/opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
-    const DATA_POINT_INTERVAL  = 1000
+    const DATA_POINT_INTERVAL  = preset.dataPointInterval
     const SLIDER_START_VAL = 0
 
-    const dataRange: {start: number, end: number} = {start: -1, end: -1}
+    const dataRange: {start: number, end: number} = {start: preset.dataRangeStart, end: preset.dataRangeEnd}
     const dataLabels = ['accel_lon', 'accel_trans']
     const [data, setData] = useState<number[][]>([])
     const [minChartValue, setMinChartValue] = useState<number>()
@@ -69,7 +85,8 @@ function App() {
           <div id={'main'}>
               <div className={'charts'}>
                   <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue} type={'line'} xAxisName={'Time steps'}
-                         yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={dataLabels} currentSignalXVal={signalMarkerPos}/>
+                         yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={dataLabels}
+                         currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}/>
                   <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'}
                          yAxisName={'Time steps'} yAxisLabelPos={'right'}/>
               </div>
