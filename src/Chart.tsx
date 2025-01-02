@@ -220,10 +220,10 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 // Draw bar
                 mortonData.forEach((m, i) => {
                     const curveCanvasWidth = canvas.width - curvePadding * 2
-                    const y = curveCanvasWidth * (m - minMorton) / (maxMorton - minMorton) + curvePadding
+                    const y = curveCanvasWidth * (maxMorton - m) / (maxMorton - minMorton) + curvePadding
 
                     const barX = y - MORTON_BAR_WIDTH / 2
-                    const signalX = curveCanvasWidth * (mortonData[mortonData.length - 1 - markerIndex] - minMorton)
+                    const signalX = curveCanvasWidth * (maxMorton - mortonData[mortonData.length - 1 - markerIndex])
                         / (maxMorton - minMorton) + curvePadding
                     const currentBarDistance = Math.abs(barX - signalX) / curveCanvasWidth
                     const defaultColor = {r: 204, g: 204, b: 204}
@@ -239,7 +239,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 // Draw points
                 mortonData.forEach((m, i) => {
                     const x = getScatterX(i, canvas, curvePadding)
-                    const y = (canvas.width - curvePadding * 2) * (m - minMorton) / (maxMorton - minMorton) + curvePadding
+                    const y = (canvas.width - curvePadding * 2) * (maxMorton - m) / (maxMorton - minMorton) + curvePadding
                         // Draw point
                         ctx.fillStyle = 'black'
                         ctx.beginPath();
