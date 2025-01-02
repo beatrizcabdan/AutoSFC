@@ -21,7 +21,14 @@ const demoPreset2 = {
     lineDataSmoothing: 1.0
 }
 
-const preset = demoPreset2
+const demoPreset3 = {
+    dataPointInterval: 1,
+    dataRangeStart: 1000,
+    dataRangeEnd: 1020,
+    lineDataSmoothing: 0
+}
+
+const preset = demoPreset3
 
 function App() {
     const FILE_PATH = 'src/assets/opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
@@ -48,20 +55,22 @@ function App() {
                 let minData = Infinity
                 let maxData = 0
                 colIndices.forEach(index => {
-                    const columns: number[] = lines
-                         .slice(1 + (dataRange.start >= 0 ? dataRange.start : 0),
+                    const column: number[] = lines
+                        .slice(1) // Skip headers
+                        .slice(dataRange.start >= 0 ? dataRange.start : 0,
                              dataRange.end >= 0 ? dataRange.end : undefined)
                         .map(l => l.split(/;/))
                         .map(arr => Number(arr[index]))
                         .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
-                    const sortedData = [...columns].sort((a, b) => a - b)
+                    const sortedData = [...column].sort((a, b) => a - b)
                     minData = Math.min(minData, sortedData[0])
                     maxData = Math.max(maxData, sortedData[sortedData.length - 1])
-                    newData.push(columns)
+                    newData.push(column)
                 })
                 setData(newData)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
+                console.log(minData, maxData)
             })
         })
     }, []);

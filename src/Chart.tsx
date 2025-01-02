@@ -145,7 +145,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     }
 
     function getLineY(canvas: HTMLCanvasElement, curvePadding: number, point: number) {
-        return (canvas.height - curvePadding * 2) * (point - props.minValue) / (props.maxValue - props.minValue) + curvePadding;
+        return (canvas.height - curvePadding * 2) * (props.maxValue - point) / (props.maxValue - props.minValue) + curvePadding;
     }
 
     useEffect(() => {
@@ -172,9 +172,9 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
             if (props.type == 'line') {
                 props.data.forEach((column, i) => {
-                    const sortedData = [...column].sort((a, b) => a - b)
-                    minData = Math.min(sortedData[0], minData)
-                    maxData = Math.max(sortedData[sortedData.length - 1], maxData)
+                    // const sortedData = [...column].sort((a, b) => a - b)
+                    /*minData = Math.min(sortedData[0], minData)
+                    maxData = Math.max(sortedData[sortedData.length - 1], maxData)*/
 
                     // Draw lines
                     ctx.strokeStyle = LINE_COLORS[i]
@@ -224,7 +224,6 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 })
             } else {
                 // Morton scatterplot
-
                 // Draw bar
                 mortonData.forEach((m, i) => {
                     const y = (canvas.width - curvePadding * 2) * (m - minMorton) / (maxMorton - minMorton) + curvePadding
@@ -260,7 +259,8 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 .map(i => Math.floor(i * props.data[0].length / (PLOT_NUM_X_VALUES - 1)).toString())
             const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
 
-            const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()].map(i => i * /*maxData*/props.maxValue / PLOT_NUM_Y_VALUES)
+            const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
+                .map(i => props.minValue + i * (props.maxValue - props.minValue) / (PLOT_NUM_Y_VALUES - 1))
             const yTickMarks = props.type === 'scatter' ? mortonLeftYValues : lineYValues
 
             const leftPaddingFactor = props.type === 'line' ? CURVE_PADDING_FACTOR : AXIS_PADDING_FACTOR
