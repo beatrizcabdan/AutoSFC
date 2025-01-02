@@ -22,6 +22,13 @@ const demoPreset2 = {
 }
 
 const demoPreset3 = {
+    dataPointInterval: 5,
+    dataRangeStart: 63000,
+    dataRangeEnd: 64000,
+    lineDataSmoothing: 1.0
+}
+
+const demoPreset4 = {
     dataPointInterval: 1,
     dataRangeStart: 1000,
     dataRangeEnd: 1020,
