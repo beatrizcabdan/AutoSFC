@@ -19,7 +19,7 @@ function getSmoothedData(data: number[], smoothing: number) {
 }
 
 export function Chart(props: { name: string, data: number[][], type: string, xAxisName: string, yAxisName: string,
-    yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[], currentSignalXVal?: number,
+    yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[], currentSignalXVal: number,
     lineDataSmoothing?: number}) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
@@ -28,8 +28,8 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
     const LINE_WIDTH = 4
     const MARKER_RADIUS = 12
-    const MORTON_BAR_WIDTH = 3
-    const MORTON_PIXEL_DIAM = 3
+    const MORTON_BAR_WIDTH = 4
+    const MORTON_PIXEL_DIAM = 4
 
     const LINE_COLORS = ['blue', 'orange']
 
@@ -166,6 +166,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
             // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
             let columns: number[][] = []
+            const markerIndex = Math.floor((props.data[0].length - 1) * props.currentSignalXVal / 100)
 
             if (props.type == 'line') {
                 props.data.forEach((column, i) => {
@@ -191,7 +192,6 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
                 // Draw markers
                 columns.forEach((column, i) => {
-                    const markerIndex = Math.floor((column.length - 1) * props.currentSignalXVal / 100)
                     const x = getLineX(markerIndex, canvas, curvePadding)
                     const y = getLineY(canvas, curvePadding, column[markerIndex])
 
@@ -219,10 +219,21 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 // Morton scatterplot
                 // Draw bar
                 mortonData.forEach((m, i) => {
-                    const y = (canvas.width - curvePadding * 2) * (m - minMorton) / (maxMorton - minMorton) + curvePadding
+                    const curveCanvasWidth = canvas.width - curvePadding * 2
+                    const y = curveCanvasWidth * (m - minMorton) / (maxMorton - minMorton) + curvePadding
 
-                    ctx.fillStyle = '#ccc'
-                    ctx.fillRect(y - MORTON_BAR_WIDTH / 2, axisPadding, MORTON_BAR_WIDTH, canvas.height - 2 * axisPadding)
+                    const barX = y - MORTON_BAR_WIDTH / 2
+                    const signalX = curveCanvasWidth * (mortonData[mortonData.length - 1 - markerIndex] - minMorton)
+                        / (maxMorton - minMorton) + curvePadding
+                    const currentBarDistance = Math.abs(barX - signalX) / curveCanvasWidth
+                    const defaultColor = {r: 204, g: 204, b: 204}
+                    const markedColor = {r: 100, g: 150, b: 255}
+                    const markedWeight = Math.max(0.03 - currentBarDistance, 0) / 0.03
+                    ctx.fillStyle = `rgb(
+                        ${markedColor.r * markedWeight + defaultColor.r * (1 - markedWeight)},
+                        ${markedColor.g * markedWeight + defaultColor.g * (1 - markedWeight)},
+                        ${markedColor.b * markedWeight + defaultColor.b * (1 - markedWeight)})`
+                    ctx.fillRect(barX, axisPadding, MORTON_BAR_WIDTH, canvas.height - 2 * axisPadding)
                 })
 
                 // Draw points
@@ -246,7 +257,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             const mortonXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
                 .map(i => (i * (maxMorton - minMorton) / (PLOT_NUM_X_VALUES - 1) + minMorton).toExponential(1))
             const mortonRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
-                .map(i => Math.floor(i * props.data[0].length / (PLOT_NUM_Y_VALUES - 1)).toString())
+                .map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_Y_VALUES - 1)).toString())
 
             const lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
                 .map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_X_VALUES - 1)).toString())

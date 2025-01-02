@@ -35,7 +35,7 @@ const demoPreset4 = {
     lineDataSmoothing: 0
 }
 
-const preset = demoPreset2
+const preset = demoPreset3
 
 function App() {
     const FILE_PATH = 'src/assets/opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
@@ -103,7 +103,7 @@ function App() {
                          yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={dataLabels}
                          currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}/>
                   <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'}
-                         yAxisName={'Time steps'} yAxisLabelPos={'right'}/>
+                         yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
               </div>
               <Slider min={0} max={data?.length} onDrag={onSliderDrag} initialVal={SLIDER_START_VAL}/>
               <Button label={'Upload data'} onClick={() => uploadData()}/>
