@@ -137,11 +137,11 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     }
 
     function getLineX(i: number, canvas: HTMLCanvasElement, padding: number) {
-        return (i / props.data[0].length) * (canvas.width - padding * 2) + padding;
+        return (i / (props.data[0].length - 1)) * (canvas.width - padding * 2) + padding;
     }
 
     function getScatterX(i: number, canvas: HTMLCanvasElement, padding: number) {
-        return (i / props.data[0].length) * (canvas.height - padding * 2) + padding;
+        return (i / (props.data[0].length - 1)) * (canvas.height - padding * 2) + padding;
     }
 
     function getLineY(canvas: HTMLCanvasElement, curvePadding: number, point: number) {
@@ -164,18 +164,11 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             curvePaddingRef.current = curvePadding
             const axisPadding = canvas.height * AXIS_PADDING_FACTOR
 
-            let minData = Infinity
-            let maxData = 0
-
             // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
             let columns: number[][] = []
 
             if (props.type == 'line') {
                 props.data.forEach((column, i) => {
-                    // const sortedData = [...column].sort((a, b) => a - b)
-                    /*minData = Math.min(sortedData[0], minData)
-                    maxData = Math.max(sortedData[sortedData.length - 1], maxData)*/
-
                     // Draw lines
                     ctx.strokeStyle = LINE_COLORS[i]
                     ctx.beginPath()
@@ -256,7 +249,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 .map(i => Math.floor(i * props.data[0].length / (PLOT_NUM_Y_VALUES - 1)).toString())
 
             const lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
-                .map(i => Math.floor(i * props.data[0].length / (PLOT_NUM_X_VALUES - 1)).toString())
+                .map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_X_VALUES - 1)).toString())
             const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
 
             const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]

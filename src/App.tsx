@@ -28,7 +28,7 @@ const demoPreset3 = {
     lineDataSmoothing: 0
 }
 
-const preset = demoPreset3
+const preset = demoPreset2
 
 function App() {
     const FILE_PATH = 'src/assets/opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
@@ -70,7 +70,6 @@ function App() {
                 setData(newData)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
-                console.log(minData, maxData)
             })
         })
     }, []);
