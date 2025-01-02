@@ -24,7 +24,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
     const AXIS_PADDING_FACTOR = 0.07
-    const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.02
+    const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.04
 
     const LINE_WIDTH = 4
     const MARKER_RADIUS = 12
