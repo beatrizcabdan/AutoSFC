@@ -4,7 +4,7 @@ import './App.scss'
 
 import React, {FormEvent, useEffect, useRef, useState} from 'react';
 import {Chart} from "./Chart.tsx";
-import {Button} from "./Button.tsx";
+import {UploadButton} from "./UploadButton.tsx";
 import {Slider} from "./Slider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 
@@ -54,7 +54,7 @@ function App() {
     const [maxChartValue, setMaxChartValue] = useState<number>()
     const [signalMarkerPos, setSignalMarkerPos] = useState<number>(SLIDER_START_VAL)
     const [playStatus, setPlayStatus] = useState(PlayStatus.PAUSED)
-    const playButtonIntervalRef = useRef(-1)
+    const playbackIntervalRef = useRef(-1)
 
     useEffect(() => {
         fetch(FILE_PATH).then(r => {
@@ -94,31 +94,49 @@ function App() {
 
     const onSliderDrag = (e: FormEvent<HTMLInputElement>) => {
         if (playStatus === PlayStatus.PLAYING) {
-            clearInterval(playButtonIntervalRef.current)
+            clearInterval(playbackIntervalRef.current)
             setPlayStatus(PlayStatus.PAUSED)
+        } else {
+            setPlayStatus(e.currentTarget.value >= 100 ? PlayStatus.REACHED_END : PlayStatus.PAUSED)
         }
         setSignalMarkerPos(e.currentTarget.value)
     }
 
+    // Stop playback when reaching end
+    useEffect(() => {
+        if (playStatus === PlayStatus.PLAYING && signalMarkerPos >= 100) {
+            clearInterval(playbackIntervalRef.current)
+            setSignalMarkerPos(100)
+            setPlayStatus(PlayStatus.REACHED_END)
+        }
+    }, [signalMarkerPos])
+
     // Clear interval when unmounting the component
     useEffect(() => {
-        return () => clearInterval(playButtonIntervalRef.current);
+        return () => clearInterval(playbackIntervalRef.current);
     }, []);
+
+    function startPlayback() {
+        playbackIntervalRef.current = setInterval(() => {
+                setSignalMarkerPos((signalMarkerPos) => Number(signalMarkerPos) + 0.1)
+            },
+            20)
+    }
 
     const onPlayClick = () => {
         switch (playStatus) {
             case PlayStatus.PAUSED:
                 setPlayStatus(PlayStatus.PLAYING)
-                playButtonIntervalRef.current = setInterval(() =>
-                        setSignalMarkerPos((signalMarkerPos) => Number(signalMarkerPos) + 0.1),
-                    20)
+                startPlayback();
                 break
             case PlayStatus.PLAYING:
                 setPlayStatus(PlayStatus.PAUSED)
-                clearInterval(playButtonIntervalRef.current)
+                clearInterval(playbackIntervalRef.current)
                 break
             case PlayStatus.REACHED_END:
                 setPlayStatus(PlayStatus.PLAYING)
+                setSignalMarkerPos(0)
+                startPlayback()
         }
     }
 
@@ -144,7 +162,7 @@ function App() {
                   <PlayButton onClick={onPlayClick} status={playStatus}/>
                   <Slider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
               </div>
-              <Button label={'Upload data'} onClick={() => uploadData()}/>
+              <UploadButton label={'Upload data'} onClick={() => uploadData()}/>
           </div>
           <div className="footer">
             Demo of SFCs for encoding multiple dimensions as one by Anton and Bea.
