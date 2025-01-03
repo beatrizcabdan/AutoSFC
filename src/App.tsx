@@ -2,10 +2,11 @@
 
 import './App.scss'
 
-import React, {FormEvent, useEffect, useState} from 'react';
+import React, {FormEvent, useEffect, useRef, useState} from 'react';
 import {Chart} from "./Chart.tsx";
 import {Button} from "./Button.tsx";
 import {Slider} from "./Slider.tsx";
+import {PlayButton} from "./PlayButton.tsx";
 
 const demoPreset1 = {
     dataPointInterval: 1000,
@@ -35,7 +36,11 @@ const demoPreset4 = {
     lineDataSmoothing: 0
 }
 
-const preset = demoPreset3
+const preset = demoPreset2
+
+export enum PlayStatus {
+    PLAYING, PAUSED, REACHED_END
+}
 
 function App() {
     const FILE_PATH = 'src/assets/opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
@@ -47,7 +52,9 @@ function App() {
     const [data, setData] = useState<number[][]>([])
     const [minChartValue, setMinChartValue] = useState<number>()
     const [maxChartValue, setMaxChartValue] = useState<number>()
-    const [signalMarkerPos, setSignalMarkerPos] = useState(SLIDER_START_VAL)
+    const [signalMarkerPos, setSignalMarkerPos] = useState<number>(SLIDER_START_VAL)
+    const [playStatus, setPlayStatus] = useState(PlayStatus.PAUSED)
+    const playButtonIntervalRef = useRef(-1)
 
     useEffect(() => {
         fetch(FILE_PATH).then(r => {
@@ -86,7 +93,33 @@ function App() {
     }
 
     const onSliderDrag = (e: FormEvent<HTMLInputElement>) => {
+        if (playStatus === PlayStatus.PLAYING) {
+            clearInterval(playButtonIntervalRef.current)
+            setPlayStatus(PlayStatus.PAUSED)
+        }
         setSignalMarkerPos(e.currentTarget.value)
+    }
+
+    // Clear interval when unmounting the component
+    useEffect(() => {
+        return () => clearInterval(playButtonIntervalRef.current);
+    }, []);
+
+    const onPlayClick = () => {
+        switch (playStatus) {
+            case PlayStatus.PAUSED:
+                setPlayStatus(PlayStatus.PLAYING)
+                playButtonIntervalRef.current = setInterval(() =>
+                        setSignalMarkerPos((signalMarkerPos) => Number(signalMarkerPos) + 0.1),
+                    20)
+                break
+            case PlayStatus.PLAYING:
+                setPlayStatus(PlayStatus.PAUSED)
+                clearInterval(playButtonIntervalRef.current)
+                break
+            case PlayStatus.REACHED_END:
+                setPlayStatus(PlayStatus.PLAYING)
+        }
     }
 
     return (
@@ -99,13 +132,18 @@ function App() {
           </div>
           <div id={'main'}>
               <div className={'charts'}>
-                  <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue} type={'line'} xAxisName={'Time steps'}
+                  <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue}
+                         type={'line'} xAxisName={'Time steps'}
                          yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={dataLabels}
                          currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}/>
-                  <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'}
+                  <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue} maxValue={maxChartValue}
+                         type={'scatter'} xAxisName={'Morton'}
                          yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
               </div>
-              <Slider min={0} max={data?.length} onDrag={onSliderDrag} initialVal={SLIDER_START_VAL}/>
+              <div className={'play-controls'}>
+                  <PlayButton onClick={onPlayClick} status={playStatus}/>
+                  <Slider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
+              </div>
               <Button label={'Upload data'} onClick={() => uploadData()}/>
           </div>
           <div className="footer">

@@ -283,9 +283,9 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             <div className={'canvas-wrapper'}>
                 <canvas ref={canvasRef} className={props.type}></canvas>
                 <p>{props.xAxisName}</p>
+                <h2>{props.name}</h2>
             </div>
             {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
         </div>
-        <h2>{props.name}</h2>
     </div>;
 }

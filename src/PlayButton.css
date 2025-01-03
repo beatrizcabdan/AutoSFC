@@ -15,7 +15,7 @@ html {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 3rem;
+  gap: 2.5rem;
   width: 100%;
   flex-direction: column;
   font-family: Inter, sans-serif;
@@ -27,7 +27,7 @@ html {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 3rem;
+  gap: 1.5rem;
 }
 
 .charts {
@@ -81,12 +81,19 @@ html {
   text-transform: initial;
 }
 
-.button {
-  padding: 0.25rem 0.3rem;
-  /*text-transform: uppercase;*/
+.button, .play-button {
+  padding: 0 0.5rem;
+  height: 1.8rem;
 }
 
-.slider {
+.play-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.play-controls .slider {
   width: 20rem;
 }
 
@@ -121,4 +128,17 @@ html {
   padding: 14px 50px;
 }
 
-/*# sourceMappingURL=App.css.map */
+.play-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.play-button span {
+  margin: 0;
+  font-size: 1.4rem;
+}
+.play-button .material-symbols-outlined {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 22;
+}
+
+/*# sourceMappingURL=PlayButton.css.map */
