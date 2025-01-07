@@ -12,6 +12,8 @@ html {
   --text-color: #3d3d3d;
   --text-color-light: #575757;
   --legend-border: #a8a8a8;
+  --button-border: #7a7a7a;
+  --light-gray: #e8e8e8;
 }
 
 #root {
@@ -97,6 +99,20 @@ html {
 .button {
   padding: 0 0.5rem;
   height: 1.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02rem;
+  background-color: white;
+  border: 2px solid var(--text-color-light);
+  border-radius: 6px;
+  transition: all 0.2s;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-color-light);
+
+  &:hover {
+    background-color: var(--light-gray);
+    cursor: pointer;
+  }
 }
 
 .play-controls {
@@ -129,6 +145,7 @@ html {
   text-decoration: none;
   font-size: 17px;
   color: white;
+  transition: background-color 0.3s;
 }
 
 .topnav a:hover {

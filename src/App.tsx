@@ -162,7 +162,7 @@ function App() {
                   <PlayButton onClick={onPlayClick} status={playStatus}/>
                   <Slider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
               </div>
-              <UploadButton label={'Upload data'} onClick={() => uploadData()}/>
+              <UploadButton label={'Upload data...'} onClick={() => uploadData()}/>
           </div>
           <div className="footer">
             Demo of SFCs for encoding multiple dimensions as one by Anton and Bea.

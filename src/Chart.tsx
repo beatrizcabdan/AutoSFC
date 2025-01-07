@@ -227,8 +227,9 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                         / (maxMorton - minMorton) + curvePadding
                     const currentBarDistance = Math.abs(barX - signalX) / curveCanvasWidth
                     const defaultColor = {r: 204, g: 204, b: 204}
-                    const markedColor = {r: 100, g: 150, b: 255}
-                    const markedWeight = Math.max(0.03 - currentBarDistance, 0) / 0.03
+                    const markedColor = {r: 0, g: 150, b: 255}
+                    const coloredWidth = 0.03
+                    const markedWeight = Math.max(coloredWidth - currentBarDistance, 0) / coloredWidth
                     ctx.fillStyle = `rgb(
                         ${markedColor.r * markedWeight + defaultColor.r * (1 - markedWeight)},
                         ${markedColor.g * markedWeight + defaultColor.g * (1 - markedWeight)},
