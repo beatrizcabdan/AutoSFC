@@ -36,6 +36,13 @@ const demoPreset4 = {
     lineDataSmoothing: 0
 }
 
+const paperPreset = {
+    dataPointInterval: 1,
+    dataRangeStart: 720,
+    dataRangeEnd: 880,
+    lineDataSmoothing: 0
+}
+
 const preset = demoPreset2
 
 export enum PlayStatus {
@@ -87,10 +94,6 @@ function App() {
             })
         })
     }, []);
-
-    function uploadData() {
-
-    }
 
     const onSliderDrag = (e: FormEvent<HTMLInputElement>) => {
         if (playStatus === PlayStatus.PLAYING) {
@@ -162,7 +165,6 @@ function App() {
                   <PlayButton onClick={onPlayClick} status={playStatus}/>
                   <Slider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
               </div>
-              <UploadButton label={'Upload data...'} onClick={() => uploadData()}/>
           </div>
           <div className="footer">
             Demo of SFCs for encoding multiple dimensions as one by Anton and Bea.
