@@ -4,7 +4,6 @@ import './App.scss'
 
 import React, {FormEvent, useEffect, useRef, useState} from 'react';
 import {Chart} from "./Chart.tsx";
-import {UploadButton} from "./UploadButton.tsx";
 import {Slider} from "./Slider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 

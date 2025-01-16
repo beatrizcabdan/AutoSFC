@@ -50,6 +50,7 @@ html {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    gap: 0;
 
     .canvas-container {
       p {

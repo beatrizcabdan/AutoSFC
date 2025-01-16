@@ -45,6 +45,7 @@ html {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  gap: 0;
 }
 .charts .chart .canvas-container {
   text-transform: uppercase;
