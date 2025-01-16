@@ -6,6 +6,7 @@ import React, {FormEvent, useEffect, useRef, useState} from 'react';
 import {Chart} from "./Chart.tsx";
 import {Slider} from "./Slider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
+import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 
 const demoPreset1 = {
     dataPointInterval: 1000,
@@ -42,7 +43,7 @@ const paperPreset = {
     lineDataSmoothing: 0
 }
 
-const preset = demoPreset2
+const preset = paperPreset
 
 export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
@@ -54,14 +55,18 @@ function App() {
     const SLIDER_START_VAL = 0
 
     const dataRange: {start: number, end: number} = {start: preset.dataRangeStart, end: preset.dataRangeEnd}
-    const dataLabels = ['accel_trans', 'accel_down']
+    const [displayedDataLabels, setDisplayedDataLabels] = useState(['accel_trans', 'accel_down'])
 
     const [data, setData] = useState<number[][]>([])
+    const allDataLabelsRef = useRef<string[]>([])
     const [minChartValue, setMinChartValue] = useState<number>()
     const [maxChartValue, setMaxChartValue] = useState<number>()
+
     const [signalMarkerPos, setSignalMarkerPos] = useState<number>(SLIDER_START_VAL)
     const [playStatus, setPlayStatus] = useState(PlayStatus.PAUSED)
     const playbackIntervalRef = useRef(-1)
+
+    const [showDialog, setShowDialog] = useState(false)
 
     useEffect(() => {
         fetch(FILE_PATH).then(r => {
@@ -69,8 +74,10 @@ function App() {
                 const lines = t
                     .trim()
                     .split(/\n/)
-                const colIndices = dataLabels.map(label => lines[0]
+                const dataLabels = lines[0]
                     .split(/;/)
+                allDataLabelsRef.current = dataLabels
+                const colIndices = displayedDataLabels.map(label => dataLabels
                     .findIndex(col => col === label)
                 ).filter(index => index !== -1);
                 const newData: number[][] = []
@@ -144,6 +151,13 @@ function App() {
         }
     }
 
+    const selectDataColumns = () => {
+        console.log('click!')
+        if (!showDialog) {
+            setShowDialog(true)
+        }
+    };
+
     return (
       <>
           <div className="topnav">
@@ -156,8 +170,9 @@ function App() {
               <div className={'charts'}>
                   <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue}
                          type={'line'} xAxisName={'Time steps'}
-                         yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={dataLabels}
-                         currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}/>
+                         yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels}
+                         currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
+                         onLegendClick={selectDataColumns}/>
                   <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue} maxValue={maxChartValue}
                          type={'scatter'} xAxisName={'Morton'}
                          yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
@@ -168,10 +183,12 @@ function App() {
               </div>
           </div>
           <div className="footer">
-            Demo of SFCs for encoding multiple dimensions as one by Anton and Bea.
-            This is for Christian to check and rejoice.
-            More to come.
+              Demo of SFCs for encoding multiple dimensions as one by Anton and Bea.
+              This is for Christian to check and rejoice.
+              More to come.
           </div>
+
+          <SelectColumnsDialog show={showDialog} dataLabelsRef={allDataLabelsRef}/>
       </>
   )
 }
