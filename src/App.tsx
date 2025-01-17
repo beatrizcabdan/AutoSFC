@@ -54,7 +54,8 @@ function App() {
     const SLIDER_START_VAL = 0
 
     const dataRange: {start: number, end: number} = {start: preset.dataRangeStart, end: preset.dataRangeEnd}
-    const dataLabels = ['accel_lon', 'accel_trans']
+    const dataLabels = ['accel_trans', 'accel_down']
+
     const [data, setData] = useState<number[][]>([])
     const [minChartValue, setMinChartValue] = useState<number>()
     const [maxChartValue, setMaxChartValue] = useState<number>()
@@ -68,9 +69,10 @@ function App() {
                 const lines = t
                     .trim()
                     .split(/\n/)
-                const colIndices = lines[0]
+                const colIndices = dataLabels.map(label => lines[0]
                     .split(/;/)
-                    .reduce((p: number[], c, i): number[] =>  dataLabels.includes(c) ? [...p, i] : p, [])
+                    .findIndex(col => col === label)
+                ).filter(index => index !== -1);
                 const newData: number[][] = []
                 let minData = Infinity
                 let maxData = 0
