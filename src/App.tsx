@@ -43,7 +43,7 @@ const paperPreset = {
     lineDataSmoothing: 0
 }
 
-const preset = demoPreset2
+const preset = paperPreset
 
 export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
@@ -58,6 +58,8 @@ function App() {
     const dataLabels = ['accel_trans', 'accel_down']
 
     const [data, setData] = useState<number[][]>([])
+    const [startTimeXticks, setStartTime] = useState<number>()
+    const [finshTimeXticks, setFinshTime] = useState<number>()
     const [minChartValue, setMinChartValue] = useState<number>()
     const [maxChartValue, setMaxChartValue] = useState<number>()
     const [signalMarkerPos, setSignalMarkerPos] = useState<number>(SLIDER_START_VAL)
@@ -74,6 +76,13 @@ function App() {
                     .split(/;/)
                     .findIndex(col => col === label)
                 ).filter(index => index !== -1);
+
+                const beginTime = Number(lines[1]?.split(/;/)[0]);
+                let startTimeXticks = Number(lines[dataRange.start + 1]?.split(/;/)[0]);
+                let finshTimeXticks = Number(dataRange.end < lines.length ? lines[dataRange.end + 1]?.split(/;/)[0] : undefined);
+                startTimeXticks = startTimeXticks-beginTime
+                finshTimeXticks = finshTimeXticks - beginTime
+
                 const newData: number[][] = []
                 let minData = Infinity
                 let maxData = 0
@@ -90,7 +99,10 @@ function App() {
                     maxData = Math.max(maxData, sortedData[sortedData.length - 1])
                     newData.push(column)
                 })
+
                 setData(newData)
+                setStartTime(startTimeXticks)
+                setFinshTime(finshTimeXticks)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
             })
@@ -156,8 +168,8 @@ function App() {
           <div id={'main'}>
               <div className={'charts'}>
                   <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue}
-                         type={'line'} xAxisName={'Time steps'}
-                         yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={dataLabels}
+                         type={'line'} xAxisName={'Time'}
+                         yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={dataLabels} startTimeXticks={startTimeXticks} finshTimeXticks={finshTimeXticks}
                          currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}/>
                   <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue} maxValue={maxChartValue}
                          type={'scatter'} xAxisName={'Morton'}

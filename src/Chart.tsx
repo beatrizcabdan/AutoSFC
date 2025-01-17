@@ -20,7 +20,7 @@ function getSmoothedData(data: number[], smoothing: number) {
 
 export function Chart(props: { name: string, data: number[][], type: string, xAxisName: string, yAxisName: string,
     yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[], currentSignalXVal: number,
-    lineDataSmoothing?: number}) {
+    startTimeXticks: number, finshTimeXticks: number, lineDataSmoothing?: number}) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
     const AXIS_PADDING_FACTOR = 0.07
@@ -260,8 +260,13 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             const mortonRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
                 .map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_Y_VALUES - 1)).toString())
 
-            const lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
-                .map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_X_VALUES - 1)).toString())
+            let lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()].map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_X_VALUES - 1)).toString())
+
+            if (props.startTimeXticks) {
+                const step = (props.finshTimeXticks - props.startTimeXticks) / (PLOT_NUM_X_VALUES-1);
+                lineXValues = Array.from({ length: PLOT_NUM_X_VALUES }, (_, i) => Math.round(props.startTimeXticks + i * step).toString());
+            }
+
             const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
 
             const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
