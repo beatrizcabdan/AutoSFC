@@ -46,12 +46,19 @@
 }
 .light-box .dialog .buttons .ok-button {
   border: none;
-  background: var(--primary-color);
   color: white;
   box-shadow: rgba(0, 0, 0, 0.4) 0 0 4px;
+  transition: all 0.2s;
 }
-.light-box .dialog .buttons .ok-button:hover {
+.light-box .dialog .buttons .ok-button.enabled {
+  background: var(--primary-color);
+}
+.light-box .dialog .buttons .ok-button.enabled:hover {
   background: #6c6cff;
+}
+.light-box .dialog .buttons .ok-button.disabled {
+  background: var(--button-border);
+  cursor: default;
 }
 
 /*# sourceMappingURL=SelectColumnsDialog.css.map */

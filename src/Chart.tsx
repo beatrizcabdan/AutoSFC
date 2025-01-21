@@ -149,8 +149,6 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     }
 
     useEffect(() => {
-        // console.log(props.data)
-
         if (props.data.length > 0 && canvasRef.current) {
             const mortonData = mortonEncode2D(props.data[0], props.data[1], props.minValue)
             const mortonSorted = [...mortonData].sort((a, b) => a - b)

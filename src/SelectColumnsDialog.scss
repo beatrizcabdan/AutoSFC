@@ -9,7 +9,6 @@
 
     &.show {
         opacity: 1;
-        // pointer-events: none;
     }
 
     .dialog {
@@ -51,12 +50,21 @@
 
             .ok-button {
                 border: none;
-                background: var(--primary-color);
                 color: white;
                 box-shadow: rgba(0 0 0 / 0.4) 0 0 4px;
+                transition: all 0.2s;
 
-                &:hover {
-                    background: #6c6cff;
+                &.enabled {
+                    background: var(--primary-color);
+
+                    &:hover {
+                        background: #6c6cff;
+                    }
+                }
+
+                &.disabled {
+                    background: var(--button-border);
+                    cursor: default;
                 }
             }
         }
