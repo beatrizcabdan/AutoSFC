@@ -76,10 +76,12 @@ function App() {
                     .split(/\n/)
                 const dataLabels = lines[0]
                     .split(/;/)
+                console.log(dataLabels)
                 allDataLabelsRef.current = dataLabels
                 const colIndices = displayedDataLabels.map(label => dataLabels
                     .findIndex(col => col === label)
                 ).filter(index => index !== -1);
+                console.log(colIndices)
                 const newData: number[][] = []
                 let minData = Infinity
                 let maxData = 0
@@ -101,7 +103,7 @@ function App() {
                 setMaxChartValue(maxData)
             })
         })
-    }, []);
+    }, [displayedDataLabels]);
 
     const onSliderDrag = (e: FormEvent<HTMLInputElement>) => {
         if (playStatus === PlayStatus.PLAYING) {
@@ -152,11 +154,15 @@ function App() {
     }
 
     const selectDataColumns = () => {
-        console.log('click!')
         if (!showDialog) {
             setShowDialog(true)
         }
     };
+
+    const setDataLabels = (labels: string[]) => {
+        setDisplayedDataLabels(labels)
+        setShowDialog(false)
+    }
 
     return (
       <>
@@ -188,7 +194,7 @@ function App() {
               More to come.
           </div>
 
-          <SelectColumnsDialog show={showDialog} dataLabelsRef={allDataLabelsRef}/>
+          <SelectColumnsDialog show={showDialog} currentLabels={displayedDataLabels} dataLabelsRef={allDataLabelsRef} setDataLabels={setDataLabels}/>
       </>
   )
 }

@@ -149,6 +149,8 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     }
 
     useEffect(() => {
+        // console.log(props.data)
+
         if (props.data.length > 0 && canvasRef.current) {
             const mortonData = mortonEncode2D(props.data[0], props.data[1], props.minValue)
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
@@ -278,7 +280,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal]);
 
     return <div className={'chart'}>
-        {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick}/>}
+        {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!}/>}
         <div className={'canvas-container'}>
             {props.yAxisLabelPos === 'left' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
             <div className={'canvas-wrapper'}>
