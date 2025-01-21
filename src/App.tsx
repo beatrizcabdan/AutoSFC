@@ -43,7 +43,7 @@ const paperPreset = {
     lineDataSmoothing: 0
 }
 
-const preset = demoPreset1
+const preset = paperPreset
 
 export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
@@ -56,7 +56,6 @@ function App() {
 
     const [startValue, setStartValue] = useState(preset.dataRangeStart)
     const [endValue, setEndValue] = useState(preset.dataRangeEnd);
-    const dataLabels = ['accel_x', 'accel_y']
     const [displayedDataLabels, setDisplayedDataLabels] = useState(['accel_trans', 'accel_down'])
 
     const [data, setData] = useState<number[][]>([])
@@ -82,8 +81,6 @@ function App() {
                     .split(/;/)
                 allDataLabelsRef.current = dataLabels
                 const colIndices = displayedDataLabels.map(label => dataLabels
-                    .trim()
-                    .split(/;/)
                     .findIndex(col => col === label)
                 ).filter(index => index !== -1);
 
