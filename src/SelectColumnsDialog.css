@@ -1,0 +1,64 @@
+.light-box {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.light-box.show {
+  opacity: 1;
+}
+.light-box .dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  border-radius: 10px;
+  border: 0 solid black;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 0 16px 4px;
+  margin: 0;
+  padding: 1rem 3rem;
+  pointer-events: all;
+}
+.light-box .dialog h2 {
+  line-height: 0.8rem;
+}
+.light-box .dialog .checkbox-list {
+  font-size: 0.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.light-box .dialog .buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.light-box .dialog .buttons button {
+  margin-top: 1rem;
+  width: 13ch;
+  text-align: center;
+}
+.light-box .dialog .buttons .ok-button {
+  border: none;
+  color: white;
+  box-shadow: rgba(0, 0, 0, 0.4) 0 0 4px;
+  transition: all 0.2s;
+}
+.light-box .dialog .buttons .ok-button.enabled {
+  background: var(--primary-color);
+}
+.light-box .dialog .buttons .ok-button.enabled:hover {
+  background: #6c6cff;
+}
+.light-box .dialog .buttons .ok-button.disabled {
+  background: var(--button-border);
+  cursor: default;
+}
+
+/*# sourceMappingURL=SelectColumnsDialog.css.map */
