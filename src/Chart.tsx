@@ -122,6 +122,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                     case 'top': {}
                 }
 
+                ctx.font = '30px Times';
                 ctx.fillText(tickMarks[i], textPos.x, textPos.y)
 
                 ctx.lineWidth = 1
@@ -285,15 +286,15 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal]);
 
     return <div className={'chart'}>
-        {props.legendLabels && <Legend labels={props.legendLabels}/>}
+        <h2 className={'chartitle'}>{props.name}</h2>
         <div className={'canvas-container'}>
             {props.yAxisLabelPos === 'left' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
             <div className={'canvas-wrapper'}>
                 <canvas ref={canvasRef} className={props.type}></canvas>
                 <p>{props.xAxisName}</p>
-                <h2>{props.name}</h2>
             </div>
             {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
         </div>
+        {props.legendLabels && <Legend labels={props.legendLabels}/>}
     </div>;
 }
