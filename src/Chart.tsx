@@ -31,7 +31,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     const MORTON_BAR_WIDTH = 4
     const MORTON_PIXEL_DIAM = 4
 
-    const LINE_COLORS = ['blue', 'orange']
+    const LINE_COLORS = ['blue', 'orange', 'green']
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const curvePaddingRef = useRef(0)
@@ -150,7 +150,8 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
-            const mortonData = mortonEncode2D(props.data[0], props.data[1], props.minValue)
+            const mortonData = mortonEncode2D(props.data[0], props.data[1], props.minValue).reverse()
+
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
             const maxMorton = mortonSorted[mortonSorted.length - 1]
@@ -220,12 +221,13 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 // Draw bar
                 mortonData.forEach((m, i) => {
                     const curveCanvasWidth = canvas.width - curvePadding * 2
-                    const y = curveCanvasWidth * (maxMorton - m) / (maxMorton - minMorton) + curvePadding
+                    const y = curveCanvasWidth * (m - minMorton) / (maxMorton - minMorton) + curvePadding
 
                     const barX = y - MORTON_BAR_WIDTH / 2
-                    const signalX = curveCanvasWidth * (maxMorton - mortonData[mortonData.length - 1 - markerIndex])
+                    const signalX = curveCanvasWidth * (mortonData[mortonData.length - 1 - markerIndex] - minMorton)
                         / (maxMorton - minMorton) + curvePadding
                     const currentBarDistance = Math.abs(barX - signalX) / curveCanvasWidth
+
                     const defaultColor = {r: 204, g: 204, b: 204}
                     const markedColor = {r: 0, g: 150, b: 255}
                     const coloredWidth = 0.03
@@ -240,7 +242,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 // Draw points
                 mortonData.forEach((m, i) => {
                     const x = getScatterX(i, canvas, curvePadding)
-                    const y = (canvas.width - curvePadding * 2) * (maxMorton - m) / (maxMorton - minMorton) + curvePadding
+                    const y = (canvas.width - curvePadding * 2) * (m - minMorton) / (maxMorton - minMorton) + curvePadding
                         // Draw point
                         ctx.fillStyle = 'black'
                         ctx.beginPath();

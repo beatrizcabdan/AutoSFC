@@ -1,9 +1,8 @@
 export function mortonEncode2D(xData: number[], yData: number[], minValue: number) {
     const resultArr: number[] = []
-    const offset = minValue < 0 ? -Math.round(minValue * 100000000) : 0
     xData.forEach((x, i) => {
-        x = Math.round(x * 100000000) + offset
-        const y = Math.round(yData[i] * 100000000) + offset
+        x = Math.trunc(Math.trunc((x + 10.0) * 1000000)/1000000 * 100)
+        const y = Math.trunc(Math.trunc((Number(yData[i]) + 10.0) * 1000000)/1000000 * 100)
 
         let xn = BigInt(x)
         xn = (xn | (xn << 16n)) & 0x0000FFFF0000FFFFn
@@ -12,7 +11,6 @@ export function mortonEncode2D(xData: number[], yData: number[], minValue: numbe
         xn = (xn | (xn << 2n)) & 0x3333333333333333n
         xn = (xn | (xn << 1n)) & 0x5555555555555555n
 
-        //TODO: Decide how to handle decimals
         let yn = BigInt(y)
         yn = (yn | (yn << 16n)) & 0x0000FFFF0000FFFFn
         yn = (yn | (yn << 8n)) & 0x00FF00FF00FF00FFn
@@ -21,6 +19,9 @@ export function mortonEncode2D(xData: number[], yData: number[], minValue: numbe
         yn = (yn | (yn << 1n)) & 0x5555555555555555n
 
         const result = xn | (yn << 1n)
+        // console.log(x, y, xn, yn, result)
+        // console.log(result)
+
         resultArr.push(Number(result))
     })
     return resultArr

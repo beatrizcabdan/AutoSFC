@@ -9,8 +9,8 @@ import {Slider} from "./Slider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 
 const demoPreset1 = {
-    dataPointInterval: 1000,
-    dataRangeStart: -1,
+    dataPointInterval: 1,
+    dataRangeStart: 0,
     dataRangeEnd: -1,
     lineDataSmoothing: 0
 }
@@ -43,19 +43,20 @@ const paperPreset = {
     lineDataSmoothing: 0
 }
 
-const preset = paperPreset
+const preset = demoPreset1
 
 export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
 }
 
 function App() {
-    const FILE_PATH = 'src/assets/opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
+    const FILE_PATH = 'src/assets/emergency_braking.csv'
     const DATA_POINT_INTERVAL  = preset.dataPointInterval
     const SLIDER_START_VAL = 0
 
-    const dataRange: {start: number, end: number} = {start: preset.dataRangeStart, end: preset.dataRangeEnd}
-    const dataLabels = ['accel_trans', 'accel_down']
+    const [startValue, setStartValue] = useState(preset.dataRangeStart)
+    const [endValue, setEndValue] = useState(preset.dataRangeEnd);
+    const dataLabels = ['accel_x', 'accel_y']
 
     const [data, setData] = useState<number[][]>([])
     const [startTimeXticks, setStartTime] = useState<number>()
@@ -73,14 +74,15 @@ function App() {
                     .trim()
                     .split(/\n/)
                 const colIndices = dataLabels.map(label => lines[0]
+                    .trim()
                     .split(/;/)
                     .findIndex(col => col === label)
                 ).filter(index => index !== -1);
 
                 const beginTime = Number(lines[1]?.split(/;/)[0]);
-                let startTimeXticks = Number(lines[dataRange.start + 1]?.split(/;/)[0]);
-                let finshTimeXticks = Number(dataRange.end < lines.length ? lines[dataRange.end + 1]?.split(/;/)[0] : undefined);
-                startTimeXticks = startTimeXticks-beginTime
+                let startTimeXticks = Number(lines[startValue + 1]?.split(/;/)[0]);
+                let finshTimeXticks = Number(endValue < lines.length ? lines[endValue + 1]?.split(/;/)[0] : undefined);
+                startTimeXticks = startTimeXticks - beginTime
                 finshTimeXticks = finshTimeXticks - beginTime
 
                 const newData: number[][] = []
@@ -89,15 +91,16 @@ function App() {
                 colIndices.forEach(index => {
                     const column: number[] = lines
                         .slice(1) // Skip headers
-                        .slice(dataRange.start >= 0 ? dataRange.start : 0,
-                             dataRange.end >= 0 ? dataRange.end : undefined)
+                        .slice(startValue >= 0 ? startValue : 0,
+                             endValue >= 0 ? endValue : undefined)
                         .map(l => l.split(/;/))
-                        .map(arr => Number(arr[index]))
+                        .map(arr => Number(arr[index])) //will only work for accelerations! otherwise arr => Number(arr[index])
                         .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
+                    newData.push(column)
+
                     const sortedData = [...column].sort((a, b) => a - b)
                     minData = Math.min(minData, sortedData[0])
                     maxData = Math.max(maxData, sortedData[sortedData.length - 1])
-                    newData.push(column)
                 })
 
                 setData(newData)
@@ -107,7 +110,7 @@ function App() {
                 setMaxChartValue(maxData)
             })
         })
-    }, []);
+    }, [startValue, endValue]);
 
     const onSliderDrag = (e: FormEvent<HTMLInputElement>) => {
         if (playStatus === PlayStatus.PLAYING) {
@@ -118,6 +121,15 @@ function App() {
         }
         setSignalMarkerPos(e.currentTarget.value)
     }
+
+    const onRangeChange = (e: FormEvent<HTMLInputElement>) => {
+        if (startValue < 0 || endValue > data.length || startValue >= endValue) {
+            return;
+        }
+        setStartTime(startValue);
+        setEndValue(endValue);
+};
+
 
     // Stop playback when reaching end
     useEffect(() => {
@@ -178,15 +190,27 @@ function App() {
               <div className={'play-controls'}>
                   <PlayButton onClick={onPlayClick} status={playStatus}/>
                   <Slider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
+
+                  <div className={'input-controls'}>
+                      <label>
+                          Start Value:
+                          <input type="number" value={startValue} onChange={(e) => setStartValue(Number(e.target.value))} />
+                      </label>
+                      &nbsp;
+                      <label>
+                          End Value:
+                          <input type="number" value={endValue} onChange={(e) => setEndValue(Number(e.target.value))} />
+                      </label>
+                  </div>
               </div>
           </div>
           <div className="footer">
-            Demo of SFCs for encoding multiple dimensions as one by Anton and Bea.
-            This is for Christian to check and rejoice.
-            More to come.
+              Demo of SFCs for encoding multiple dimensions as one by Anton and Bea.
+              This is for Christian to check and rejoice.
+              More to come.
           </div>
       </>
-  )
+    )
 }
 
 export default App
