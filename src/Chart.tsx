@@ -20,7 +20,7 @@ function getSmoothedData(data: number[], smoothing: number) {
 
 export function Chart(props: { name: string, data: number[][], type: string, xAxisName: string, yAxisName: string,
     yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[], currentSignalXVal: number,
-    startTimeXticks: number, finshTimeXticks: number, lineDataSmoothing?: number}) {
+    startTimeXticks?: number, finshTimeXticks?: number, lineDataSmoothing?: number, onLegendClick?: () => void}) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
     const AXIS_PADDING_FACTOR = 0.07
@@ -287,6 +287,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
     return <div className={'chart'}>
         <h2 className={'chartitle'}>{props.name}</h2>
+        {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!}/>}
         <div className={'canvas-container'}>
             {props.yAxisLabelPos === 'left' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
             <div className={'canvas-wrapper'}>

@@ -1,4 +1,15 @@
-.legend {
+.legend-container .legend-msg {
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  letter-spacing: 0.03rem;
+  line-height: 0.3rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.legend-container .legend-msg.show {
+  opacity: 1;
+}
+.legend-container .legend {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -8,9 +19,13 @@
   border: 1px solid;
   border-radius: 3px;
   border-color: var(--legend-border);
-  margin-bottom: -0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
 }
-.legend p {
+.legend-container .legend:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 0 6px 1px;
+}
+.legend-container .legend p {
   margin: 0;
   line-height: 0.5rem;
   font-size: 0.7rem;
@@ -20,13 +35,13 @@
   align-items: center;
   justify-self: center;
 }
-.legend p:nth-of-type(1):before {
+.legend-container .legend p:nth-of-type(1):before {
   background: blue;
 }
-.legend p:nth-of-type(2):before {
+.legend-container .legend p:nth-of-type(2):before {
   background: orange;
 }
-.legend p:before {
+.legend-container .legend p:before {
   content: " ";
   width: 2rem;
   height: 4px;

@@ -4,9 +4,9 @@ import './App.scss'
 
 import React, {FormEvent, useEffect, useRef, useState} from 'react';
 import {Chart} from "./Chart.tsx";
-import {UploadButton} from "./UploadButton.tsx";
 import {Slider} from "./Slider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
+import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 
 const demoPreset1 = {
     dataPointInterval: 1,
@@ -43,29 +43,33 @@ const paperPreset = {
     lineDataSmoothing: 0
 }
 
-const preset = demoPreset1
+const preset = paperPreset
 
 export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
 }
 
 function App() {
-    const FILE_PATH = 'src/assets/emergency_braking.csv'
+    const FILE_PATH = 'src/assets/opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
     const DATA_POINT_INTERVAL  = preset.dataPointInterval
     const SLIDER_START_VAL = 0
 
     const [startValue, setStartValue] = useState(preset.dataRangeStart)
     const [endValue, setEndValue] = useState(preset.dataRangeEnd);
-    const dataLabels = ['accel_x', 'accel_y']
+    const [displayedDataLabels, setDisplayedDataLabels] = useState(['accel_trans', 'accel_down'])
 
     const [data, setData] = useState<number[][]>([])
     const [startTimeXticks, setStartTime] = useState<number>()
     const [finshTimeXticks, setFinshTime] = useState<number>()
+    const allDataLabelsRef = useRef<string[]>([])
     const [minChartValue, setMinChartValue] = useState<number>()
     const [maxChartValue, setMaxChartValue] = useState<number>()
+
     const [signalMarkerPos, setSignalMarkerPos] = useState<number>(SLIDER_START_VAL)
     const [playStatus, setPlayStatus] = useState(PlayStatus.PAUSED)
     const playbackIntervalRef = useRef(-1)
+
+    const [showDialog, setShowDialog] = useState(false)
 
     useEffect(() => {
         fetch(FILE_PATH).then(r => {
@@ -73,9 +77,10 @@ function App() {
                 const lines = t
                     .trim()
                     .split(/\n/)
-                const colIndices = dataLabels.map(label => lines[0]
-                    .trim()
+                const dataLabels = lines[0]
                     .split(/;/)
+                allDataLabelsRef.current = dataLabels
+                const colIndices = displayedDataLabels.map(label => dataLabels
                     .findIndex(col => col === label)
                 ).filter(index => index !== -1);
 
@@ -110,7 +115,7 @@ function App() {
                 setMaxChartValue(maxData)
             })
         })
-    }, [startValue, endValue]);
+    }, [startValue, endValue, displayedDataLabels]);
 
     const onSliderDrag = (e: FormEvent<HTMLInputElement>) => {
         if (playStatus === PlayStatus.PLAYING) {
@@ -169,6 +174,17 @@ function App() {
         }
     }
 
+    const selectDataColumns = () => {
+        if (!showDialog) {
+            setShowDialog(true)
+        }
+    };
+
+    const setDataLabels = (labels: string[]) => {
+        setDisplayedDataLabels(labels)
+        setShowDialog(false)
+    }
+
     return (
       <>
           <div className="topnav">
@@ -181,8 +197,9 @@ function App() {
               <div className={'charts'}>
                   <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue}
                          type={'line'} xAxisName={'Time'}
-                         yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={dataLabels} startTimeXticks={startTimeXticks} finshTimeXticks={finshTimeXticks}
-                         currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}/>
+                         yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels} startTimeXticks={startTimeXticks} finshTimeXticks={finshTimeXticks}
+                         currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
+                         onLegendClick={selectDataColumns}/>
                   <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue} maxValue={maxChartValue}
                          type={'scatter'} xAxisName={'Morton'}
                          yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
@@ -205,12 +222,14 @@ function App() {
               </div>
           </div>
           <div className="footer">
-              Demo of SFCs for encoding multiple dimensions as one by Anton and Bea.
-              This is for Christian to check and rejoice.
-              More to come.
+            Demo of SFCs for encoding multiple dimensions as one by Anton and Bea.
+            This is for Christian to check and rejoice.
+            More to come.
           </div>
+
+          <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels} dataLabelsRef={allDataLabelsRef} setDataLabels={setDataLabels}/>
       </>
-    )
+  )
 }
 
 export default App
