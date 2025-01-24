@@ -1,6 +1,6 @@
 @use 'sass:math';
 
-$canvas-height: 50vh;
+$canvas-height: 40vh;
 
 * {
   // border: 1px solid green;
@@ -8,8 +8,8 @@ $canvas-height: 50vh;
 }
 
 h2 {
-  font-size: 1.2rem;
-  font-weight: 500;
+  //font-size: 1.2rem;
+  //font-weight: 500;
   letter-spacing: -0.07rem;
   color: var(--text-color-light);
   text-transform: initial;

@@ -5,7 +5,7 @@ $line-width: 4px;
 .legend-container {
     .legend-msg {
         text-transform: uppercase;
-        font-size: 0.6rem;
+        font-size: 0.7rem;
         letter-spacing: 0.03rem;
         line-height: 0.3rem;
         opacity: 0;
@@ -18,7 +18,7 @@ $line-width: 4px;
 
     .legend {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         justify-content: center;
         align-items: flex-start;
         gap: 0.5rem;
@@ -43,30 +43,19 @@ $line-width: 4px;
             align-items: center;
             justify-self: center;
 
-            p {
-                margin: 0;
-                line-height: 0.5rem;
-                font-size: 0.7rem;
-                display: flex;
-                flex-direction: row;
-                gap: 0.2rem;
-                align-items: center;
-                justify-self: center;
+            &:nth-of-type(1):before {
+                background: $line-color-1;
+            }
 
-                &:nth-of-type(1):before {
-                    background: $line-color-1;
-                }
+            &:nth-of-type(2):before {
+                background: $line-color-2;
+            }
 
-                &:nth-of-type(2):before {
-                    background: $line-color-2;
-                }
-
-                &:before {
-                    content: ' ';
-                    width: 2rem;
-                    height: $line-width;
-                    margin-top: 0.1rem;
-                }
+            &:before {
+                content: ' ';
+                width: 2rem;
+                height: $line-width;
+                margin-top: 0.1rem;
             }
         }
     }

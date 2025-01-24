@@ -287,7 +287,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
     return <div className={'chart'}>
         <h2 className={'chartitle'}>{props.name}</h2>
-        {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!}/>}
+
         <div className={'canvas-container'}>
             {props.yAxisLabelPos === 'left' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
             <div className={'canvas-wrapper'}>
@@ -296,6 +296,6 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             </div>
             {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
         </div>
-        {props.legendLabels && <Legend labels={props.legendLabels}/>}
+        {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!}/>}
     </div>;
 }
