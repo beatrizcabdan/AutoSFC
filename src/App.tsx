@@ -186,50 +186,60 @@ function App() {
     }
 
     return (
-      <>
-          <div className="topnav">
-              <a className="active" href="#demo">Demo</a>
-              <a href="#work">Previous work</a>
-              <a href="#contact">Contact</a>
-              <a href="#about">About SFCs</a>
-          </div>
-          <div id={'main'}>
-              <div className={'charts'}>
-                  <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue}
-                         type={'line'} xAxisName={'Time'}
-                         yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels} startTimeXticks={startTimeXticks} finshTimeXticks={finshTimeXticks}
-                         currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
-                         onLegendClick={selectDataColumns}/>
-                  <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue} maxValue={maxChartValue}
-                         type={'scatter'} xAxisName={'Morton'}
-                         yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
-              </div>
-              <div className={'play-controls'}>
-                  <PlayButton onClick={onPlayClick} status={playStatus}/>
-                  <Slider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
+        <>
+            {/*<div className="header">*/}
+            {/*    <h2 className="header-text"></h2>*/}
+            {/*    <img src="assets/logo1.png" alt="AutoSFC logo" className="header-img"/>*/}
+            {/*</div>*/}
+            <div className="topnav">
+            <a className="active" href="#demo">Demo</a>
+                <a href="#work">Previous work</a>
+                <a href="#contact">Contact</a>
+                <a href="#about">About SFCs</a>
+            </div>
+            <div id={'main'}>
+                <div className={'charts'}>
+                    <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue}
+                           type={'line'} xAxisName={'Time'}
+                           yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels}
+                           startTimeXticks={startTimeXticks} finshTimeXticks={finshTimeXticks}
+                           currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
+                           onLegendClick={selectDataColumns}/>
+                    <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue}
+                           maxValue={maxChartValue}
+                           type={'scatter'} xAxisName={'Morton'}
+                           yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
+                </div>
+                <div className={'play-controls'}>
+                    <PlayButton onClick={onPlayClick} status={playStatus}/>
+                    <Slider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
 
-                  <div className={'input-controls'}>
-                      <label>
-                          Start Value:
-                          <input type="number" value={startValue} onChange={(e) => setStartValue(Number(e.target.value))} />
-                      </label>
-                      &nbsp;
-                      <label>
-                          End Value:
-                          <input type="number" value={endValue} onChange={(e) => setEndValue(Number(e.target.value))} />
-                      </label>
-                  </div>
-              </div>
-          </div>
-          <div className="footer">
-            Demo of SFCs for encoding multiple dimensions as one by Anton and Bea.
-            This is for Christian to check and rejoice.
-            More to come.
-          </div>
+                    <div className={'input-controls'}>
+                        <label>
+                            Start Value:
+                            <input type="number" value={startValue}
+                                   onChange={(e) => setStartValue(Number(e.target.value))}/>
+                        </label>
+                        &nbsp;
+                        <label>
+                            End Value:
+                            <input type="number" value={endValue}
+                                   onChange={(e) => setEndValue(Number(e.target.value))}/>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div className="tabcontent">
 
-          <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels} dataLabelsRef={allDataLabelsRef} setDataLabels={setDataLabels}/>
-      </>
-  )
+            </div>
+            <div className="footer">
+                Demo of SFC encoding and barcode formation for automotive data.
+            </div>
+
+            <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels}
+                                 dataLabelsRef={allDataLabelsRef} setDataLabels={setDataLabels}/>
+        </>
+    )
 }
 
 export default App
