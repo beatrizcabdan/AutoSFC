@@ -8,6 +8,7 @@ import {Chart} from "./Chart.tsx";
 import {Slider} from "./Slider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
+import {UploadButton} from "./UploadButton.tsx";
 
 // @ts-expect-error
 const demoPreset1 = {
@@ -183,6 +184,10 @@ function App() {
         setShowDialog(false)
     }
 
+    function uploadFile() {
+
+    }
+
     return (
         <>
             {/*<div className="header">*/}
@@ -226,6 +231,7 @@ function App() {
                         </label>
                     </div>
                 </div>
+                <UploadButton onClick={uploadFile} label={'Upload file...'}/>
             </div>
             <div className="tabcontent">
 

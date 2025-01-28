@@ -26,13 +26,14 @@ html {
 }
 
 #root {
+  display: flex;
+  flex-direction: column;
   margin: 0 auto;
   text-align: center;
   justify-content: space-between;
   align-items: center;
   gap: 2.5rem;
   width: 100%;
-  flex-direction: column;
   color: var(--text-color);
 }
 
@@ -41,8 +42,7 @@ html {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1.5rem;
-  margin-top: 2rem;
+  gap: 2.5rem;
 }
 
 .charts {
@@ -173,6 +173,8 @@ html {
 }
 
 .footer {
+  position: fixed;
+  bottom: 0;
   background-color: var(--text-color);
   color: white;
   text-align: left;
