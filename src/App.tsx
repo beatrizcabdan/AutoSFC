@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unused-vars */
+// noinspection JSUnusedLocalSymbols
+
 import './App.scss'
 
 import {FormEvent, useEffect, useRef, useState} from 'react';

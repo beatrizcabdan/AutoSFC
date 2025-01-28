@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment*/
+
 import {useEffect, useRef} from "react";
 import {makeGaussKernel, mortonEncode2D} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
@@ -172,7 +174,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             const axisPadding = canvas.height * AXIS_PADDING_FACTOR
 
             // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
-            let columns: number[][] = []
+            const columns: number[][] = []
             const markerIndex = Math.floor((props.data[0].length - 1) * props.currentSignalXVal / 100)
 
             if (props.type == 'line') {
@@ -225,7 +227,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             } else {
                 // Morton scatterplot
                 // Draw bar
-                mortonData.forEach((m, _) => {
+                mortonData.forEach((m) => {
                     const curveCanvasWidth = canvas.width - curvePadding * 2
                     const y = curveCanvasWidth * (m - minMorton) / (maxMorton - minMorton) + curvePadding
 
