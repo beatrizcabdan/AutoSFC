@@ -55,7 +55,7 @@ export enum PlayStatus {
 }
 
 function App() {
-    const FILE_PATH = 'src/assets/opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
+    const FILE_PATH = './opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
     const DATA_POINT_INTERVAL  = preset.dataPointInterval
     const SLIDER_START_VAL = 0
 
