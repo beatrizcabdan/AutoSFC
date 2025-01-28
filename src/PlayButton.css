@@ -129,12 +129,9 @@ html {
   overflow: hidden;
   background-color: var(--text-color);
   color: white;
-  top: 0;
   padding: 0 50px;
   width: 100%;
   position: sticky;
-  top: 0;
-  overflow: hidden;
 }
 
 .topnav a {
@@ -152,7 +149,6 @@ html {
 }
 
 .footer {
-  position: fixed;
   bottom: 0;
   background-color: var(--text-color);
   color: white;

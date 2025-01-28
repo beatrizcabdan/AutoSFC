@@ -1,16 +1,15 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unused-vars,no-unused-vars */
 // noinspection JSUnusedLocalSymbols
 
 import './App.scss'
 
-import {FormEvent, useEffect, useRef, useState} from 'react';
+import {ChangeEvent, FormEvent, useEffect, useRef, useState} from 'react';
 import {Chart} from "./Chart.tsx";
 import {Slider} from "./Slider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {UploadButton} from "./UploadButton.tsx";
 
-// @ts-expect-error
 const demoPreset1 = {
     dataPointInterval: 1,
     dataRangeStart: 0,
@@ -18,7 +17,6 @@ const demoPreset1 = {
     lineDataSmoothing: 0
 }
 
-// @ts-expect-error
 const demoPreset2 = {
     dataPointInterval: 5,
     dataRangeStart: 13000,
@@ -26,7 +24,6 @@ const demoPreset2 = {
     lineDataSmoothing: 1.0
 }
 
-// @ts-expect-error
 const demoPreset3 = {
     dataPointInterval: 5,
     dataRangeStart: 63000,
@@ -34,7 +31,6 @@ const demoPreset3 = {
     lineDataSmoothing: 1.0
 }
 
-// @ts-expect-error
 const demoPreset4 = {
     dataPointInterval: 1,
     dataRangeStart: 1000,
@@ -51,18 +47,19 @@ const paperPreset = {
 
 const preset = paperPreset
 
+// eslint-disable-next-line react-refresh/only-export-components
 export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
 }
 
 function App() {
-    const FILE_PATH = './opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
+    const [filePath, setFilePath] = useState('./opendlv.device.gps.pos.Grp1Data-0-excerpt.csv')
     const DATA_POINT_INTERVAL  = preset.dataPointInterval
     const SLIDER_START_VAL = 0
 
     const [startValue, setStartValue] = useState(preset.dataRangeStart)
     const [endValue, setEndValue] = useState(preset.dataRangeEnd);
-    const [displayedDataLabels, setDisplayedDataLabels] = useState(['accel_trans', 'accel_down'])
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_trans', 'accel_down'])
 
     const [data, setData] = useState<number[][]>([])
     const [startTimeXticks, setStartTime] = useState<number>()
@@ -78,7 +75,7 @@ function App() {
     const [showDialog, setShowDialog] = useState(false)
 
     useEffect(() => {
-        fetch(FILE_PATH).then(r => {
+        fetch(filePath).then(r => {
             r.text().then(t => {
                 const lines = t
                     .trim()
@@ -86,9 +83,9 @@ function App() {
                 const dataLabels = lines[0]
                     .split(/;/)
                 allDataLabelsRef.current = dataLabels
-                const colIndices = displayedDataLabels.map(label => dataLabels
+                const colIndices = displayedDataLabels?.map(label => dataLabels
                     .findIndex(col => col === label)
-                ).filter(index => index !== -1);
+                ).filter(index => index !== -1) ?? [0, 1]
 
                 const beginTime = Number(lines[1]?.split(/;/)[0]);
                 let startTimeXticks = Number(lines[startValue + 1]?.split(/;/)[0]);
@@ -119,9 +116,18 @@ function App() {
                 setFinshTime(finshTimeXticks)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
+                if (displayedDataLabels === null) {
+                    setDisplayedDataLabels(dataLabels.slice(0, 2))
+                }
+                if (startValue === -1) {
+                    setStartValue(0)
+                }
+                if (endValue === undefined || endValue < 0) {
+                    setEndValue(lines.length - 2)
+                }
             })
         })
-    }, [startValue, endValue, displayedDataLabels]);
+    }, [startValue, endValue, displayedDataLabels, filePath]);
 
     const onSliderDrag = (e: FormEvent<HTMLInputElement>) => {
         if (playStatus === PlayStatus.PLAYING) {
@@ -184,8 +190,16 @@ function App() {
         setShowDialog(false)
     }
 
-    function uploadFile() {
-
+    function uploadFile(e: ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.item(0)
+        if (file?.type === 'text/csv') {
+            const url = URL.createObjectURL(file)
+            console.log(url)
+            setFilePath(url)
+            setDisplayedDataLabels(null)
+            setStartValue(-1)
+            setEndValue(-1)
+        }
     }
 
     return (
@@ -234,7 +248,6 @@ function App() {
                 <UploadButton onClick={uploadFile} label={'Upload file...'}/>
             </div>
             <div className="tabcontent">
-
             </div>
             <div className="footer">
                 Demo of SFC encoding and barcode formation for automotive data.

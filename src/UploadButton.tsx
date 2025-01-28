@@ -1,5 +1,8 @@
-export function UploadButton(props: { onClick: () => void, label: string }) {
+import React from "react";
+
+export function UploadButton(props: { onClick: React.ChangeEventHandler<HTMLInputElement>, label: string }) {
     return <>
-        <input className={'button'} type={'button'} value={props.label}/>
+        {/*<input className={'button'} type={'button'} value={props.label}/>*/}
+        <input type="file" id="input" onChange={props.onClick}/>
     </>
 }

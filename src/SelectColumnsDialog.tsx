@@ -2,15 +2,16 @@ import {Dispatch, FormEvent, MutableRefObject, SetStateAction, useEffect, useSta
 import './SelectColumnsDialog.scss'
 
 export function SelectColumnsDialog(props: {show: boolean, setShow: Dispatch<SetStateAction<boolean>>, dataLabelsRef:  MutableRefObject<string[]>,
-    setDataLabels: (newLabels: string[]) => void, currentLabels: string[]}) {
+    setDataLabels: (newLabels: string[]) => void, currentLabels: string[] | null}) {
     const [submittable, setSubmittable] = useState(true)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [labelsToCheckedMap, setLabelsToCheckedMap]: [Map<any, any>, Dispatch<SetStateAction<Map<any, any>>>] = useState(new Map())
 
     function init() {
         const map = new Map<string, boolean>()
         props.dataLabelsRef.current.forEach(l => {
-            map.set(l, props.currentLabels.includes(l))
+            map.set(l, props.currentLabels!.includes(l))
         })
         setLabelsToCheckedMap(map)
         setSubmittable(true)
