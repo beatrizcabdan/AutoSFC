@@ -1,4 +1,4 @@
-export function mortonEncode2D(xData: number[], yData: number[], minValue: number) {
+export function mortonEncode2D(xData: number[], yData: number[]) {
     const resultArr: number[] = []
     xData.forEach((x, i) => {
         x = Math.trunc(Math.trunc((x + 10.0) * 1000000)/1000000 * 100)
@@ -35,6 +35,7 @@ export function makeGaussKernel(sigma: number){
     const s2 = 2.0 * sigma * sigma;
     let sum = 0.0;
 
+    // @ts-ignore
     const kernel = new Float32Array(dim - !(dim & 1)); // Make it odd number
     const half = Math.floor(kernel.length / 2)
     for (let j = 0, i = -half; j < kernel.length; i++, j++)

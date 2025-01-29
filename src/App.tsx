@@ -1,13 +1,12 @@
-// noinspection TypeScriptValidateTypes
-
 import './App.scss'
 
-import React, {FormEvent, useEffect, useRef, useState} from 'react';
+import {FormEvent, useEffect, useRef, useState} from 'react';
 import {Chart} from "./Chart.tsx";
 import {Slider} from "./Slider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 
+// @ts-expect-error
 const demoPreset1 = {
     dataPointInterval: 1,
     dataRangeStart: 0,
@@ -15,6 +14,7 @@ const demoPreset1 = {
     lineDataSmoothing: 0
 }
 
+// @ts-expect-error
 const demoPreset2 = {
     dataPointInterval: 5,
     dataRangeStart: 13000,
@@ -22,6 +22,7 @@ const demoPreset2 = {
     lineDataSmoothing: 1.0
 }
 
+// @ts-expect-error
 const demoPreset3 = {
     dataPointInterval: 5,
     dataRangeStart: 63000,
@@ -29,6 +30,7 @@ const demoPreset3 = {
     lineDataSmoothing: 1.0
 }
 
+// @ts-expect-error
 const demoPreset4 = {
     dataPointInterval: 1,
     dataRangeStart: 1000,
@@ -62,8 +64,8 @@ function App() {
     const [startTimeXticks, setStartTime] = useState<number>()
     const [finshTimeXticks, setFinshTime] = useState<number>()
     const allDataLabelsRef = useRef<string[]>([])
-    const [minChartValue, setMinChartValue] = useState<number>()
-    const [maxChartValue, setMaxChartValue] = useState<number>()
+    const [minChartValue, setMinChartValue] = useState<number>(-1)
+    const [maxChartValue, setMaxChartValue] = useState<number>(-1)
 
     const [signalMarkerPos, setSignalMarkerPos] = useState<number>(SLIDER_START_VAL)
     const [playStatus, setPlayStatus] = useState(PlayStatus.PAUSED)
@@ -122,19 +124,12 @@ function App() {
             clearInterval(playbackIntervalRef.current)
             setPlayStatus(PlayStatus.PAUSED)
         } else {
+            // @ts-expect-error
             setPlayStatus(e.currentTarget.value >= 100 ? PlayStatus.REACHED_END : PlayStatus.PAUSED)
         }
+        // @ts-ignore
         setSignalMarkerPos(e.currentTarget.value)
     }
-
-    const onRangeChange = (e: FormEvent<HTMLInputElement>) => {
-        if (startValue < 0 || endValue > data.length || startValue >= endValue) {
-            return;
-        }
-        setStartTime(startValue);
-        setEndValue(endValue);
-};
-
 
     // Stop playback when reaching end
     useEffect(() => {

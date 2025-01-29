@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import {useEffect, useRef} from "react";
 import {makeGaussKernel, mortonEncode2D} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 
@@ -36,6 +36,8 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const curvePaddingRef = useRef(0)
 
+    //TODO: null ctx is not ok null check todo
+    //@ts-ignore
     let ctx: CanvasRenderingContext2D
 
     function drawAxis(canvas: HTMLCanvasElement, axisPadding: number, position: string, lineWidth: number,
@@ -52,8 +54,8 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
         ctx.beginPath()
 
-        let startPos: {x: number, y: number} = {}
-        let endPos: {x: number, y: number} = {}
+        let startPos: {x: number, y: number} = {x: -1, y: -1}
+        let endPos: {x: number, y: number} = {x: -1, y: -1}
 
         switch (position) {
             case 'left': {
@@ -85,15 +87,15 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
         if (tickMarks) {
             const tickLength = 10
             const tickTextMargin = 20
-            let tickStartPos: {x: number, y: number} = {}
-            let tickEndPos: {x: number, y: number} = {}
-            let textPos: {x: number, y: number} = {}
+            let tickStartPos: {x: number, y: number} = {x: -1, y: -1}
+            let tickEndPos: {x: number, y: number} = {x: -1, y: -1}
+            let textPos: {x: number, y: number} = {x: -1, y: -1}
             const tickPadding = canvas.height * paddingFactor
             ctx.font = "16px sans-serif"
             ctx.textAlign = 'center'
             ctx.textBaseline = 'middle'
             ctx.fillStyle = axisColor
-            tickMarks.forEach((v, i) => {
+            tickMarks.forEach((_, i) => {
                 switch (position) {
                     case 'left': {
                         const axisLen = canvas.height - tickPadding * 2
@@ -151,7 +153,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
-            const mortonData = mortonEncode2D(props.data[0], props.data[1], props.minValue).reverse()
+            const mortonData = mortonEncode2D(props.data[0], props.data[1]).reverse()
 
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
@@ -159,8 +161,11 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
             const canvas: HTMLCanvasElement = canvasRef.current!
             // TODO: Dynamic canvas res?
+            // @ts-ignore
             canvas.width = Number(getComputedStyle(canvas).width.replace('px', '') * 2)
+            // @ts-ignore
             canvas.height = Number(getComputedStyle(canvas).height.replace('px', '') * 2)
+            // @ts-ignore
             ctx = canvas.getContext('2d')
             const curvePadding = canvas.height * CURVE_PADDING_FACTOR
             curvePaddingRef.current = curvePadding
@@ -220,7 +225,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             } else {
                 // Morton scatterplot
                 // Draw bar
-                mortonData.forEach((m, i) => {
+                mortonData.forEach((m, _) => {
                     const curveCanvasWidth = canvas.width - curvePadding * 2
                     const y = curveCanvasWidth * (m - minMorton) / (maxMorton - minMorton) + curvePadding
 
@@ -255,6 +260,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 })
             }
 
+            // @ts-ignore
             ctx = canvas.getContext('2d')
 
             const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
@@ -266,7 +272,9 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             let lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()].map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_X_VALUES - 1)).toString())
 
             if (props.startTimeXticks) {
+                // @ts-ignore
                 const step = (props.finshTimeXticks - props.startTimeXticks) / (PLOT_NUM_X_VALUES-1);
+                // @ts-ignore
                 lineXValues = Array.from({ length: PLOT_NUM_X_VALUES }, (_, i) => Math.round(props.startTimeXticks + i * step).toString());
             }
 

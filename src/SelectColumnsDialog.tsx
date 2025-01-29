@@ -1,11 +1,11 @@
-import React, {FormEvent, MutableRefObject, useEffect, useRef, useState} from "react";
+import {Dispatch, FormEvent, MutableRefObject, SetStateAction, useEffect, useState} from "react";
 import './SelectColumnsDialog.scss'
 
-export function SelectColumnsDialog(props: {show: boolean, setShow: (show: boolean) => true, dataLabelsRef:  MutableRefObject<string[]>,
+export function SelectColumnsDialog(props: {show: boolean, setShow: Dispatch<SetStateAction<boolean>>, dataLabelsRef:  MutableRefObject<string[]>,
     setDataLabels: (newLabels: string[]) => void, currentLabels: string[]}) {
     const [submittable, setSubmittable] = useState(true)
 
-    const [labelsToCheckedMap, setLabelsToCheckedMap]: Map<string, boolean> = useState(new Map())
+    const [labelsToCheckedMap, setLabelsToCheckedMap]: [Map<any, any>, Dispatch<SetStateAction<Map<any, any>>>] = useState(new Map())
 
     function init() {
         const map = new Map<string, boolean>()

@@ -1,4 +1,4 @@
-import React, {FormEvent} from "react";
+import {FormEvent} from "react";
 
 export function Slider(props: { min?: number, max?: number | undefined, onDrag: (e: FormEvent<HTMLInputElement>) => void,
     value: number }) {
