@@ -61,7 +61,7 @@ function App() {
 
     const [startValue, setStartValue] = useState(preset.dataRangeStart)
     const [endValue, setEndValue] = useState(preset.dataRangeEnd);
-    const [displayedDataLabels, setDisplayedDataLabels] = useState(['accel_trans', 'accel_down'])
+    const [displayedDataLabels, setDisplayedDataLabels] = useState(['accel_trans', 'accel_lon'])
 
     const [data, setData] = useState<number[][]>([])
     const [startTimeXticks, setStartTime] = useState<number>()
@@ -89,11 +89,11 @@ function App() {
                     .findIndex(col => col === label)
                 ).filter(index => index !== -1);
 
-                const beginTime = Number(lines[1]?.split(/;/)[0]);
-                let startTimeXticks = Number(lines[startValue + 1]?.split(/;/)[0]);
-                let finshTimeXticks = Number(endValue < lines.length ? lines[endValue + 1]?.split(/;/)[0] : undefined);
-                startTimeXticks = startTimeXticks - beginTime
-                finshTimeXticks = finshTimeXticks - beginTime
+                const beginTime = Number(lines[1]?.split(/;/)[0])*1000000+Number(lines[1]?.split(/;/)[1]);
+                let startTimeXticks = Number(lines[startValue + 1]?.split(/;/)[0])*1000000+Number(lines[startValue + 1]?.split(/;/)[1]);
+                let finshTimeXticks = Number(endValue < lines.length ? Number(lines[endValue + 1]?.split(/;/)[0])*1000000+Number(lines[endValue + 1]?.split(/;/)[1]) : undefined);
+                startTimeXticks = (startTimeXticks - beginTime)/1000000;
+                finshTimeXticks = (finshTimeXticks - beginTime)/1000000;
 
                 const newData: number[][] = []
                 let minData = Infinity
