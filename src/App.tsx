@@ -52,8 +52,6 @@ export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
 }
 
-// TODO: Improved button looks, less file fetching
-
 function App() {
     const SLIDER_START_VAL = 0
     const EXAMPLE_FILE_PATH = './opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
@@ -121,15 +119,6 @@ function App() {
                 setFinshTime(finishTimeXticks)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
-                if (displayedDataLabels === null) {
-                    setDisplayedDataLabels(dataLabels.slice(dataLabels.length - 2, dataLabels.length))
-                }
-                if (startValue === -1) {
-                    setStartValue(0)
-                }
-                if (endValue === undefined || endValue < 0) {
-                    setEndValue(lines.length - 2)
-                }
             })
         })
     }, [startValue, endValue, displayedDataLabels, filePath]);
@@ -198,12 +187,29 @@ function App() {
     function uploadFile(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.item(0)
         if (file?.type === 'text/csv') {
-            const url = URL.createObjectURL(file)
-            setFileName(file.name)
-            setFilePath(url)
-            setDisplayedDataLabels(null)
-            setStartValue(-1)
-            setEndValue(-1)
+            const reader = new FileReader();
+            reader.onload = () => {
+                const text = reader.result?.toString();
+                if (text) {
+                    const lines = text
+                        .trim()
+                        .split(/;?\n/)
+                    const dataLabels = lines[0]
+                        .split(/;/)
+                    setDisplayedDataLabels(dataLabels.slice(dataLabels.length - 2))
+                    setStartValue(0)
+                    setEndValue(lines.length - 2) // -1 due to header row
+                    const url = URL.createObjectURL(file)
+                    setFileName(file.name)
+                    setFilePath(url)
+                } else {
+                    alert("Error reading the file. Please try again.");
+                }
+            };
+            reader.onerror = () => {
+                alert("Error reading the file. Please try again.");
+            };
+            reader.readAsText(file);
         }
     }
 
