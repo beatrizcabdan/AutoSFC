@@ -21,18 +21,20 @@ html {
   --legend-border: #a8a8a8;
   --button-border: #7a7a7a;
   --light-gray: #e8e8e8;
+  --button-active: #d3d3d3;
 
   --primary-color: #4e4eff;
 }
 
 #root {
+  display: flex;
+  flex-direction: column;
   margin: 0 auto;
   text-align: center;
   justify-content: space-between;
   align-items: center;
   gap: 2.5rem;
   width: 100%;
-  flex-direction: column;
   color: var(--text-color);
 }
 
@@ -41,8 +43,7 @@ html {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1.5rem;
-  margin-top: 2rem;
+  gap: 2.5rem;
 }
 
 .charts {
@@ -130,6 +131,10 @@ html {
     background-color: var(--light-gray);
     cursor: pointer;
   }
+
+  &:active {
+    background-color: var(--button-active);
+  }
 }
 
 .play-controls {
@@ -150,12 +155,9 @@ html {
   overflow: hidden;
   background-color: var(--text-color);
   color: white;
-  top: 0;
   padding: 0 50px;
   width: 100%;
   position: sticky;
-  top: 0;
-  overflow: hidden;
 }
 
 .topnav a {
@@ -173,6 +175,7 @@ html {
 }
 
 .footer {
+  bottom: 0;
   background-color: var(--text-color);
   color: white;
   text-align: left;
