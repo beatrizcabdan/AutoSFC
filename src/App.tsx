@@ -9,6 +9,7 @@ import {Slider} from "./Slider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {UploadButton} from "./UploadButton.tsx";
+import {debounce} from "./utils.ts";
 
 const demoPreset1 = {
     dataPointInterval: 1,
@@ -77,7 +78,7 @@ function App() {
 
     const [showDialog, setShowDialog] = useState(false)
 
-    useEffect(() => {
+    const loadFile = () => {
         fetch(filePath).then(r => {
             r.text().then(t => {
                 const lines = t
@@ -90,11 +91,11 @@ function App() {
                     .findIndex(col => col === label)
                 ).filter(index => index !== -1) ?? [dataLabels.length - 2, dataLabels.length - 1]
 
-                const beginTime = Number(lines[1]?.split(/;/)[0])*1000000+Number(lines[1]?.split(/;/)[1]);
-                let startTimeXticks = Number(0 < startValue ? Number(lines[startValue + 1]?.split(/;/)[0])*1000000+Number(lines[startValue + 1]?.split(/;/)[1]) : beginTime);
-                let finishTimeXticks = Number(-1 < endValue && (endValue < lines.length -1) ? Number(lines[endValue + 1]?.split(/;/)[0])*1000000+Number(lines[endValue + 1]?.split(/;/)[1]) : Number(lines[lines.length-1]?.split(/;/)[0])*1000000+Number(lines[lines.length-1]?.split(/;/)[1]));
-                startTimeXticks = (startTimeXticks - beginTime)/1000000;
-                finishTimeXticks = (finishTimeXticks - beginTime)/1000000;
+                const beginTime = Number(lines[1]?.split(/;/)[0]) * 1000000 + Number(lines[1]?.split(/;/)[1]);
+                let startTimeXticks = Number(0 < startValue ? Number(lines[startValue + 1]?.split(/;/)[0]) * 1000000 + Number(lines[startValue + 1]?.split(/;/)[1]) : beginTime);
+                let finishTimeXticks = Number(-1 < endValue && (endValue < lines.length - 1) ? Number(lines[endValue + 1]?.split(/;/)[0]) * 1000000 + Number(lines[endValue + 1]?.split(/;/)[1]) : Number(lines[lines.length - 1]?.split(/;/)[0]) * 1000000 + Number(lines[lines.length - 1]?.split(/;/)[1]));
+                startTimeXticks = (startTimeXticks - beginTime) / 1000000;
+                finishTimeXticks = (finishTimeXticks - beginTime) / 1000000;
 
                 const newData: number[][] = []
                 let minData = Infinity
@@ -103,7 +104,7 @@ function App() {
                     const column: number[] = lines
                         .slice(1) // Skip headers
                         .slice(startValue >= 0 ? startValue : 0,
-                             endValue >= 0 ? endValue : undefined)
+                            endValue >= 0 ? endValue : undefined)
                         .map(l => l.split(/;/))
                         .map(arr => Number(arr[index]))
                         .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
@@ -121,6 +122,12 @@ function App() {
                 setMaxChartValue(maxData)
             })
         })
+    }
+
+    onresize = debounce(loadFile, 200)
+
+    useEffect(() => {
+        loadFile()
     }, [startValue, endValue, displayedDataLabels, filePath]);
 
     const onSliderDrag = (e: FormEvent<HTMLInputElement>) => {

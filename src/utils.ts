@@ -49,3 +49,13 @@ export function makeGaussKernel(sigma: number){
     }
     return kernel;
 }
+
+export function debounce(func: () => void, time: number) {
+    let timer: number | undefined;
+    return function () {
+        if (timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(func, time)
+    }
+}
