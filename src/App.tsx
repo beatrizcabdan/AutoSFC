@@ -237,7 +237,7 @@ function App() {
                     <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue}
                            type={'line'} xAxisName={'Time'}
                            yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels}
-                           startTimeXticks={startTimeXticks} finshTimeXticks={finshTimeXticks}
+                           startTimeXticks={startTimeXticks} finishTimeXticks={finshTimeXticks}
                            currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
                            onLegendClick={selectDataColumns}/>
                     <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue}
