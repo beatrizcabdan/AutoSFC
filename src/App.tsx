@@ -92,9 +92,9 @@ function App() {
 
                 const beginTime = Number(lines[1]?.split(/;/)[0])*1000000+Number(lines[1]?.split(/;/)[1]);
                 let startTimeXticks = Number(0 < startValue ? Number(lines[startValue + 1]?.split(/;/)[0])*1000000+Number(lines[startValue + 1]?.split(/;/)[1]) : beginTime);
-                let finshTimeXticks = Number(-1 < endValue && (endValue < lines.length -1) ? Number(lines[endValue + 1]?.split(/;/)[0])*1000000+Number(lines[endValue + 1]?.split(/;/)[1]) : Number(lines[lines.length-1]?.split(/;/)[0])*1000000+Number(lines[lines.length-1]?.split(/;/)[1]));
+                let finishTimeXticks = Number(-1 < endValue && (endValue < lines.length -1) ? Number(lines[endValue + 1]?.split(/;/)[0])*1000000+Number(lines[endValue + 1]?.split(/;/)[1]) : Number(lines[lines.length-1]?.split(/;/)[0])*1000000+Number(lines[lines.length-1]?.split(/;/)[1]));
                 startTimeXticks = (startTimeXticks - beginTime)/1000000;
-                finshTimeXticks = (finshTimeXticks - beginTime)/1000000;
+                finishTimeXticks = (finishTimeXticks - beginTime)/1000000;
 
                 const newData: number[][] = []
                 let minData = Infinity
@@ -116,7 +116,7 @@ function App() {
 
                 setData(newData)
                 setStartTime(startTimeXticks)
-                setFinshTime(finshTimeXticks)
+                setFinshTime(finishTimeXticks)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
             })
