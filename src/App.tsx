@@ -52,6 +52,8 @@ export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
 }
 
+// TODO: Improved button looks, less file fetching
+
 function App() {
     const [filePath, setFilePath] = useState('./opendlv.device.gps.pos.Grp1Data-0-excerpt.csv')
     const DATA_POINT_INTERVAL  = preset.dataPointInterval
@@ -79,19 +81,19 @@ function App() {
             r.text().then(t => {
                 const lines = t
                     .trim()
-                    .split(/\n/)
+                    .split(/;?\n/)
                 const dataLabels = lines[0]
                     .split(/;/)
                 allDataLabelsRef.current = dataLabels
                 const colIndices = displayedDataLabels?.map(label => dataLabels
                     .findIndex(col => col === label)
-                ).filter(index => index !== -1) ?? [0, 1]
+                ).filter(index => index !== -1) ?? [dataLabels.length - 2, dataLabels.length - 1]
 
                 const beginTime = Number(lines[1]?.split(/;/)[0]);
                 let startTimeXticks = Number(lines[startValue + 1]?.split(/;/)[0]);
-                let finshTimeXticks = Number(endValue < lines.length ? lines[endValue + 1]?.split(/;/)[0] : undefined);
+                let finishTimeXticks = Number(endValue < lines.length ? lines[endValue + 1]?.split(/;/)[0] : undefined);
                 startTimeXticks = startTimeXticks - beginTime
-                finshTimeXticks = finshTimeXticks - beginTime
+                finishTimeXticks = finishTimeXticks - beginTime
 
                 const newData: number[][] = []
                 let minData = Infinity
@@ -113,11 +115,11 @@ function App() {
 
                 setData(newData)
                 setStartTime(startTimeXticks)
-                setFinshTime(finshTimeXticks)
+                setFinshTime(finishTimeXticks)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
                 if (displayedDataLabels === null) {
-                    setDisplayedDataLabels(dataLabels.slice(0, 2))
+                    setDisplayedDataLabels(dataLabels.slice(dataLabels.length - 2, dataLabels.length))
                 }
                 if (startValue === -1) {
                     setStartValue(0)
@@ -193,8 +195,8 @@ function App() {
     function uploadFile(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.item(0)
         if (file?.type === 'text/csv') {
+            console.log(file)
             const url = URL.createObjectURL(file)
-            console.log(url)
             setFilePath(url)
             setDisplayedDataLabels(null)
             setStartValue(-1)
