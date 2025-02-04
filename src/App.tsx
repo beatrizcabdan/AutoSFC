@@ -55,9 +55,12 @@ export enum PlayStatus {
 // TODO: Improved button looks, less file fetching
 
 function App() {
-    const [filePath, setFilePath] = useState('./opendlv.device.gps.pos.Grp1Data-0-excerpt.csv')
-    const DATA_POINT_INTERVAL  = preset.dataPointInterval
     const SLIDER_START_VAL = 0
+    const EXAMPLE_FILE_PATH = './opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
+
+    const [filePath, setFilePath] = useState(EXAMPLE_FILE_PATH)
+    const [fileName, setFileName] = useState(EXAMPLE_FILE_PATH)
+    const DATA_POINT_INTERVAL  = preset.dataPointInterval
 
     const [startValue, setStartValue] = useState(preset.dataRangeStart)
     const [endValue, setEndValue] = useState(preset.dataRangeEnd);
@@ -195,8 +198,8 @@ function App() {
     function uploadFile(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.item(0)
         if (file?.type === 'text/csv') {
-            console.log(file)
             const url = URL.createObjectURL(file)
+            setFileName(file.name)
             setFilePath(url)
             setDisplayedDataLabels(null)
             setStartValue(-1)
@@ -247,7 +250,7 @@ function App() {
                         </label>
                     </div>
                 </div>
-                <UploadButton onClick={uploadFile} label={'Upload file...'}/>
+                <UploadButton onClick={uploadFile} label={'Upload file...'} currentFile={fileName.replace(/.\//, '')}/>
             </div>
             <div className="tabcontent">
             </div>
