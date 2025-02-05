@@ -62,7 +62,7 @@ function App() {
 
     const [startValue, setStartValue] = useState(preset.dataRangeStart)
     const [endValue, setEndValue] = useState(preset.dataRangeEnd);
-    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_trans', 'accel_down'])
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_trans', 'accel_lon'])
 
     const [data, setData] = useState<number[][]>([])
     const [startTimeXticks, setStartTime] = useState<number>()
@@ -90,11 +90,11 @@ function App() {
                     .findIndex(col => col === label)
                 ).filter(index => index !== -1) ?? [dataLabels.length - 2, dataLabels.length - 1]
 
-                const beginTime = Number(lines[1]?.split(/;/)[0]);
-                let startTimeXticks = Number(lines[startValue + 1]?.split(/;/)[0]);
-                let finishTimeXticks = Number(endValue < lines.length ? lines[endValue + 1]?.split(/;/)[0] : undefined);
-                startTimeXticks = startTimeXticks - beginTime
-                finishTimeXticks = finishTimeXticks - beginTime
+                const beginTime = Number(lines[1]?.split(/;/)[0])*1000000+Number(lines[1]?.split(/;/)[1]);
+                let startTimeXticks = Number(0 < startValue ? Number(lines[startValue + 1]?.split(/;/)[0])*1000000+Number(lines[startValue + 1]?.split(/;/)[1]) : beginTime);
+                let finshTimeXticks = Number(-1 < endValue && (endValue < lines.length -1) ? Number(lines[endValue + 1]?.split(/;/)[0])*1000000+Number(lines[endValue + 1]?.split(/;/)[1]) : Number(lines[lines.length-1]?.split(/;/)[0])*1000000+Number(lines[lines.length-1]?.split(/;/)[1]));
+                startTimeXticks = (startTimeXticks - beginTime)/1000000;
+                finshTimeXticks = (finshTimeXticks - beginTime)/1000000;
 
                 const newData: number[][] = []
                 let minData = Infinity
@@ -105,7 +105,7 @@ function App() {
                         .slice(startValue >= 0 ? startValue : 0,
                              endValue >= 0 ? endValue : undefined)
                         .map(l => l.split(/;/))
-                        .map(arr => Number(arr[index])) //will only work for accelerations! otherwise arr => Number(arr[index])
+                        .map(arr => Number(arr[index]))
                         .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
                     newData.push(column)
 
@@ -116,7 +116,7 @@ function App() {
 
                 setData(newData)
                 setStartTime(startTimeXticks)
-                setFinshTime(finishTimeXticks)
+                setFinshTime(finshTimeXticks)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
             })

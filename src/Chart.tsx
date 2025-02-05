@@ -273,7 +273,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
             let lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()].map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_X_VALUES - 1)).toString())
 
-            if (props.startTimeXticks) {
+            if (props.startTimeXticks !== undefined ) {
                 // @ts-ignore
                 const step = (props.finshTimeXticks - props.startTimeXticks) / (PLOT_NUM_X_VALUES-1);
                 // @ts-ignore
