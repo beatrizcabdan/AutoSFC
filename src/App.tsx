@@ -1,15 +1,15 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unused-vars,no-unused-vars */
 // noinspection JSUnusedLocalSymbols
 
 import './App.scss'
 
-import {FormEvent, useEffect, useRef, useState} from 'react';
+import {ChangeEvent, FormEvent, useEffect, useRef, useState} from 'react';
 import {Chart} from "./Chart.tsx";
 import {Slider} from "./Slider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
+import {UploadButton} from "./UploadButton.tsx";
 
-// @ts-expect-error
 const demoPreset1 = {
     dataPointInterval: 1,
     dataRangeStart: 0,
@@ -17,7 +17,6 @@ const demoPreset1 = {
     lineDataSmoothing: 0
 }
 
-// @ts-expect-error
 const demoPreset2 = {
     dataPointInterval: 5,
     dataRangeStart: 13000,
@@ -25,7 +24,6 @@ const demoPreset2 = {
     lineDataSmoothing: 1.0
 }
 
-// @ts-expect-error
 const demoPreset3 = {
     dataPointInterval: 5,
     dataRangeStart: 63000,
@@ -33,7 +31,6 @@ const demoPreset3 = {
     lineDataSmoothing: 1.0
 }
 
-// @ts-expect-error
 const demoPreset4 = {
     dataPointInterval: 1,
     dataRangeStart: 1000,
@@ -50,18 +47,22 @@ const paperPreset = {
 
 const preset = paperPreset
 
+// eslint-disable-next-line react-refresh/only-export-components
 export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
 }
 
 function App() {
-    const FILE_PATH = './opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
-    const DATA_POINT_INTERVAL  = preset.dataPointInterval
     const SLIDER_START_VAL = 0
+    const EXAMPLE_FILE_PATH = './opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
+
+    const [filePath, setFilePath] = useState(EXAMPLE_FILE_PATH)
+    const [fileName, setFileName] = useState(EXAMPLE_FILE_PATH)
+    const DATA_POINT_INTERVAL  = preset.dataPointInterval
 
     const [startValue, setStartValue] = useState(preset.dataRangeStart)
     const [endValue, setEndValue] = useState(preset.dataRangeEnd);
-    const [displayedDataLabels, setDisplayedDataLabels] = useState(['accel_trans', 'accel_lon'])
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_trans', 'accel_lon'])
 
     const [data, setData] = useState<number[][]>([])
     const [startTimeXticks, setStartTime] = useState<number>()
@@ -77,23 +78,23 @@ function App() {
     const [showDialog, setShowDialog] = useState(false)
 
     useEffect(() => {
-        fetch(FILE_PATH).then(r => {
+        fetch(filePath).then(r => {
             r.text().then(t => {
                 const lines = t
                     .trim()
-                    .split(/\n/)
+                    .split(/;?\n/)
                 const dataLabels = lines[0]
                     .split(/;/)
                 allDataLabelsRef.current = dataLabels
-                const colIndices = displayedDataLabels.map(label => dataLabels
+                const colIndices = displayedDataLabels?.map(label => dataLabels
                     .findIndex(col => col === label)
-                ).filter(index => index !== -1);
+                ).filter(index => index !== -1) ?? [dataLabels.length - 2, dataLabels.length - 1]
 
                 const beginTime = Number(lines[1]?.split(/;/)[0])*1000000+Number(lines[1]?.split(/;/)[1]);
                 let startTimeXticks = Number(0 < startValue ? Number(lines[startValue + 1]?.split(/;/)[0])*1000000+Number(lines[startValue + 1]?.split(/;/)[1]) : beginTime);
-                let finshTimeXticks = Number(-1 < endValue && (endValue < lines.length -1) ? Number(lines[endValue + 1]?.split(/;/)[0])*1000000+Number(lines[endValue + 1]?.split(/;/)[1]) : Number(lines[lines.length-1]?.split(/;/)[0])*1000000+Number(lines[lines.length-1]?.split(/;/)[1]));
+                let finishTimeXticks = Number(-1 < endValue && (endValue < lines.length -1) ? Number(lines[endValue + 1]?.split(/;/)[0])*1000000+Number(lines[endValue + 1]?.split(/;/)[1]) : Number(lines[lines.length-1]?.split(/;/)[0])*1000000+Number(lines[lines.length-1]?.split(/;/)[1]));
                 startTimeXticks = (startTimeXticks - beginTime)/1000000;
-                finshTimeXticks = (finshTimeXticks - beginTime)/1000000;
+                finishTimeXticks = (finishTimeXticks - beginTime)/1000000;
 
                 const newData: number[][] = []
                 let minData = Infinity
@@ -115,12 +116,12 @@ function App() {
 
                 setData(newData)
                 setStartTime(startTimeXticks)
-                setFinshTime(finshTimeXticks)
+                setFinshTime(finishTimeXticks)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
             })
         })
-    }, [startValue, endValue, displayedDataLabels]);
+    }, [startValue, endValue, displayedDataLabels, filePath]);
 
     const onSliderDrag = (e: FormEvent<HTMLInputElement>) => {
         if (playStatus === PlayStatus.PLAYING) {
@@ -183,6 +184,35 @@ function App() {
         setShowDialog(false)
     }
 
+    function uploadFile(e: ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.item(0)
+        if (file?.type === 'text/csv') {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const text = reader.result?.toString();
+                if (text) {
+                    const lines = text
+                        .trim()
+                        .split(/;?\n/)
+                    const dataLabels = lines[0]
+                        .split(/;/)
+                    setDisplayedDataLabels(dataLabels.slice(dataLabels.length - 2))
+                    setStartValue(0)
+                    setEndValue(lines.length - 2) // -1 due to header row
+                    const url = URL.createObjectURL(file)
+                    setFileName(file.name)
+                    setFilePath(url)
+                } else {
+                    alert("Error reading the file. Please try again.");
+                }
+            };
+            reader.onerror = () => {
+                alert("Error reading the file. Please try again.");
+            };
+            reader.readAsText(file);
+        }
+    }
+
     return (
         <>
             {/*<div className="header">*/}
@@ -226,9 +256,9 @@ function App() {
                         </label>
                     </div>
                 </div>
+                <UploadButton onClick={uploadFile} label={'Upload file...'} currentFile={fileName.replace(/.\//, '')}/>
             </div>
             <div className="tabcontent">
-
             </div>
             <div className="footer">
                 Demo of SFC encoding and barcode formation for automotive data.

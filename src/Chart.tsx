@@ -21,7 +21,7 @@ function getSmoothedData(data: number[], smoothing: number) {
 }
 
 export function Chart(props: { name: string, data: number[][], type: string, xAxisName: string, yAxisName: string,
-    yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[], currentSignalXVal: number,
+    yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[] | null, currentSignalXVal: number,
     startTimeXticks?: number, finshTimeXticks?: number, lineDataSmoothing?: number, onLegendClick?: () => void}) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
