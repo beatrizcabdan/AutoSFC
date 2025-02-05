@@ -1,3 +1,103 @@
+//HILBERT (transpiled with ChatGPT as of feb 5, 2025)
+
+function gray2binary(gray: number[]): number[] {
+    const binary = [...gray];
+
+    for (let i = 1; i < gray.length; i++) {
+        binary[i] = binary[i - 1] ^ gray[i]; // XOR previous bit with current gray bit
+    }
+    return binary;
+}
+
+export function hilbertEncode2D( locs: number[][], numDims: number, numBits: number ): number[] {
+// Convert locations to 64-bit unsigned integers and split into bytes
+  const locsUint8: number[][][] = locs.map(row =>
+    row.map(value => {
+      const bytes = new Array(8).fill(0);
+      for (let i = 0; i < 8; i++) {
+        bytes[7 - i] = (value >> (i * 8)) & 0xff; // Extract each byte
+      }
+      return bytes;
+    })
+  );
+
+  // Convert bytes to bits and truncate to `numBits`
+    let bits: number[];
+  const gray: number[][][] = locsUint8.map(row =>
+    row.map(byteArr => {
+
+        bits = byteArr.flatMap(byte =>
+            Array.from({length: 8}, (_, i) => (byte >> (7 - i)) & 1)
+        );
+      return bits.slice(-numBits); // Keep only `numBits`
+    })
+  );
+
+  // Run the Gray encoding process
+    let mask: number[];
+  for (let bit = 0; bit < numBits; bit++) {
+    for (let dim = 0; dim < numDims; dim++) {
+
+        mask = gray.map(row => row[dim][bit]);
+
+      // Invert lower bits where this bit is active
+      for (let i = 0; i < gray.length; i++) {
+        if (mask[i]) {
+          for (let j = bit + 1; j < numBits; j++) {
+            gray[i][0][j] ^= 1;
+          }
+        }
+      }
+
+      // Swap lower bits between dim and 0 where the bit is inactive
+        let swap: number;
+      for (let i = 0; i < gray.length; i++) {
+        if (!mask[i]) {
+          for (let j = bit + 1; j < numBits; j++) {
+
+              swap = gray[i][0][j] ^ gray[i][dim][j];
+            gray[i][dim][j] ^= swap;
+            gray[i][0][j] ^= swap;
+          }
+        }
+      }
+    }
+  }
+
+  // Flatten the bits array and swap axes
+  const flattened: number[][] = gray.map(row =>
+    row[0].map((_, bitIndex) => row.map(dimBits => dimBits[bitIndex])).flat()
+  );
+
+  // Convert Gray code to Binary
+  const hhBin = flattened.map(gray2binary);
+
+  // Pad back to 64-bit
+  const extraDims = 64 - numBits * numDims;
+  const padded = hhBin.map(binRow => [...Array(extraDims).fill(0), ...binRow]);
+
+  // Convert binary values into uint8 bytes
+  const hhUint8 = padded.map(binRow => {
+    const packed: number[] = [];
+    for (let i = 0; i < binRow.length; i += 8) {
+        const byte = binRow.slice(i, i + 8).reduce((acc, bit, idx) => acc + (bit << (7 - idx)), 0);
+      packed.push(byte);
+    }
+    return packed;
+  });
+
+  // Convert uint8 bytes into uint64 values
+  const hhUint64 = hhUint8.map(bytes =>
+    bytes.reduce((acc, byte, i) => acc + (BigInt(byte) << BigInt((7 - i) * 8)), BigInt(0))
+  );
+
+  const numberArray = Array.from(BigInt64Array.from(hhUint64), (value) => Number(value)); //todo: final conversion might lead to precision loss!
+
+  return numberArray;
+}
+
+//MORTON
+
 export function mortonEncode2D(xData: number[], yData: number[]) {
     const resultArr: number[] = []
     xData.forEach((x, i) => {
@@ -20,9 +120,8 @@ export function mortonEncode2D(xData: number[], yData: number[]) {
 
         const result = xn | (yn << 1n)
         // console.log(x, y, xn, yn, result)
-        // console.log(result)
 
-        resultArr.push(Number(result))
+        resultArr.push(Number(result)) //todo: final conversion might lead to precision loss!
     })
     return resultArr
 }

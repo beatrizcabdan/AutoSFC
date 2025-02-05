@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 
 import {useEffect, useRef} from "react";
-import {makeGaussKernel, mortonEncode2D} from "./utils.ts";
+import {makeGaussKernel, mortonEncode2D, hilbertEncode2D} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
@@ -156,6 +156,10 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
             const mortonData = mortonEncode2D(props.data[0], props.data[1]).reverse()
+
+            // const hilbertData = props.data[0].map((value, index) => [value, props.data[1][index]])
+            // const hilbertData = props.data[0].map((value, index) => [Math.trunc(Math.trunc((value + 10.0) * 1000000)/1000000 * 100), Math.trunc(Math.trunc((Number(props.data[1][index]) + 10.0) * 1000000)/1000000 * 100)])
+            // const mortonData = hilbertEncode2D(hilbertData, 2, 3)
 
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
