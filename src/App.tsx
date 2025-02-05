@@ -90,8 +90,8 @@ function App() {
                 ).filter(index => index !== -1);
 
                 const beginTime = Number(lines[1]?.split(/;/)[0])*1000000+Number(lines[1]?.split(/;/)[1]);
-                let startTimeXticks = Number(lines[startValue + 1]?.split(/;/)[0])*1000000+Number(lines[startValue + 1]?.split(/;/)[1]);
-                let finshTimeXticks = Number(endValue < lines.length ? Number(lines[endValue + 1]?.split(/;/)[0])*1000000+Number(lines[endValue + 1]?.split(/;/)[1]) : undefined);
+                let startTimeXticks = Number(0 < startValue ? Number(lines[startValue + 1]?.split(/;/)[0])*1000000+Number(lines[startValue + 1]?.split(/;/)[1]) : beginTime);
+                let finshTimeXticks = Number(-1 < endValue && (endValue < lines.length -1) ? Number(lines[endValue + 1]?.split(/;/)[0])*1000000+Number(lines[endValue + 1]?.split(/;/)[1]) : Number(lines[lines.length-1]?.split(/;/)[0])*1000000+Number(lines[lines.length-1]?.split(/;/)[1]));
                 startTimeXticks = (startTimeXticks - beginTime)/1000000;
                 finshTimeXticks = (finshTimeXticks - beginTime)/1000000;
 
@@ -104,7 +104,7 @@ function App() {
                         .slice(startValue >= 0 ? startValue : 0,
                              endValue >= 0 ? endValue : undefined)
                         .map(l => l.split(/;/))
-                        .map(arr => Number(arr[index])) //will only work for accelerations! otherwise arr => Number(arr[index])
+                        .map(arr => Number(arr[index]))
                         .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
                     newData.push(column)
 
