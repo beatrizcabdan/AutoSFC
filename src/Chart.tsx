@@ -214,7 +214,6 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 if (longestLabelNum.length > MAX_Y_AXIS_DIGITS) {
                     yTickMarks = lineYValues.map(n => n.toExponential(1))
                     leftExtraPadding = LINE_CHART_LEFT_AXIS_EXTRA_PADDING
-                    console.log(yTickMarks)
                 }
             }
 
