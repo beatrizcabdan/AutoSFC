@@ -88,7 +88,7 @@ function App() {
                 if (!allDataLabelsRef.current || allDataLabelsRef.current.length === 0) {
                     dataLabels = lines[0]
                         .split(/;/)
-                    appendNumbersToLabels(dataLabels)
+                    formatDataLabels(dataLabels)
                     allDataLabelsRef.current = dataLabels
                 } else {
                     dataLabels = allDataLabelsRef.current
@@ -198,7 +198,7 @@ function App() {
     }
 
     // Only append to duplicates
-    function appendNumbersToLabels(dataLabels: string[]) {
+    function formatDataLabels(dataLabels: string[]) {
         const dataLabelsSet = new Set<string>(dataLabels)
         dataLabelsSet.forEach(l1 => {
             const numInstances = dataLabels.filter(l2 => l1 === l2).length
@@ -225,7 +225,7 @@ function App() {
                         .split(/;?\n/)
                     const dataLabels = lines[0]
                         .split(/;/)
-                    appendNumbersToLabels(dataLabels);
+                    formatDataLabels(dataLabels);
                     allDataLabelsRef.current = dataLabels
 
                     setDisplayedDataLabels(dataLabels.slice(dataLabels.length - 2))
