@@ -236,7 +236,7 @@ function App() {
                 <div className={'charts'}>
                     <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue}
                            type={'line'} xAxisName={'Time'}
-                           yAxisName={'Acceleration'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels}
+                           yAxisName={'Signal'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels}
                            startTimeXticks={startTimeXticks} finshTimeXticks={finshTimeXticks}
                            currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
                            onLegendClick={selectDataColumns}/>
