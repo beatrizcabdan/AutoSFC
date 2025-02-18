@@ -86,6 +86,7 @@ function App() {
                     .split(/;?\n/)
                 const dataLabels = lines[0]
                     .split(/;/)
+                appendNumbersToLabels(dataLabels)
                 allDataLabelsRef.current = dataLabels
                 const colIndices = displayedDataLabels?.map(label => dataLabels
                     .findIndex(col => col === label)
@@ -191,6 +192,22 @@ function App() {
         setShowDialog(false)
     }
 
+    // Only append to duplicates
+    function appendNumbersToLabels(dataLabels: string[]) {
+        const dataLabelsSet = new Set<string>(dataLabels)
+        dataLabelsSet.forEach(l1 => {
+            const numInstances = dataLabels.filter(l2 => l1 === l2).length
+            if (numInstances > 1) {
+                let index = 1
+                for (let i = 0; i < dataLabels.length; i++) {
+                    if (dataLabels[i] === l1) {
+                        dataLabels[i] = `${l1}_${index++}`
+                    }
+                }
+            }
+        })
+    }
+
     function uploadFile(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.item(0)
         if (file?.type === 'text/csv') {
@@ -203,6 +220,9 @@ function App() {
                         .split(/;?\n/)
                     const dataLabels = lines[0]
                         .split(/;/)
+                    appendNumbersToLabels(dataLabels);
+                    allDataLabelsRef.current = dataLabels
+
                     setDisplayedDataLabels(dataLabels.slice(dataLabels.length - 2))
                     setStartValue(0)
                     setEndValue(lines.length - 2) // -1 due to header row
