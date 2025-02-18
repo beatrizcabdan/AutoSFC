@@ -84,10 +84,15 @@ function App() {
                 const lines = t
                     .trim()
                     .split(/;?\n/)
-                const dataLabels = lines[0]
-                    .split(/;/)
-                appendNumbersToLabels(dataLabels)
-                allDataLabelsRef.current = dataLabels
+                let dataLabels: string[]
+                if (!allDataLabelsRef.current || allDataLabelsRef.current.length === 0) {
+                    dataLabels = lines[0]
+                        .split(/;/)
+                    appendNumbersToLabels(dataLabels)
+                    allDataLabelsRef.current = dataLabels
+                } else {
+                    dataLabels = allDataLabelsRef.current
+                }
                 const colIndices = displayedDataLabels?.map(label => dataLabels
                     .findIndex(col => col === label)
                 ).filter(index => index !== -1) ?? [dataLabels.length - 2, dataLabels.length - 1]
