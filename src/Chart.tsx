@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 
 import {useEffect, useRef} from "react";
-import {makeGaussKernel, mortonEncode2D, hilbertEncode2D} from "./utils.ts";
+import {makeGaussKernel, mortonEncode2D} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
@@ -22,11 +22,14 @@ function getSmoothedData(data: number[], smoothing: number) {
 
 export function Chart(props: { name: string, data: number[][], type: string, xAxisName: string, yAxisName: string,
     yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[] | null, currentSignalXVal: number,
-    startTimeXticks?: number, finshTimeXticks?: number, lineDataSmoothing?: number, onLegendClick?: () => void}) {
+    startTimeXticks?: number, finishTimeXticks?: number, lineDataSmoothing?: number, onLegendClick?: () => void}) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
     const AXIS_PADDING_FACTOR = 0.07
     const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.04
+    const LEFT_AXIS_EXTRA_PADDING = 10
+    const LINE_CHART_LEFT_AXIS_EXTRA_PADDING = 50
+    const MAX_Y_AXIS_DIGITS = 4
 
     const LINE_WIDTH = 4
     const MARKER_RADIUS = 12
@@ -43,10 +46,10 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     let ctx: CanvasRenderingContext2D
 
     function drawAxis(canvas: HTMLCanvasElement, axisPadding: number, position: string, lineWidth: number,
-                      tickMarks?: string[], paddingFactor = CURVE_PADDING_FACTOR) {
-        const ulCorner = {x: axisPadding, y: axisPadding}
+                      tickMarks?: string[], tickPaddingFactor = CURVE_PADDING_FACTOR, leftExtraPadding: number = 10) {
+        const ulCorner = {x: axisPadding + leftExtraPadding, y: axisPadding}
         const urCorner = {x: canvas.width - axisPadding, y: axisPadding}
-        const blCorner = {x: axisPadding, y: canvas.height - axisPadding}
+        const blCorner = {x: axisPadding + leftExtraPadding, y: canvas.height - axisPadding}
         const brCorner = {x: canvas.width - axisPadding, y: canvas.height - axisPadding}
 
         ctx.lineWidth = lineWidth
@@ -92,25 +95,25 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             let tickStartPos: {x: number, y: number} = {x: -1, y: -1}
             let tickEndPos: {x: number, y: number} = {x: -1, y: -1}
             let textPos: {x: number, y: number} = {x: -1, y: -1}
-            const tickPadding = canvas.height * paddingFactor
-            ctx.font = "16px sans-serif"
+            const tickPadding = canvas.height * tickPaddingFactor
             ctx.textAlign = 'center'
             ctx.textBaseline = 'middle'
             ctx.fillStyle = axisColor
+
             tickMarks.forEach((_, i) => {
                 switch (position) {
                     case 'left': {
                         const axisLen = canvas.height - tickPadding * 2
                         const intervalLen = axisLen / (tickMarks.length - 1)
-                        tickStartPos = {x: axisPadding, y: canvas.height - tickPadding - intervalLen * i}
+                        tickStartPos = {x: axisPadding + leftExtraPadding, y: canvas.height - tickPadding - intervalLen * i}
                         tickEndPos = {x: tickStartPos.x - tickLength, y: tickStartPos.y}
                         textPos = {x: tickEndPos.x - tickTextMargin, y: tickEndPos.y}
                         break
                     }
                     case 'bottom': {
-                        const axisWidth = canvas.width - tickPadding * 2
+                        const axisWidth = canvas.width - tickPadding * 2 - leftExtraPadding
                         const intervalLen = axisWidth / (tickMarks.length - 1)
-                        tickStartPos = {x: tickPadding + intervalLen * i, y: canvas.height - axisPadding}
+                        tickStartPos = {x: tickPadding + intervalLen * i + leftExtraPadding, y: canvas.height - axisPadding}
                         tickEndPos = {x: tickStartPos.x, y: tickStartPos.y + tickLength}
                         textPos = {x: tickEndPos.x, y: tickEndPos.y + tickTextMargin}
                         break
@@ -126,8 +129,8 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                     case 'top': {}
                 }
 
-                ctx.font = '30px Times';
-                ctx.fillText(tickMarks[i], textPos.x, textPos.y)
+                ctx.font = '24px sans-serif';
+                ctx.fillText(tickMarks[i], textPos.x - (position === 'left' ? leftExtraPadding * 0.5 : 0), textPos.y)
 
                 ctx.lineWidth = 1
                 ctx.strokeStyle = axisColor
@@ -141,12 +144,12 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
         }
     }
 
-    function getLineX(i: number, canvas: HTMLCanvasElement, padding: number) {
-        return (i / (props.data[0].length - 1)) * (canvas.width - padding * 2) + padding;
+    function getLineX(i: number, canvas: HTMLCanvasElement, padding: number, leftExtraPadding: number) {
+        return (i / (props.data[0].length - 1)) * (canvas.width - padding * 2 - leftExtraPadding) + padding + leftExtraPadding;
     }
 
     function getScatterX(i: number, canvas: HTMLCanvasElement, padding: number) {
-        return (i / (props.data[0].length - 1)) * (canvas.height - padding * 2) + padding;
+        return (i / (props.data[0].length - 1)) * (canvas.height - padding * 2) + padding
     }
 
     function getLineY(canvas: HTMLCanvasElement, curvePadding: number, point: number) {
@@ -156,10 +159,6 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
             const mortonData = mortonEncode2D(props.data[0], props.data[1]).reverse()
-
-            // const hilbertData = props.data[0].map((value, index) => [value, props.data[1][index]])
-            // const hilbertData = props.data[0].map((value, index) => [Math.trunc(Math.trunc((value + 10.0) * 1000000)/1000000 * 100), Math.trunc(Math.trunc((Number(props.data[1][index]) + 10.0) * 1000000)/1000000 * 100)])
-            // const mortonData = hilbertEncode2D(hilbertData, 2, 3)
 
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
@@ -181,6 +180,44 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             const columns: number[][] = []
             const markerIndex = Math.floor((props.data[0].length - 1) * props.currentSignalXVal / 100)
 
+            const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
+            const mortonXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
+                .map(i => (i * (maxMorton - minMorton) / (PLOT_NUM_X_VALUES - 1) + minMorton).toExponential(1))
+            const mortonRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
+                .map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_Y_VALUES - 1)).toString())
+
+            let lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()].map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_X_VALUES - 1)).toString())
+
+            if (props.startTimeXticks !== undefined ) {
+                // @ts-ignore
+                const step = (props.finishTimeXticks - props.startTimeXticks) / (PLOT_NUM_X_VALUES-1);
+                // @ts-ignore
+                lineXValues = Array.from({ length: PLOT_NUM_X_VALUES }, (_, i) => Math.round(props.startTimeXticks + i * step).toString());
+            }
+
+            const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
+
+            const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
+                .map(i => props.minValue + i * (props.maxValue - props.minValue) / (PLOT_NUM_Y_VALUES - 1))
+
+            const leftTickPaddingFactor = props.type === 'line' ? CURVE_PADDING_FACTOR : AXIS_PADDING_FACTOR
+            let leftExtraPadding = LEFT_AXIS_EXTRA_PADDING
+
+            let yTickMarks: string[]
+
+            if (props.type === 'scatter') {
+                yTickMarks = mortonLeftYValues.map(n => n.toFixed(1))
+            } else {
+                yTickMarks = lineYValues.map(n => n.toFixed(1))
+                const longestLabelNum = [...yTickMarks].sort((a, b) =>
+                    b.length - a.length)[0]
+                if (longestLabelNum.length > MAX_Y_AXIS_DIGITS) {
+                    yTickMarks = lineYValues.map(n => n.toExponential(1))
+                    leftExtraPadding = LINE_CHART_LEFT_AXIS_EXTRA_PADDING
+                    console.log(yTickMarks)
+                }
+            }
+
             if (props.type == 'line') {
                 props.data.forEach((column, i) => {
                     // Draw lines
@@ -192,7 +229,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                         : column
                     columns.push(smoothedData)
                     smoothedData.forEach((point, i) => {
-                        const x = getLineX(i, canvas, curvePadding)
+                        const x = getLineX(i, canvas, curvePadding, leftExtraPadding)
                         const y = getLineY(canvas, curvePadding, point)
                         if (i === 0) {
                             ctx.moveTo(x, y)
@@ -205,7 +242,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
                 // Draw markers
                 columns.forEach((column, i) => {
-                    const x = getLineX(markerIndex, canvas, curvePadding)
+                    const x = getLineX(markerIndex, canvas, curvePadding, leftExtraPadding)
                     const y = getLineY(canvas, curvePadding, column[markerIndex])
 
                     // Outline + shadow
@@ -232,8 +269,8 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 // Morton scatterplot
                 // Draw bar
                 mortonData.forEach((m) => {
-                    const curveCanvasWidth = canvas.width - curvePadding * 2
-                    const y = curveCanvasWidth * (m - minMorton) / (maxMorton - minMorton) + curvePadding
+                    const curveCanvasWidth = canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING
+                    const y = curveCanvasWidth * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
 
                     const barX = y - MORTON_BAR_WIDTH / 2
                     const signalX = curveCanvasWidth * (mortonData[mortonData.length - 1 - markerIndex] - minMorton)
@@ -254,7 +291,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 // Draw points
                 mortonData.forEach((m, i) => {
                     const x = getScatterX(i, canvas, curvePadding)
-                    const y = (canvas.width - curvePadding * 2) * (m - minMorton) / (maxMorton - minMorton) + curvePadding
+                    const y = (canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING) * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
                         // Draw point
                         ctx.fillStyle = 'black'
                         ctx.beginPath();
@@ -269,33 +306,10 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             // @ts-ignore
             ctx = canvas.getContext('2d')
 
-            const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
-            const mortonXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
-                .map(i => (i * (maxMorton - minMorton) / (PLOT_NUM_X_VALUES - 1) + minMorton).toExponential(1))
-            const mortonRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
-                .map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_Y_VALUES - 1)).toString())
-
-            let lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()].map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_X_VALUES - 1)).toString())
-
-            if (props.startTimeXticks !== undefined ) {
-                // @ts-ignore
-                const step = (props.finshTimeXticks - props.startTimeXticks) / (PLOT_NUM_X_VALUES-1);
-                // @ts-ignore
-                lineXValues = Array.from({ length: PLOT_NUM_X_VALUES }, (_, i) => Math.round(props.startTimeXticks + i * step).toString());
-            }
-
-            const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
-
-            const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
-                .map(i => props.minValue + i * (props.maxValue - props.minValue) / (PLOT_NUM_Y_VALUES - 1))
-            const yTickMarks = props.type === 'scatter' ? mortonLeftYValues : lineYValues
-
-            const leftPaddingFactor = props.type === 'line' ? CURVE_PADDING_FACTOR : AXIS_PADDING_FACTOR
-
-            drawAxis(canvas, axisPadding, 'left', 2, yTickMarks.map(n => n.toFixed(1)), leftPaddingFactor)
-            drawAxis(canvas, axisPadding, 'bottom', 2, xTickMarks)
-            drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [])
-            drawAxis(canvas, axisPadding, 'top', 2)
+            drawAxis(canvas, axisPadding, 'left', 2, yTickMarks, leftTickPaddingFactor, leftExtraPadding)
+            drawAxis(canvas, axisPadding, 'bottom', 2, xTickMarks, undefined, leftExtraPadding)
+            drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [], CURVE_PADDING_FACTOR, leftExtraPadding)
+            drawAxis(canvas, axisPadding, 'top', 2, undefined, undefined, leftExtraPadding)
         }
     }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal]);
 
