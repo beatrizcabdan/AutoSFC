@@ -47,7 +47,14 @@ const paperPreset = {
     lineDataSmoothing: 0
 }
 
-const preset = paperPreset
+const demoPreset5 = {
+    dataPointInterval: 1,
+    dataRangeStart: 0,
+    dataRangeEnd: 236,
+    lineDataSmoothing: 0
+}
+
+const preset = demoPreset5
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum PlayStatus {
@@ -56,7 +63,7 @@ export enum PlayStatus {
 
 function App() {
     const SLIDER_START_VAL = 0
-    const EXAMPLE_FILE_PATH = './opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
+    const EXAMPLE_FILE_PATH = './emergency_braking.csv'
 
     const [filePath, setFilePath] = useState(EXAMPLE_FILE_PATH)
     const [fileName, setFileName] = useState(EXAMPLE_FILE_PATH)
@@ -66,7 +73,7 @@ function App() {
     const [startLine, setStartLine] = useState(preset.dataRangeStart)
     const [endLine, setEndLine] = useState(preset.dataRangeEnd)
 
-    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_trans', 'accel_lon'])
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_y', 'accel_z'])
 
     const [data, setData] = useState<number[][]>([])
     const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
@@ -202,6 +209,9 @@ function App() {
 
     // Only append to duplicates
     function formatDataLabels(dataLabels: string[]) {
+        for (let i = 0; i < dataLabels.length; i++) {
+            dataLabels[i] = dataLabels[i].replace('\r', '')
+        }
         const dataLabelsSet = new Set<string>(dataLabels)
         dataLabelsSet.forEach(l1 => {
             const numInstances = dataLabels.filter(l2 => l1 === l2).length
