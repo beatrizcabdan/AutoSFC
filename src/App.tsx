@@ -140,16 +140,15 @@ function App() {
         loadFile()
     }, [startLine, endLine, displayedDataLabels, filePath]);
 
-    const onSliderDrag = (e: FormEvent<HTMLInputElement>) => {
+    const onSliderDrag = (e: Event, value: number | number[]) => {
         if (playStatus === PlayStatus.PLAYING) {
             clearInterval(playbackIntervalRef.current)
             setPlayStatus(PlayStatus.PAUSED)
         } else {
-            // @ts-expect-error
-            setPlayStatus(e.currentTarget.value >= 100 ? PlayStatus.REACHED_END : PlayStatus.PAUSED)
+            setPlayStatus((value as number) >= 100 ? PlayStatus.REACHED_END : PlayStatus.PAUSED)
         }
         // @ts-ignore
-        setSignalMarkerPos(e.currentTarget.value)
+        setSignalMarkerPos(value as number)
     }
 
     // Stop playback when reaching end
