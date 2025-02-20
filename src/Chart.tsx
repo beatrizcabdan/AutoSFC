@@ -179,7 +179,6 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
             const columns: number[][] = []
             const markerIndex = Math.floor((props.data[0].length - 1) * props.currentSignalXVal / 100)
-            console.log(markerIndex)
 
             const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
             const mortonXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
