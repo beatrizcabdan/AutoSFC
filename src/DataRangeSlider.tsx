@@ -1,4 +1,5 @@
 import {Slider} from "@mui/material";
+import './DataRangeSlider.scss'
 
 export function DataRangeSlider(props: {
     dataRangeChartStart: number, dataRangeChartEnd: number, numLines: number,
