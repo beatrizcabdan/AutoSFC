@@ -179,6 +179,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
             // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
             const columns: number[][] = []
             const markerIndex = Math.floor((props.data[0].length - 1) * props.currentSignalXVal / 100)
+            console.log(markerIndex)
 
             const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
             const mortonXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
@@ -291,14 +292,14 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
                 mortonData.forEach((m, i) => {
                     const x = getScatterX(i, canvas, curvePadding)
                     const y = (canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING) * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
-                        // Draw point
-                        ctx.fillStyle = 'black'
-                        ctx.beginPath();
-                        ctx.lineWidth = 0.5
-                        // noinspection JSSuspiciousNameCombination
-                        ctx.arc(y, x, Math.floor(MORTON_PIXEL_DIAM / 2), 0, 2 * Math.PI);
-                        ctx.fill()
-                        ctx.closePath()
+                    // Draw point
+                    ctx.fillStyle = (mortonData.length - i) <= markerIndex ? 'black' : 'transparent'
+                    ctx.beginPath();
+                    ctx.lineWidth = 0.5
+                    // noinspection JSSuspiciousNameCombination
+                    ctx.arc(y, x, Math.floor(MORTON_PIXEL_DIAM / 2), 0, 2 * Math.PI);
+                    ctx.fill()
+                    ctx.closePath()
                 })
             }
 

@@ -3,7 +3,7 @@
 
 import './App.scss'
 
-import {ChangeEvent, FormEvent, useEffect, useRef, useState} from 'react';
+import {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {Chart} from "./Chart.tsx";
 import {PlaySlider} from "./PlaySlider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
