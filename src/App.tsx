@@ -288,27 +288,30 @@ function App() {
                            type={'scatter'} xAxisName={'Morton'}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
                 </div>
-                <div className={'play-controls'}>
-                    <PlayButton onClick={onPlayClick} status={playStatus}/>
-                    <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
-
-                    <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
-                                     numLines={dataNumLines} onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
-                    <div className={'input-controls'}>
-                        <label>
-                            Start row:
-                            <input type="number" value={startLine}
-                                   onChange={(e) => setStartLine(Number(e.target.value))}/>
-                        </label>
-                        &nbsp;
-                        <label>
-                            End row:
-                            <input type="number" value={endLine}
-                                   onChange={(e) => setEndLine(Number(e.target.value))}/>
-                        </label>
+                <div className={'controls'}>
+                    <div className={'control-container'}>
+                        <PlayButton onClick={onPlayClick} status={playStatus}/>
+                        <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
                     </div>
+                    <div className={'control-container'}>
+                        <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
+                                         numLines={dataNumLines} onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
+                        <div className={'text-controls'}>
+                            <label>
+                                Start row:
+                                <input type="number" value={startLine}
+                                       onChange={(e) => setStartLine(Number(e.target.value))}/>
+                            </label>
+                            &nbsp;
+                            <label>
+                                End row:
+                                <input type="number" value={endLine}
+                                       onChange={(e) => setEndLine(Number(e.target.value))}/>
+                            </label>
+                        </div>
+                    </div>
+                    <UploadButton onClick={uploadFile} label={'Upload file...'} currentFile={fileName.replace(/.\//, '')}/>
                 </div>
-                <UploadButton onClick={uploadFile} label={'Upload file...'} currentFile={fileName.replace(/.\//, '')}/>
             </div>
             <div className="tabcontent">
             </div>
