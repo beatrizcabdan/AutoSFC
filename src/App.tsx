@@ -5,11 +5,12 @@ import './App.scss'
 
 import {ChangeEvent, FormEvent, useEffect, useRef, useState} from 'react';
 import {Chart} from "./Chart.tsx";
-import {Slider} from "./Slider.tsx";
+import {PlaySlider} from "./PlaySlider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {UploadButton} from "./UploadButton.tsx";
 import {debounce} from "./utils.ts";
+import {DataRangeSlider} from "./DataRangeSlider.tsx";
 
 const demoPreset1 = {
     dataPointInterval: 1,
@@ -46,7 +47,14 @@ const paperPreset = {
     lineDataSmoothing: 0
 }
 
-const preset = paperPreset
+const demoPreset5 = {
+    dataPointInterval: 1,
+    dataRangeStart: 0,
+    dataRangeEnd: 236,
+    lineDataSmoothing: 0
+}
+
+const preset = demoPreset5
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum PlayStatus {
@@ -55,19 +63,21 @@ export enum PlayStatus {
 
 function App() {
     const SLIDER_START_VAL = 0
-    const EXAMPLE_FILE_PATH = './opendlv.device.gps.pos.Grp1Data-0-excerpt.csv'
+    const EXAMPLE_FILE_PATH = './emergency_braking.csv'
 
     const [filePath, setFilePath] = useState(EXAMPLE_FILE_PATH)
     const [fileName, setFileName] = useState(EXAMPLE_FILE_PATH)
     const DATA_POINT_INTERVAL  = preset.dataPointInterval
 
-    const [startValue, setStartValue] = useState(preset.dataRangeStart)
-    const [endValue, setEndValue] = useState(preset.dataRangeEnd);
-    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_trans', 'accel_lon'])
+    const [dataNumLines, setDataNumLines] = useState(-1)
+    const [startLine, setStartLine] = useState(preset.dataRangeStart)
+    const [endLine, setEndLine] = useState(preset.dataRangeEnd)
+
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_y', 'accel_z'])
 
     const [data, setData] = useState<number[][]>([])
-    const [startTimeXticks, setStartTime] = useState<number>()
-    const [finshTimeXticks, setFinshTime] = useState<number>()
+    const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
+    const [finishTimeXTicks, setFinishTimeXTicks] = useState<number>()
     const allDataLabelsRef = useRef<string[]>([])
     const [minChartValue, setMinChartValue] = useState<number>(-1)
     const [maxChartValue, setMaxChartValue] = useState<number>(-1)
@@ -98,10 +108,10 @@ function App() {
                 ).filter(index => index !== -1) ?? [dataLabels.length - 2, dataLabels.length - 1]
 
                 const beginTime = Number(lines[1]?.split(/;/)[0]) * 1000000 + Number(lines[1]?.split(/;/)[1]);
-                let startTimeXticks = Number(0 < startValue ? Number(lines[startValue + 1]?.split(/;/)[0]) * 1000000 + Number(lines[startValue + 1]?.split(/;/)[1]) : beginTime);
-                let finishTimeXticks = Number(-1 < endValue && (endValue < lines.length - 1) ? Number(lines[endValue + 1]?.split(/;/)[0]) * 1000000 + Number(lines[endValue + 1]?.split(/;/)[1]) : Number(lines[lines.length - 1]?.split(/;/)[0]) * 1000000 + Number(lines[lines.length - 1]?.split(/;/)[1]));
-                startTimeXticks = (startTimeXticks - beginTime) / 1000000;
-                finishTimeXticks = (finishTimeXticks - beginTime) / 1000000;
+                let startTimeXTicks = Number(0 < startLine ? Number(lines[startLine + 1]?.split(/;/)[0]) * 1000000 + Number(lines[startLine + 1]?.split(/;/)[1]) : beginTime);
+                let finishTimeXTicks = Number(-1 < endLine && (endLine < lines.length - 1) ? Number(lines[endLine + 1]?.split(/;/)[0]) * 1000000 + Number(lines[endLine + 1]?.split(/;/)[1]) : Number(lines[lines.length - 1]?.split(/;/)[0]) * 1000000 + Number(lines[lines.length - 1]?.split(/;/)[1]));
+                startTimeXTicks = (startTimeXTicks - beginTime) / 1000000;
+                finishTimeXTicks = (finishTimeXTicks - beginTime) / 1000000;
 
                 const newData: number[][] = []
                 let minData = Infinity
@@ -109,8 +119,8 @@ function App() {
                 colIndices.forEach(index => {
                     const column: number[] = lines
                         .slice(1) // Skip headers
-                        .slice(startValue >= 0 ? startValue : 0,
-                            endValue >= 0 ? endValue : undefined)
+                        .slice(startLine >= 0 ? startLine : 0,
+                            endLine >= 0 ? endLine : undefined)
                         .map(l => l.split(/;/))
                         .map(arr => Number(arr[index]))
                         .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
@@ -122,10 +132,11 @@ function App() {
                 })
 
                 setData(newData)
-                setStartTime(startTimeXticks)
-                setFinshTime(finishTimeXticks)
+                setStartTimeXTicks(startTimeXTicks)
+                setFinishTimeXTicks(finishTimeXTicks)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
+                setDataNumLines(lines.length - 1)
             })
         })
     }
@@ -134,18 +145,17 @@ function App() {
 
     useEffect(() => {
         loadFile()
-    }, [startValue, endValue, displayedDataLabels, filePath]);
+    }, [startLine, endLine, displayedDataLabels, filePath]);
 
-    const onSliderDrag = (e: FormEvent<HTMLInputElement>) => {
+    const onSliderDrag = (e: Event, value: number | number[]) => {
         if (playStatus === PlayStatus.PLAYING) {
             clearInterval(playbackIntervalRef.current)
             setPlayStatus(PlayStatus.PAUSED)
         } else {
-            // @ts-expect-error
-            setPlayStatus(e.currentTarget.value >= 100 ? PlayStatus.REACHED_END : PlayStatus.PAUSED)
+            setPlayStatus((value as number) >= 100 ? PlayStatus.REACHED_END : PlayStatus.PAUSED)
         }
         // @ts-ignore
-        setSignalMarkerPos(e.currentTarget.value)
+        setSignalMarkerPos(value as number)
     }
 
     // Stop playback when reaching end
@@ -199,6 +209,9 @@ function App() {
 
     // Only append to duplicates
     function formatDataLabels(dataLabels: string[]) {
+        for (let i = 0; i < dataLabels.length; i++) {
+            dataLabels[i] = dataLabels[i].replace('\r', '')
+        }
         const dataLabelsSet = new Set<string>(dataLabels)
         dataLabelsSet.forEach(l1 => {
             const numInstances = dataLabels.filter(l2 => l1 === l2).length
@@ -229,8 +242,8 @@ function App() {
                     allDataLabelsRef.current = dataLabels
 
                     setDisplayedDataLabels(dataLabels.slice(dataLabels.length - 2))
-                    setStartValue(0)
-                    setEndValue(lines.length - 2) // -1 due to header row
+                    setStartLine(0)
+                    setEndLine(lines.length - 2) // -1 due to header row
                     const url = URL.createObjectURL(file)
                     setFileName(file.name)
                     setFilePath(url)
@@ -243,6 +256,11 @@ function App() {
             };
             reader.readAsText(file);
         }
+    }
+
+    function onZoomSliderChange(_: Event, newValue: number[] | number) {
+        setStartLine((newValue as number[])[0])
+        setEndLine((newValue as number[])[1])
     }
 
     return (
@@ -265,7 +283,7 @@ function App() {
                     <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue}
                            type={'line'} xAxisName={'Time'}
                            yAxisName={'Signal'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels}
-                           startTimeXticks={startTimeXticks} finishTimeXticks={finshTimeXticks}
+                           startTimeXticks={startTimeXTicks} finishTimeXticks={finishTimeXTicks}
                            currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
                            onLegendClick={selectDataColumns}/>
                     <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue}
@@ -273,25 +291,30 @@ function App() {
                            type={'scatter'} xAxisName={'Morton'}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
                 </div>
-                <div className={'play-controls'}>
-                    <PlayButton onClick={onPlayClick} status={playStatus}/>
-                    <Slider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
-
-                    <div className={'input-controls'}>
-                        <label>
-                            Start Value:
-                            <input type="number" value={startValue}
-                                   onChange={(e) => setStartValue(Number(e.target.value))}/>
-                        </label>
-                        &nbsp;
-                        <label>
-                            End Value:
-                            <input type="number" value={endValue}
-                                   onChange={(e) => setEndValue(Number(e.target.value))}/>
-                        </label>
+                <div className={'controls'}>
+                    <div className={'control-container'}>
+                        <PlayButton onClick={onPlayClick} status={playStatus}/>
+                        <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
                     </div>
+                    <div className={'control-container'}>
+                        <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
+                                         numLines={dataNumLines} onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
+                        <div className={'text-controls'}>
+                            <label>
+                                Start row:
+                                <input type="number" value={startLine}
+                                       onChange={(e) => setStartLine(Number(e.target.value))}/>
+                            </label>
+                            &nbsp;
+                            <label>
+                                End row:
+                                <input type="number" value={endLine}
+                                       onChange={(e) => setEndLine(Number(e.target.value))}/>
+                            </label>
+                        </div>
+                    </div>
+                    <UploadButton onClick={uploadFile} label={'Upload file...'} currentFile={fileName.replace(/.\//, '')}/>
                 </div>
-                <UploadButton onClick={uploadFile} label={'Upload file...'} currentFile={fileName.replace(/.\//, '')}/>
             </div>
 
             <div className="tabcontent" id={'work'}>
@@ -393,7 +416,6 @@ function App() {
 
                 <p>At ille pellit, qui permulcet sensum voluptate. Bork Haec igitur Epicuri non probo, inquam. </p>
             </div>
-
             <div className="footer">
                 Demo of SFC encoding and barcode formation for automotive data.
             </div>
