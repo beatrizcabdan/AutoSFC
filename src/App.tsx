@@ -247,16 +247,19 @@ function App() {
 
     return (
         <>
-            {/*<div className="header">*/}
-            {/*    <h2 className="header-text"></h2>*/}
-            {/*    <img src="assets/logo1.png" alt="AutoSFC logo" className="header-img"/>*/}
-            {/*</div>*/}
+            <div className="landing-section">
+                <img src="public/logo2.png" alt="AutoSFC logo" className="header-img"/>
+                <p>AutoSFC is a web-based demo for the research-activities around the usage of Space-Filling Curves
+                    (SFC) for encoding and reducing the dimensionality of automotive data.</p>
+            </div>
+
             <div className="topnav">
-            <a className="active" href="#demo">Demo</a>
+                <a className="active" href="#main">Demo</a>
                 <a href="#work">Previous work</a>
                 <a href="#contact">Contact</a>
                 <a href="#about">About SFCs</a>
             </div>
+
             <div id={'main'}>
                 <div className={'charts'}>
                     <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue}
@@ -290,8 +293,107 @@ function App() {
                 </div>
                 <UploadButton onClick={uploadFile} label={'Upload file...'} currentFile={fileName.replace(/.\//, '')}/>
             </div>
-            <div className="tabcontent">
+
+            <div className="tabcontent" id={'work'}>
+                <h1>Previous work using Space-Filling Curves (SFCs)</h1>
+
+                <div className="papers-container">
+                    <div className="paper-block">
+                        <h2 className="paper-title">Paper Title 1</h2>
+                        <p className="paper-description">
+                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                        </p>
+                        <div className="paper-buttons">
+                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button">More info</button>
+                        </div>
+                    </div>
+                    <div className="paper-block">
+                        <h2 className="paper-title">Paper Title 1</h2>
+                        <p className="paper-description">
+                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                        </p>
+                        <div className="paper-buttons">
+                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button">More info</button>
+                        </div>
+                    </div>
+                    <div className="paper-block">
+                        <h2 className="paper-title">Paper Title 1</h2>
+                        <p className="paper-description">
+                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                        </p>
+                        <div className="paper-buttons">
+                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button">More info</button>
+                        </div>
+                    </div>
+                    <div className="paper-block">
+                        <h2 className="paper-title">Paper Title 1</h2>
+                        <p className="paper-description">
+                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                        </p>
+                        <div className="paper-buttons">
+                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button">More info</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
+            <div className="tabcontent" id={'contact'}>
+                <h1>Want to collaborate? Contact us!</h1>
+
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Bork Quamquam ab iis philosophiam et omnes
+                    ingenuas disciplinas habemus; Hoc sic expositum dissimile est superiori. Quis hoc dicit? Ad eas enim
+                    res ab Epicuro praecepta dantur. Duo Reges: constructio interrete. </p>
+
+                <ol>
+                    <li>Roges enim Aristonem, bonane ei videantur haec: vacuitas doloris, divitiae, valitudo;</li>
+                    <li>Qui igitur convenit ab alia voluptate dicere naturam proficisci, in alia summum bonum ponere?
+                    </li>
+                    <li>Semovenda est igitur voluptas, non solum ut recta sequamini, sed etiam ut loqui deceat
+                        frugaliter.
+                    </li>
+                    <li>Facit enim ille duo seiuncta ultima bonorum, quae ut essent vera, coniungi debuerunt;</li>
+                </ol>
+
+
+                <h2>Sed fortuna fortis;</h2>
+
+                <p>Si id dicis, vicimus. Igitur ne dolorem quidem. Ut pulsi recurrant? Quae sequuntur igitur? Videsne
+                    quam sit magna dissensio? Ergo, inquit, tibi Q. Cur id non ita fit? </p>
+
+                <p>At ille pellit, qui permulcet sensum voluptate. Bork Haec igitur Epicuri non probo, inquam. </p>
+            </div>
+
+            <div className="tabcontent" id={'about'}>
+                <h1>Space-Filling Curves (SFCs): what and why?</h1>
+
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Bork Quamquam ab iis philosophiam et omnes
+                    ingenuas disciplinas habemus; Hoc sic expositum dissimile est superiori. Quis hoc dicit? Ad eas enim
+                    res ab Epicuro praecepta dantur. Duo Reges: constructio interrete. </p>
+
+                <ol>
+                    <li>Roges enim Aristonem, bonane ei videantur haec: vacuitas doloris, divitiae, valitudo;</li>
+                    <li>Qui igitur convenit ab alia voluptate dicere naturam proficisci, in alia summum bonum ponere?
+                    </li>
+                    <li>Semovenda est igitur voluptas, non solum ut recta sequamini, sed etiam ut loqui deceat
+                        frugaliter.
+                    </li>
+                    <li>Facit enim ille duo seiuncta ultima bonorum, quae ut essent vera, coniungi debuerunt;</li>
+                </ol>
+
+
+                <h2>Sed fortuna fortis;</h2>
+
+                <p>Si id dicis, vicimus. Igitur ne dolorem quidem. Ut pulsi recurrant? Quae sequuntur igitur? Videsne
+                    quam sit magna dissensio? Ergo, inquit, tibi Q. Cur id non ita fit? </p>
+
+                <p>At ille pellit, qui permulcet sensum voluptate. Bork Haec igitur Epicuri non probo, inquam. </p>
+            </div>
+
             <div className="footer">
                 Demo of SFC encoding and barcode formation for automotive data.
             </div>
