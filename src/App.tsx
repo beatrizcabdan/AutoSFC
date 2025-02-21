@@ -73,7 +73,7 @@ function App() {
     const [startLine, setStartLine] = useState(preset.dataRangeStart)
     const [endLine, setEndLine] = useState(preset.dataRangeEnd)
 
-    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_y', 'accel_z'])
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y'])
 
     const [data, setData] = useState<number[][]>([])
     const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
@@ -274,8 +274,8 @@ function App() {
             <div className="topnav">
                 <a className="active" href="#main">Demo</a>
                 <a href="#work">Previous work</a>
-                <a href="#contact">Contact</a>
                 <a href="#about">About SFCs</a>
+                <a href="#contact">Contact</a>
             </div>
 
             <div id={'main'}>
@@ -298,7 +298,8 @@ function App() {
                     </div>
                     <div className={'control-container'}>
                         <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
-                                         numLines={dataNumLines} onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
+                                         numLines={dataNumLines}
+                                         onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
                         <div className={'text-controls'}>
                             <label>
                                 Start row:
@@ -313,7 +314,8 @@ function App() {
                             </label>
                         </div>
                     </div>
-                    <UploadButton onClick={uploadFile} label={'Upload file...'} currentFile={fileName.replace(/.\//, '')}/>
+                    <UploadButton onClick={uploadFile} label={'Upload file...'}
+                                  currentFile={fileName.replace(/.\//, '')}/>
                 </div>
             </div>
 
@@ -365,6 +367,72 @@ function App() {
 
             </div>
 
+            <div className="tabcontent" id={'about'}>
+                <h1>Space-Filling Curves (SFCs): what and why?</h1>
+                <div className="papers-container">
+                    <div className="paper-block">
+                        <h2 className="paper-title">Paper Title 1</h2>
+                        <p className="paper-description">
+                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                        </p>
+                        <div className="paper-buttons">
+                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button">More info</button>
+                        </div>
+                    </div>
+                    <div className="paper-block">
+                        <h2 className="paper-title">Paper Title 1</h2>
+                        <p className="paper-description">
+                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                        </p>
+                        <div className="paper-buttons">
+                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button">More info</button>
+                        </div>
+                    </div>
+                    <div className="paper-block">
+                        <h2 className="paper-title">Paper Title 1</h2>
+                        <p className="paper-description">
+                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                        </p>
+                        <div className="paper-buttons">
+                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button">More info</button>
+                        </div>
+                    </div>
+                    <div className="paper-block">
+                        <h2 className="paper-title">Paper Title 1</h2>
+                        <p className="paper-description">
+                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                        </p>
+                        <div className="paper-buttons">
+                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button">More info</button>
+                        </div>
+                    </div>
+                    <div className="paper-block">
+                        <h2 className="paper-title">Paper Title 1</h2>
+                        <p className="paper-description">
+                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                        </p>
+                        <div className="paper-buttons">
+                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button">More info</button>
+                        </div>
+                    </div>
+                    <div className="paper-block">
+                        <h2 className="paper-title">Paper Title 1</h2>
+                        <p className="paper-description">
+                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                        </p>
+                        <div className="paper-buttons">
+                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button">More info</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="tabcontent" id={'contact'}>
                 <h1>Want to collaborate? Contact us!</h1>
 
@@ -372,18 +440,7 @@ function App() {
                     ingenuas disciplinas habemus; Hoc sic expositum dissimile est superiori. Quis hoc dicit? Ad eas enim
                     res ab Epicuro praecepta dantur. Duo Reges: constructio interrete. </p>
 
-                <ol>
-                    <li>Roges enim Aristonem, bonane ei videantur haec: vacuitas doloris, divitiae, valitudo;</li>
-                    <li>Qui igitur convenit ab alia voluptate dicere naturam proficisci, in alia summum bonum ponere?
-                    </li>
-                    <li>Semovenda est igitur voluptas, non solum ut recta sequamini, sed etiam ut loqui deceat
-                        frugaliter.
-                    </li>
-                    <li>Facit enim ille duo seiuncta ultima bonorum, quae ut essent vera, coniungi debuerunt;</li>
-                </ol>
-
-
-                <h2>Sed fortuna fortis;</h2>
+                <h2>Sed fortuna fortis:</h2>
 
                 <p>Si id dicis, vicimus. Igitur ne dolorem quidem. Ut pulsi recurrant? Quae sequuntur igitur? Videsne
                     quam sit magna dissensio? Ergo, inquit, tibi Q. Cur id non ita fit? </p>
@@ -391,31 +448,6 @@ function App() {
                 <p>At ille pellit, qui permulcet sensum voluptate. Bork Haec igitur Epicuri non probo, inquam. </p>
             </div>
 
-            <div className="tabcontent" id={'about'}>
-                <h1>Space-Filling Curves (SFCs): what and why?</h1>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Bork Quamquam ab iis philosophiam et omnes
-                    ingenuas disciplinas habemus; Hoc sic expositum dissimile est superiori. Quis hoc dicit? Ad eas enim
-                    res ab Epicuro praecepta dantur. Duo Reges: constructio interrete. </p>
-
-                <ol>
-                    <li>Roges enim Aristonem, bonane ei videantur haec: vacuitas doloris, divitiae, valitudo;</li>
-                    <li>Qui igitur convenit ab alia voluptate dicere naturam proficisci, in alia summum bonum ponere?
-                    </li>
-                    <li>Semovenda est igitur voluptas, non solum ut recta sequamini, sed etiam ut loqui deceat
-                        frugaliter.
-                    </li>
-                    <li>Facit enim ille duo seiuncta ultima bonorum, quae ut essent vera, coniungi debuerunt;</li>
-                </ol>
-
-
-                <h2>Sed fortuna fortis;</h2>
-
-                <p>Si id dicis, vicimus. Igitur ne dolorem quidem. Ut pulsi recurrant? Quae sequuntur igitur? Videsne
-                    quam sit magna dissensio? Ergo, inquit, tibi Q. Cur id non ita fit? </p>
-
-                <p>At ille pellit, qui permulcet sensum voluptate. Bork Haec igitur Epicuri non probo, inquam. </p>
-            </div>
             <div className="footer">
                 Demo of SFC encoding and barcode formation for automotive data.
             </div>
