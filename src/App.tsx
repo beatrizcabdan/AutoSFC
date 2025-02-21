@@ -266,7 +266,7 @@ function App() {
     return (
         <>
             <div className="landing-section">
-                <img src="public/logo2.png" alt="AutoSFC logo" className="header-img"/>
+                <img src="./logo2.png" alt="AutoSFC logo" className="header-img"/>
                 <p>AutoSFC is a web-based demo for the research-activities around the usage of Space-Filling Curves
                     (SFC) for encoding and reducing the dimensionality of automotive data.</p>
             </div>
