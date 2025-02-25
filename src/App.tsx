@@ -11,7 +11,7 @@ import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {UploadButton} from "./UploadButton.tsx";
 import {debounce} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
-import {PresetList} from "./PresetList.tsx";
+import {PresetComponent} from "./PresetComponent.tsx";
 import {Divider} from "@mui/material";
 
 const demoPreset1 = {
@@ -324,7 +324,7 @@ function App() {
                             </div>
                         </div>
                         <Divider flexItem/>
-                        <PresetList initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}/>
+                        <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}/>
                     </div>
                     <UploadButton onClick={uploadFile} label={'Upload file...'}
                                   currentFile={fileName.replace(/.\//, '')}/>

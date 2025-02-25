@@ -1,13 +1,14 @@
-import {List, ListItem, ListItemButton, ListItemText} from "@mui/material";
+import {Button, List, ListItem, ListItemButton, ListItemText} from "@mui/material";
 import {useEffect, useState} from "react";
-import './PresetList.scss'
+import './PresetComponent.scss'
+import './App.scss'
 
 interface Preset {
     startRow: number,
     endRow: number
 }
 
-export function PresetList(props: {
+export function PresetComponent(props: {
     onPresetSelect: (startRow: number, endRow: number) => void, initialDataPath: string,
     displayedStartRow: number, displayedEndRow: number
 }) {
@@ -53,17 +54,26 @@ export function PresetList(props: {
         props.onPresetSelect(preset.startRow, preset.endRow)
     }
 
+    function addPreset() {
+        setPresets(presets => [...presets!, {startRow: props.displayedStartRow,
+            endRow: props.displayedEndRow}])
+        setSelectedIndex(presets!.length)
+    }
+
     return <div className={'preset-list-container'}>
-    <h3>Presets</h3>
-    <List id={'preset-list'}>
-        {presets?.map((p, i) => <ListItem key={i}>
-            <ListItemButton selected={i === selectedIndex} onClick={() => onPresetClick(i)}>
-                <ListItemText primary={<div className={'preset-item-text'}>
-                    <p>{p.startRow}<span>Start</span></p>
-                    <p>{p.endRow}<span>End</span></p>
-                </div>} />
-            </ListItemButton>
-        </ListItem>)}
-    </List>
+        <h3>Presets</h3>
+        <List id={'preset-list'}>
+            {presets?.map((p, i) => <ListItem key={i}>
+                <ListItemButton selected={i === selectedIndex} onClick={() => onPresetClick(i)}>
+                    <ListItemText primary={<div className={'preset-item-text'}>
+                        <p>{p.startRow}<span>Start</span></p>
+                        <p>{p.endRow}<span>End</span></p>
+                    </div>} />
+                </ListItemButton>
+            </ListItem>)}
+        </List>
+        <div className={'preset-button-panel'}>
+            <Button className={'button'} id={'add-preset-button'} variant={'outlined'} onClick={addPreset}>Create preset</Button>
+        </div>
     </div>
 }
