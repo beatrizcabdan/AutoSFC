@@ -55,6 +55,9 @@ export function PresetComponent(props: {
     }
 
     function addPreset() {
+        if (selectedIndex > -1) {
+            return
+        }
         setPresets(presets => [...presets!, {startRow: props.displayedStartRow,
             endRow: props.displayedEndRow}])
         setSelectedIndex(presets!.length)
@@ -75,7 +78,8 @@ export function PresetComponent(props: {
             </ListItem>)}
         </List>
         <div className={'preset-button-panel'}>
-            <Button className={'button'} id={'add-preset-button'} variant={'outlined'} onClick={addPreset}>Create preset</Button>
+            <Button className={'button'} id={'add-preset-button'} variant={'outlined'} disabled={selectedIndex > -1}
+                    onClick={addPreset}>Create preset</Button>
         </div>
     </div>
 }

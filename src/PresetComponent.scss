@@ -66,6 +66,11 @@
         font-weight: 700;
         font-size: 0.6rem;
         letter-spacing: 0.02rem;
+        transition: all 0.2s;
+
+        &.Mui-disabled {
+            color: var(--button-active);
+        }
     }
 
 }

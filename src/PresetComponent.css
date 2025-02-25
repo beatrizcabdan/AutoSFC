@@ -59,6 +59,10 @@
   font-weight: 700;
   font-size: 0.6rem;
   letter-spacing: 0.02rem;
+  transition: all 0.2s;
+}
+.preset-list-container #add-preset-button.Mui-disabled {
+  color: var(--button-active);
 }
 
 /*# sourceMappingURL=PresetComponent.css.map */
