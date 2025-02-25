@@ -7,8 +7,9 @@ interface Preset {
     endRow: number
 }
 
-export function PresetList(props: { onPresetSelect: (startRow: number, endRow: number) => void,
-    initialDataPath: string
+export function PresetList(props: {
+    onPresetSelect: (startRow: number, endRow: number) => void, initialDataPath: string,
+    displayedStartRow: number, displayedEndRow: number
 }) {
     const PRESET_FILE_SUFFIX = '_presets.csv'
 
@@ -30,6 +31,21 @@ export function PresetList(props: { onPresetSelect: (startRow: number, endRow: n
             })
         })
     }, [])
+
+    useEffect(() => {
+        if (!presets) {
+            return
+        }
+
+        for (const p of presets) {
+            const i = presets.indexOf(p);
+            if (props.displayedStartRow === p.startRow && props.displayedEndRow === p.endRow) {
+                setSelectedIndex(i)
+                return;
+            }
+        }
+        setSelectedIndex(-1)
+    }, [props.displayedStartRow, props.displayedEndRow]);
 
     function onPresetClick(index: number) {
         setSelectedIndex(index)

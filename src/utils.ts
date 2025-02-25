@@ -149,7 +149,7 @@ export function makeGaussKernel(sigma: number){
     return kernel;
 }
 
-export function debounce(func: () => void, time: number) {
+export function debounce(func: () => void, time = 200) {
     let timer: number | undefined;
     return function () {
         if (timer) {

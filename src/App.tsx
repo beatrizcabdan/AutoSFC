@@ -143,7 +143,7 @@ function App() {
         })
     }
 
-    onresize = debounce(loadFile, 200)
+    onresize = debounce(loadFile)
 
     useEffect(() => {
         loadFile()
@@ -324,7 +324,7 @@ function App() {
                             </div>
                         </div>
                         <Divider flexItem/>
-                        <PresetList initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected}/>
+                        <PresetList initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}/>
                     </div>
                     <UploadButton onClick={uploadFile} label={'Upload file...'}
                                   currentFile={fileName.replace(/.\//, '')}/>
