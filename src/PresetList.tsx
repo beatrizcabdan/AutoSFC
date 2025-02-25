@@ -33,6 +33,8 @@ export function PresetList(props: { onPresetSelect: (startRow: number, endRow: n
 
     function onPresetClick(index: number) {
         setSelectedIndex(index)
+        const preset = presets![index]
+        props.onPresetSelect(preset.startRow, preset.endRow)
     }
 
     return <div className={'preset-list-container'}>

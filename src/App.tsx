@@ -266,8 +266,10 @@ function App() {
     }
 
     const presetSelected = (startRow: number, endRow: number) => {
-
+        setStartLine(startRow)
+        setEndLine(endRow)
     }
+
     // @ts-ignore
     return (
         <>
