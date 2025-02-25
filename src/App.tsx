@@ -11,6 +11,8 @@ import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {UploadButton} from "./UploadButton.tsx";
 import {debounce} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
+import {PresetList} from "./PresetList.tsx";
+import {Divider} from "@mui/material";
 
 const demoPreset1 = {
     dataPointInterval: 1,
@@ -263,6 +265,9 @@ function App() {
         setEndLine((newValue as number[])[1])
     }
 
+    const presetSelected = (startRow: number, endRow: number) => {
+
+    }
     return (
         <>
             <div className="landing-section">
@@ -300,6 +305,8 @@ function App() {
                         <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
                                          numLines={dataNumLines}
                                          onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
+                        <Divider />
+                        <PresetList onPresetSelect={presetSelected}/>
                         <div className={'text-controls'}>
                             <label>
                                 Start row:
