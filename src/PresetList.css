@@ -1,0 +1,54 @@
+.MuiButtonBase-root {
+  border: 1px solid var(--button-active) !important;
+  box-shadow: rgba(0, 0, 0, 0.05) 0 0 2px 3px;
+  border-radius: 6px !important;
+  padding: 0 0.5rem !important;
+  margin: 0 !important;
+}
+
+.MuiListItem-root {
+  width: fit-content !important;
+  padding: 0.2rem 0.4rem !important;
+}
+
+.preset-list-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.preset-list-container h3 {
+  line-height: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.02rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+.preset-list-container #preset-list {
+  display: grid;
+  width: fit-content;
+  grid-template-columns: repeat(4, 1fr);
+}
+.preset-list-container #preset-list .preset-item-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+.preset-list-container #preset-list .preset-item-text p {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.4rem;
+  margin: 0.1rem 0.2rem;
+  font-size: 0.8333rem;
+}
+.preset-list-container #preset-list .preset-item-text p span {
+  line-height: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02rem;
+  position: relative;
+  font-size: 0.6rem;
+}
+
+/*# sourceMappingURL=PresetList.css.map */
