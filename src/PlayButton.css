@@ -16,6 +16,7 @@ html {
   --light-gray: #e8e8e8;
   --button-active: #d3d3d3;
   --primary-color: #4e4eff;
+  --primary-color-light: #b9e0ff;
 }
 
 #root {
@@ -147,6 +148,7 @@ html {
   width: 100%;
   position: sticky;
   top: 0;
+  z-index: 1;
 }
 
 .topnav a {

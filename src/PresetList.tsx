@@ -13,6 +13,7 @@ export function PresetList(props: { onPresetSelect: (startRow: number, endRow: n
     const PRESET_FILE_SUFFIX = '_presets.csv'
 
     const [presets, setPresets] = useState<Preset[] | null>()
+    const [selectedIndex, setSelectedIndex] = useState(0)
 
     useEffect(() => {
         const presetPath = `${props.initialDataPath.replace('.csv', '')}${PRESET_FILE_SUFFIX}`
@@ -30,11 +31,15 @@ export function PresetList(props: { onPresetSelect: (startRow: number, endRow: n
         })
     }, [])
 
+    function onPresetClick(index: number) {
+        setSelectedIndex(index)
+    }
+
     return <div className={'preset-list-container'}>
     <h3>Presets</h3>
     <List id={'preset-list'}>
         {presets?.map((p, i) => <ListItem key={i}>
-            <ListItemButton>
+            <ListItemButton selected={i === selectedIndex} onClick={() => onPresetClick(i)}>
                 <ListItemText primary={<div className={'preset-item-text'}>
                     <p>{p.startRow}<span>Start</span></p>
                     <p>{p.endRow}<span>End</span></p>

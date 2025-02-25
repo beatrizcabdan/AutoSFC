@@ -5,6 +5,9 @@
   padding: 0 0.5rem !important;
   margin: 0 !important;
 }
+.MuiButtonBase-root.Mui-selected {
+  background-color: var(--primary-color-light) !important;
+}
 
 .MuiListItem-root {
   width: fit-content !important;
