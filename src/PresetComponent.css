@@ -3,6 +3,7 @@
   border-radius: 6px !important;
   padding: 0 0.5rem !important;
   margin: 0 !important;
+  background-color: white !important;
 }
 .MuiButtonBase-root.Mui-selected {
   background-color: var(--primary-color-light) !important;

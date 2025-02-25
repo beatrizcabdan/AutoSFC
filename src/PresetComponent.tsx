@@ -1,4 +1,4 @@
-import {Button, List, ListItem, ListItemButton, ListItemText} from "@mui/material";
+import {Button, List, ListItem, ListItemButton, ListItemText, Zoom} from "@mui/material";
 import {useEffect, useState} from "react";
 import './PresetComponent.scss'
 import './App.scss'
@@ -64,12 +64,14 @@ export function PresetComponent(props: {
         <h3>Presets</h3>
         <List id={'preset-list'}>
             {presets?.map((p, i) => <ListItem key={i}>
-                <ListItemButton selected={i === selectedIndex} onClick={() => onPresetClick(i)}>
-                    <ListItemText primary={<div className={'preset-item-text'}>
-                        <p>{p.startRow}<span>Start</span></p>
-                        <p>{p.endRow}<span>End</span></p>
-                    </div>} />
-                </ListItemButton>
+                <Zoom in={true}>
+                    <ListItemButton selected={i === selectedIndex} onClick={() => onPresetClick(i)}>
+                        <ListItemText primary={<div className={'preset-item-text'}>
+                            <p>{p.startRow}<span>Start</span></p>
+                            <p>{p.endRow}<span>End</span></p>
+                        </div>} />
+                    </ListItemButton>
+                </Zoom>
             </ListItem>)}
         </List>
         <div className={'preset-button-panel'}>
