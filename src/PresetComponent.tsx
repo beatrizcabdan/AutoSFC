@@ -1,6 +1,6 @@
 import {Button, IconButton, List, ListItem, ListItemButton, ListItemText, Zoom} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
-import React, {useEffect, useState} from "react";
+import React, {ChangeEvent, FormEvent, useEffect, useRef, useState} from "react";
 import './PresetComponent.scss'
 import './App.scss'
 
@@ -16,21 +16,25 @@ export function PresetComponent(props: {
 
     const [presets, setPresets] = useState<Preset[] | null>()
     const [selectedIndex, setSelectedIndex] = useState(0)
+    const inputRef = useRef<HTMLInputElement | null>(null)
+
+    function setPresetsFromFileString(content: string) {
+        const lines = content.split('\n')
+        const presArray: Preset[] = []
+        lines.forEach(line => {
+            const [startRow, endRow] = line.split(/[;,]/)
+            presArray.push({startRow: Number(startRow), endRow: Number(endRow)})
+        })
+        setPresets(presArray)
+        setSelectedIndex(0)
+    }
 
     useEffect(() => {
         const presetPath = `${props.initialDataPath.replace('.csv', '')}${PRESET_FILE_SUFFIX}`
         fetch(presetPath).then(r => {
-            r.text().then(t => {
-                // console.log(t)
-                const lines = t.split('\n')
-                const presArray: Preset[] = []
-                lines.forEach(line => {
-                    const [startRow, endRow] = line.split(/[;,]/)
-                    presArray.push({startRow: Number(startRow), endRow: Number(endRow)})
-                })
-                setPresets(presArray)
-            })
+            r.text().then(t => setPresetsFromFileString(t))
         })
+        setPresetsFromFileString(presetPath);
     }, [])
 
     useEffect(() => {
@@ -73,6 +77,32 @@ export function PresetComponent(props: {
         }
     }
 
+    function onLoadClick() {
+        inputRef.current?.click()
+    }
+
+    function uploadFile(e: FormEvent<HTMLInputElement>) {
+        const file = e.currentTarget?.files?.item(0)
+        if (file?.type === 'text/csv') {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const text = reader.result?.toString();
+                if (text) {
+                    setPresetsFromFileString(text)
+                } else {
+                    alert("Error reading the file. Please try again.");
+                }
+            };
+            reader.onerror = () => {
+                alert("Error reading the file. Please try again.");
+            };
+            reader.readAsText(file);
+        }
+        if (e.currentTarget) {
+            e.currentTarget.value = ''
+        }
+    }
+
     return <div className={'preset-list-container'}>
         <h3>Presets</h3>
         <List id={'preset-list'}>
@@ -90,9 +120,12 @@ export function PresetComponent(props: {
                 </Zoom>
             </ListItem>)}
         </List>
-        <div className={'preset-button-panel'}>
+        <div id={'preset-button-panel'}>
+            <input ref={inputRef} type="file" className="file-input" onInput={uploadFile} accept={'text/csv'}/>
             <Button className={'button'} id={'add-preset-button'} variant={'outlined'} disabled={selectedIndex > -1}
                     onClick={addPreset}>Create preset</Button>
+            <Button className={'button'} id={'save-preset-button'}>Save presets</Button>
+            <Button className={'button'} id={'load-preset-button'} onClick={onLoadClick}>Load presets</Button>
         </div>
     </div>
 }
