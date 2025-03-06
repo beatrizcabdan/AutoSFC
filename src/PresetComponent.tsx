@@ -1,6 +1,6 @@
 import {Button, IconButton, List, ListItem, ListItemButton, ListItemText, Zoom} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
-import React, {ChangeEvent, FormEvent, useEffect, useRef, useState} from "react";
+import React, {FormEvent, useEffect, useRef, useState} from "react";
 import './PresetComponent.scss'
 import './App.scss'
 
@@ -10,7 +10,7 @@ interface Preset {
 }
 export function PresetComponent(props: {
     onPresetSelect: (startRow: number, endRow: number) => void, initialDataPath: string,
-    displayedStartRow: number, displayedEndRow: number
+    displayedStartRow: number, displayedEndRow: number, currentDataFile: string
 }) {
     const PRESET_FILE_SUFFIX = '_presets.csv'
 
@@ -26,7 +26,7 @@ export function PresetComponent(props: {
             presArray.push({startRow: Number(startRow), endRow: Number(endRow)})
         })
         setPresets(presArray)
-        setSelectedIndex(0)
+        setSelectedIndex(-1)
     }
 
     useEffect(() => {
@@ -70,11 +70,7 @@ export function PresetComponent(props: {
     function onPresetDeleteClick(i: number, e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
         setPresets(presets => [...presets!.slice(0, i), ...presets!.slice(i + 1)])
-        if (selectedIndex === i) {
-            setSelectedIndex(-1)
-        } else if (i < selectedIndex) {
-            setSelectedIndex(selectedIndex - 1)
-        }
+        setSelectedIndex(-1)
     }
 
     function onLoadClick() {
@@ -103,6 +99,16 @@ export function PresetComponent(props: {
         }
     }
 
+    function savePresets() {
+        // https://stackoverflow.com/a/72490299/23995082
+        const textContent = presets?.map(p => `${p.startRow};${p.endRow}`).join('\n') ?? ''
+        const hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:attachment/text,' + encodeURI(textContent);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = props.currentDataFile.replace('.csv', '') + '_presets.csv'
+        hiddenElement.click();
+    }
+
     return <div className={'preset-list-container'}>
         <h3>Presets</h3>
         <List id={'preset-list'}>
@@ -124,7 +130,7 @@ export function PresetComponent(props: {
             <input ref={inputRef} type="file" className="file-input" onInput={uploadFile} accept={'text/csv'}/>
             <Button className={'button'} id={'add-preset-button'} variant={'outlined'} disabled={selectedIndex > -1}
                     onClick={addPreset}>Create preset</Button>
-            <Button className={'button'} id={'save-preset-button'}>Save presets</Button>
+            <Button className={'button'} id={'save-preset-button'} onClick={savePresets} disabled={!presets || presets.length === 0}>Save presets</Button>
             <Button className={'button'} id={'load-preset-button'} onClick={onLoadClick}>Load presets</Button>
         </div>
     </div>

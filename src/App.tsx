@@ -324,7 +324,8 @@ function App() {
                             </div>
                         </div>
                         <Divider flexItem/>
-                        <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}/>
+                        <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
+                                         currentDataFile={fileName.replace(/.\//, '')}/>
                     </div>
                     <UploadButton onClick={uploadFile} label={'Upload file...'}
                                   currentFile={fileName.replace(/.\//, '')}/>
