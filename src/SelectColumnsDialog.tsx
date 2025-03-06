@@ -38,7 +38,7 @@ export function SelectColumnsDialog(props: {show: boolean, setShow: Dispatch<Set
         const numChecked = [...map.values()]
             .filter(b => b)
             .length
-        setSubmittable(numChecked === 2)
+        setSubmittable(numChecked >= 2)
         setLabelsToCheckedMap(map)
     }
 
