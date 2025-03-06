@@ -1,5 +1,6 @@
-import {Button, List, ListItem, ListItemButton, ListItemText, Zoom} from "@mui/material";
-import {useEffect, useState} from "react";
+import {Button, IconButton, List, ListItem, ListItemButton, ListItemText, Zoom} from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import React, {useEffect, useState} from "react";
 import './PresetComponent.scss'
 import './App.scss'
 
@@ -7,7 +8,6 @@ interface Preset {
     startRow: number,
     endRow: number
 }
-
 export function PresetComponent(props: {
     onPresetSelect: (startRow: number, endRow: number) => void, initialDataPath: string,
     displayedStartRow: number, displayedEndRow: number
@@ -63,6 +63,16 @@ export function PresetComponent(props: {
         setSelectedIndex(presets!.length)
     }
 
+    function onPresetDeleteClick(i: number, e: React.MouseEvent<HTMLButtonElement>) {
+        e.stopPropagation()
+        setPresets(presets => [...presets!.slice(0, i), ...presets!.slice(i + 1)])
+        if (selectedIndex === i) {
+            setSelectedIndex(-1)
+        } else if (i < selectedIndex) {
+            setSelectedIndex(selectedIndex - 1)
+        }
+    }
+
     return <div className={'preset-list-container'}>
         <h3>Presets</h3>
         <List id={'preset-list'}>
@@ -73,6 +83,9 @@ export function PresetComponent(props: {
                             <p>{p.startRow}<span>Start</span></p>
                             <p>{p.endRow}<span>End</span></p>
                         </div>} />
+                        <IconButton onClick={e => onPresetDeleteClick(i, e)}>
+                            <DeleteIcon />
+                        </IconButton>
                     </ListItemButton>
                 </Zoom>
             </ListItem>)}

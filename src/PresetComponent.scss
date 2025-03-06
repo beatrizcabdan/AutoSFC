@@ -1,9 +1,13 @@
-.MuiButtonBase-root {
+.MuiListItemButton-root {
     border: 1px solid var(--button-active) !important;
     border-radius: 6px !important;
     padding: 0 0.5rem !important;
     margin: 0 !important;
     background-color: white !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    width: max-content !important;
+    gap: 2.0rem;
 
     &.Mui-selected {
         background-color: var(--primary-color-light) !important;
@@ -17,6 +21,11 @@
 
 .MuiListItemText-root {
     margin: 0 !important;
+}
+
+.MuiSvgIcon-root {
+    width: 1.3rem !important;
+    aspect-ratio: 1 !important;
 }
 
 .preset-list-container {
@@ -37,7 +46,7 @@
     #preset-list {
         display: grid;
         width: fit-content;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
 
         .preset-item-text {
             display: flex;
@@ -54,7 +63,7 @@
                 font-size: 0.8333rem;
 
                 span {
-                    line-height: 0.7rem;
+                    line-height: 0.4rem;
                     text-transform: uppercase;
                     letter-spacing: 0.02rem;
                     position: relative;
@@ -71,6 +80,8 @@
         font-size: 0.6rem;
         letter-spacing: 0.02rem;
         transition: all 0.2s;
+        border-width: 2px;
+        border-radius: 6px;
 
         &.Mui-disabled {
             color: var(--button-active);
