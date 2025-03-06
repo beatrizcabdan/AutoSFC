@@ -14,6 +14,10 @@
   padding: 0.2rem 0.4rem !important;
 }
 
+.MuiListItemText-root {
+  margin: 0 !important;
+}
+
 .preset-list-container {
   width: 100%;
   display: flex;
@@ -52,7 +56,7 @@
   text-transform: uppercase;
   letter-spacing: 0.02rem;
   position: relative;
-  font-size: 0.6rem;
+  font-size: 0.5rem;
 }
 .preset-list-container #add-preset-button {
   color: var(--text-color-light);
