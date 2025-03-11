@@ -302,8 +302,8 @@ function App() {
                 <div className={'controls'}>
                     <div className={'control-container'}>
                         <h3>Playback</h3>
-                        <PlayButton onClick={onPlayClick} status={playStatus}/>
                         <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
+                        <PlayButton onClick={onPlayClick} status={playStatus}/>
                     </div>
                     <div className={'control-container range-container'}>
                         <h3>Displayed range</h3>

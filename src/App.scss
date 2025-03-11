@@ -152,6 +152,7 @@ html {
   --gap: 20px;
   gap: var(--gap);
   padding: 20px;
+  // max-width: 70rem;
 
   .control-container {
     width: 100%;
@@ -165,9 +166,34 @@ html {
     flex: 1 1 30rem;
     margin-right: auto;
     max-width: calc(50% - var(--gap));
+    justify-content: center;
 
     h3 {
-      margin-bottom: 1rem;
+      margin-top: 0;
+      padding-bottom: 1rem;
+      margin-bottom: auto;
+    }
+
+    > :last-child {
+      margin-bottom: auto;
+    }
+
+
+    .text-controls {
+      display: flex;
+      gap: 1rem;
+      flex-direction: row;
+
+      label {
+        text-transform: uppercase;
+        font-size: 0.6rem;
+        letter-spacing: 0.02rem;
+        font-weight: 700;
+      }
+
+      input {
+        width: 15ch;
+      }
     }
   }
 }

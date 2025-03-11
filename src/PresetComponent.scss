@@ -7,7 +7,7 @@
     display: flex !important;
     justify-content: space-between !important;
     width: max-content !important;
-    gap: 1.5rem;
+    // gap: 1.5rem;
     transition: all 0.2s !important;
 
     &.Mui-selected {
@@ -21,7 +21,6 @@
 }
 
 .MuiListItem-root {
-    width: fit-content !important;
     padding: 0.2rem 0 !important;
 }
 
@@ -51,7 +50,7 @@
 
         .preset-item-text {
             display: flex;
-            justify-content: center;
+            // justify-content: center;
             align-items: center;
             gap: 0.5rem;
 

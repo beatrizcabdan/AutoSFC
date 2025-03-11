@@ -150,9 +150,29 @@ html {
   flex: 1 1 30rem;
   margin-right: auto;
   max-width: calc(50% - var(--gap));
+  justify-content: center;
 }
 .controls .control-container h3 {
-  margin-bottom: 1rem;
+  margin-top: 0;
+  padding-bottom: 1rem;
+  margin-bottom: auto;
+}
+.controls .control-container > :last-child {
+  margin-bottom: auto;
+}
+.controls .control-container .text-controls {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+}
+.controls .control-container .text-controls label {
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  letter-spacing: 0.02rem;
+  font-weight: 700;
+}
+.controls .control-container .text-controls input {
+  width: 15ch;
 }
 
 /* HEADER AND FOOTER */
