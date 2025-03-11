@@ -16,7 +16,7 @@ export function PresetComponent(props: {
 
     const [presets, setPresets] = useState<Preset[] | null>()
     const [selectedIndex, setSelectedIndex] = useState(0)
-    const [deletedPreset, setDeletedPreset] = useState(-1)
+    const [deletedIndex, setDeletedIndex] = useState(-1)
     const inputRef = useRef<HTMLInputElement | null>(null)
 
     function setPresetsFromFileString(content: string) {
@@ -77,8 +77,7 @@ export function PresetComponent(props: {
 
     function onPresetDeleteClick(i: number, e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
-        setPresets(presets => [...presets!.slice(0, i), ...presets!.slice(i + 1)])
-        setSelectedIndex(-1)
+        setDeletedIndex(i)
     }
 
     function onLoadClick() {
@@ -117,11 +116,17 @@ export function PresetComponent(props: {
         hiddenElement.click();
     }
 
+    function removePreset(index: number) {
+        setPresets(presets => [...presets!.slice(0, index), ...presets!.slice(index + 1)])
+        setDeletedIndex(-1)
+    }
+
     return <div className={'preset-list-container'}>
         <h3>Presets</h3>
         <List id={'preset-list'}>
             {presets?.map((p, i) => <ListItem key={i}>
-                <Zoom in={i !== deletedPreset}>
+                 <Zoom appear={i == deletedIndex || p.startRow === props.displayedStartRow && p.endRow === props.displayedEndRow}
+                       in={i !== deletedIndex} onExited={() => removePreset(i)}>
                     <ListItemButton selected={i === selectedIndex} onClick={() => onPresetClick(i)}>
                         <ListItemText primary={<div className={'preset-item-text'}>
                             <p>{p.startRow}<span>Start</span></p>
