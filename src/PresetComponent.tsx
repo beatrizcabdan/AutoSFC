@@ -62,9 +62,14 @@ export function PresetComponent(props: {
         if (selectedIndex > -1) {
             return
         }
-        setPresets(presets => [...presets!, {startRow: props.displayedStartRow,
-            endRow: props.displayedEndRow}])
-        setSelectedIndex(presets!.length)
+        const newPreset = {startRow: props.displayedStartRow,
+            endRow: props.displayedEndRow}
+        const newPresets = [...presets!, newPreset]
+            .sort((p1, p2) =>
+                // Sort first by startRow, then by endRow
+                p1.startRow !== p2.startRow ? p1.startRow - p2.startRow : p1.endRow - p2.endRow)
+        setPresets(newPresets)
+        setSelectedIndex(newPresets.findIndex(p => p === newPreset))
     }
 
     function onPresetDeleteClick(i: number, e: React.MouseEvent<HTMLButtonElement>) {
