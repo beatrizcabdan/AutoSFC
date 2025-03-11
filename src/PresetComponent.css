@@ -8,9 +8,14 @@
   justify-content: space-between !important;
   width: max-content !important;
   gap: 1.5rem;
+  transition: background-color 0.2s !important;
 }
 .MuiListItemButton-root.Mui-selected {
   background-color: var(--primary-color-light) !important;
+}
+.MuiListItemButton-root:hover:not(.MuiListItemButton-root.Mui-selected) {
+  background-color: var(--light-gray) !important;
+  cursor: pointer;
 }
 
 .MuiListItem-root {
