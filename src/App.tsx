@@ -3,7 +3,7 @@
 
 import './App.scss'
 
-import {ChangeEvent, useEffect, useRef, useState} from 'react';
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {Chart} from "./Chart.tsx";
 import {PlaySlider} from "./PlaySlider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
@@ -301,34 +301,40 @@ function App() {
                 </div>
                 <div className={'controls'}>
                     <div className={'control-container'}>
+                        <h3>Playback</h3>
                         <PlayButton onClick={onPlayClick} status={playStatus}/>
                         <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
                     </div>
                     <div className={'control-container range-container'}>
-                        <div>
-                            <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
-                                             numLines={dataNumLines}
-                                             onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
-                            <div className={'text-controls'}>
-                                <label>
-                                    Start row:
-                                    <input type="number" value={startLine}
-                                           onChange={(e) => setStartLine(Number(e.target.value))}/>
-                                </label>
-                                &nbsp;
-                                <label>
-                                    End row:
-                                    <input type="number" value={endLine}
-                                           onChange={(e) => setEndLine(Number(e.target.value))}/>
-                                </label>
-                            </div>
+                        <h3>Displayed range</h3>
+                        <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
+                                         numLines={dataNumLines}
+                                         onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
+                        <div className={'text-controls'}>
+                            <label>
+                                Start row:
+                                <input type="number" value={startLine}
+                                       onChange={(e) => setStartLine(Number(e.target.value))}/>
+                            </label>
+                            &nbsp;
+                            <label>
+                                End row:
+                                <input type="number" value={endLine}
+                                       onChange={(e) => setEndLine(Number(e.target.value))}/>
+                            </label>
                         </div>
-                        <Divider flexItem/>
+                    </div>
+                    <div className={'control-container'}>
+                        <h3>Presets</h3>
                         <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
                                          currentDataFile={fileName.replace(/.\//, '')}/>
                     </div>
-                    <UploadButton onClick={uploadFile} label={'Upload file...'}
-                                  currentFile={fileName.replace(/.\//, '')}/>
+                    <div className={'control-container'}>
+                        <h3>Current file</h3>
+                        <UploadButton onClick={uploadFile} label={'Upload file...'}
+                                      currentFile={fileName.replace(/.\//, '')}/>
+                    </div>
+
                 </div>
             </div>
 
@@ -377,9 +383,7 @@ function App() {
                         </div>
                     </div>
                 </div>
-
             </div>
-
             <div className="tabcontent" id={'about'}>
                 <h1>Space-Filling Curves (SFCs): what and why?</h1>
                 <div className="papers-container">
