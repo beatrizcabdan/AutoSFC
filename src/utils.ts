@@ -124,15 +124,18 @@ function assignSlice(c: number, start: number, totalBits: number, step: number, 
   return c;
 }
 
-export function morton_interlace(data: number[][]) {
+export function morton_interlace(data: number[][], bits_per_dim: number) {
     const dims = data.length;
     const resultArr: number[] = []
     data = data[0].map((_, colIndex) => data.map(row => row[colIndex])); //transpose
     data.forEach((x, i) => {
         x = x.map(dim => Math.trunc(Math.round(dim*10)));
-        let bigger_x = x.reduce((max, current) => (current > max ? current : max), x[0]);
-        bigger_x = bigger_x < 2 ? 1 : bigger_x;
-        const bits_per_dim = Math.floor( Math.log(bigger_x) / Math.log(2) ) + 1
+
+        //not fixing bits per dim
+        // let bigger_x = x.reduce((max, current) => (current > max ? current : max), x[0]);
+        // bigger_x = bigger_x < 2 ? 1 : bigger_x;
+        // let bits_per_dim = Math.floor( Math.log(bigger_x) / Math.log(2) ) + 1
+
         const total_bits = dims * bits_per_dim
 
         let c = 0;

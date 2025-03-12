@@ -158,7 +158,8 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
-            const mortonData = morton_interlace([props.data[0], props.data[1]]).reverse()
+            const mortonData = morton_interlace([props.data[0], props.data[1]], 8).reverse()
+
 
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
