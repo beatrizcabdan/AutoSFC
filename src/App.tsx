@@ -11,6 +11,8 @@ import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {UploadButton} from "./UploadButton.tsx";
 import {debounce} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
+import {PresetComponent} from "./PresetComponent.tsx";
+import {Divider} from "@mui/material";
 
 const demoPreset1 = {
     dataPointInterval: 1,
@@ -141,7 +143,7 @@ function App() {
         })
     }
 
-    onresize = debounce(loadFile, 200)
+    onresize = debounce(loadFile)
 
     useEffect(() => {
         loadFile()
@@ -263,6 +265,12 @@ function App() {
         setEndLine((newValue as number[])[1])
     }
 
+    const presetSelected = (startRow: number, endRow: number) => {
+        setStartLine(startRow)
+        setEndLine(endRow)
+    }
+
+    // @ts-ignore
     return (
         <>
             <div className="landing-section">
@@ -296,23 +304,28 @@ function App() {
                         <PlayButton onClick={onPlayClick} status={playStatus}/>
                         <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
                     </div>
-                    <div className={'control-container'}>
-                        <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
-                                         numLines={dataNumLines}
-                                         onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
-                        <div className={'text-controls'}>
-                            <label>
-                                Start row:
-                                <input type="number" value={startLine}
-                                       onChange={(e) => setStartLine(Number(e.target.value))}/>
-                            </label>
-                            &nbsp;
-                            <label>
-                                End row:
-                                <input type="number" value={endLine}
-                                       onChange={(e) => setEndLine(Number(e.target.value))}/>
-                            </label>
+                    <div className={'control-container range-container'}>
+                        <div>
+                            <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
+                                             numLines={dataNumLines}
+                                             onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
+                            <div className={'text-controls'}>
+                                <label>
+                                    Start row:
+                                    <input type="number" value={startLine}
+                                           onChange={(e) => setStartLine(Number(e.target.value))}/>
+                                </label>
+                                &nbsp;
+                                <label>
+                                    End row:
+                                    <input type="number" value={endLine}
+                                           onChange={(e) => setEndLine(Number(e.target.value))}/>
+                                </label>
+                            </div>
                         </div>
+                        <Divider flexItem/>
+                        <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
+                                         currentDataFile={fileName.replace(/.\//, '')}/>
                     </div>
                     <UploadButton onClick={uploadFile} label={'Upload file...'}
                                   currentFile={fileName.replace(/.\//, '')}/>

@@ -1,0 +1,93 @@
+.MuiListItemButton-root {
+  border: 1px solid var(--button-active) !important;
+  border-radius: 6px !important;
+  padding: 0 0.5rem !important;
+  margin: 0 !important;
+  background-color: white !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  width: max-content !important;
+  gap: 1.5rem;
+}
+.MuiListItemButton-root.Mui-selected {
+  background-color: var(--primary-color-light) !important;
+}
+
+.MuiListItem-root {
+  width: fit-content !important;
+  padding: 0.2rem 0 !important;
+}
+
+.MuiListItemText-root {
+  margin: 0 !important;
+}
+
+.MuiSvgIcon-root {
+  width: 1.3rem !important;
+  height: 1.3rem !important;
+}
+
+.preset-list-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.preset-list-container h3 {
+  line-height: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.02rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+.preset-list-container #preset-list {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 0.5rem;
+}
+.preset-list-container #preset-list .preset-item-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+.preset-list-container #preset-list .preset-item-text p {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.4rem;
+  margin: 0.1rem 0.2rem;
+  font-size: 0.8333rem;
+}
+.preset-list-container #preset-list .preset-item-text p span {
+  line-height: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02rem;
+  position: relative;
+  font-size: 0.5rem;
+}
+.preset-list-container #preset-button-panel {
+  display: flex;
+  justify-content: flex-end;
+}
+.preset-list-container #preset-button-panel .preset-button, .preset-list-container #preset-button-panel #save-preset-button, .preset-list-container #preset-button-panel #load-preset-button, .preset-list-container #preset-button-panel #add-preset-button {
+  margin-top: 0.5rem;
+  border-radius: 6px;
+  color: var(--text-color-light);
+  font-weight: 700;
+  font-size: 0.6rem;
+  letter-spacing: 0.02rem;
+  transition: all 0.2s;
+}
+.preset-list-container #preset-button-panel .preset-button.Mui-disabled, .preset-list-container #preset-button-panel .Mui-disabled#save-preset-button, .preset-list-container #preset-button-panel .Mui-disabled#load-preset-button, .preset-list-container #preset-button-panel .Mui-disabled#add-preset-button {
+  color: var(--button-active);
+}
+.preset-list-container #preset-button-panel #add-preset-button {
+  border-width: 2px;
+  margin-right: auto;
+}
+.preset-list-container #preset-button-panel .file-input {
+  display: none;
+}
+
+/*# sourceMappingURL=PresetComponent.css.map */

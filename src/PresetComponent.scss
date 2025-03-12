@@ -1,0 +1,111 @@
+.MuiListItemButton-root {
+    border: 1px solid var(--button-active) !important;
+    border-radius: 6px !important;
+    padding: 0 0.5rem !important;
+    margin: 0 !important;
+    background-color: white !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    width: max-content !important;
+    gap: 1.5rem;
+
+    &.Mui-selected {
+        background-color: var(--primary-color-light) !important;
+    }
+}
+
+.MuiListItem-root {
+    width: fit-content !important;
+    padding: 0.2rem 0 !important;
+}
+
+.MuiListItemText-root {
+    margin: 0 !important;
+}
+
+.MuiSvgIcon-root {
+    width: 1.3rem !important;
+    height: 1.3rem !important;
+}
+
+.preset-list-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    h3 {
+        line-height: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.02rem;
+        font-size: 0.6rem;
+        font-weight: 700;
+    }
+
+    #preset-list {
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: 0.5rem;
+
+        .preset-item-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+
+            p {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                line-height: 1.4rem;
+                margin: 0.1rem 0.2rem;
+                font-size: 0.8333rem;
+
+                span {
+                    line-height: 0.4rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.02rem;
+                    position: relative;
+                    font-size: 0.5rem;
+                }
+            }
+
+        }
+    }
+
+    #preset-button-panel {
+        display: flex;
+        justify-content: flex-end;
+
+        .preset-button {
+            margin-top: 0.5rem;
+            border-radius: 6px;
+            color: var(--text-color-light);
+            font-weight: 700;
+            font-size: 0.6rem;
+            letter-spacing: 0.02rem;
+            transition: all 0.2s;
+
+            &.Mui-disabled {
+                color: var(--button-active);
+            }
+        }
+
+        #add-preset-button {
+            @extend .preset-button;
+            border-width: 2px;
+            margin-right: auto;
+        }
+
+        #save-preset-button, #load-preset-button {
+            @extend .preset-button;
+        }
+
+        .file-input {
+            display: none;
+        }
+    }
+}
+
+
+
