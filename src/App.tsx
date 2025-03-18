@@ -12,7 +12,6 @@ import {UploadButton} from "./UploadButton.tsx";
 import {debounce} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {PresetComponent} from "./PresetComponent.tsx";
-import {Divider} from "@mui/material";
 
 const demoPreset1 = {
     dataPointInterval: 1,
