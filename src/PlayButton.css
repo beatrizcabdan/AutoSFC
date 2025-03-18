@@ -139,10 +139,23 @@ html {
   gap: var(--gap);
   padding: 20px;
 }
-.controls .second-control-row {
+.controls .control-row {
   display: flex;
   justify-content: center;
   gap: var(--gap);
+}
+.controls .control-row #process-container .signal-rows {
+  flex-direction: column;
+  display: flex;
+  align-items: flex-end;
+}
+.controls .control-row #process-container .signal-rows .signal-row span {
+  font-size: 0.9rem;
+  padding-right: 3rem;
+}
+.controls .control-row #process-container .signal-rows .signal-row input {
+  width: 7ch;
+  margin: 0 0.5rem;
 }
 @media (max-width: 1080px) {
   .controls .file-container, .controls .position-container {
@@ -155,7 +168,7 @@ html {
   .controls .file-container {
     order: 2;
   }
-  .controls .second-control-row {
+  .controls .control-row {
     flex-direction: column;
     max-width: 100%;
     width: 100%;
@@ -206,6 +219,12 @@ html {
   max-width: 27rem;
   justify-content: center;
 }
+.controls .control-container .input-label {
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  letter-spacing: 0.02rem;
+  font-weight: 700;
+}
 .controls .control-container h3 {
   margin-top: 0;
   padding-bottom: 1rem;
@@ -218,12 +237,6 @@ html {
   display: flex;
   gap: 1rem;
   flex-direction: row;
-}
-.controls .control-container .text-controls label {
-  text-transform: uppercase;
-  font-size: 0.6rem;
-  letter-spacing: 0.02rem;
-  font-weight: 700;
 }
 .controls .control-container .text-controls input {
   width: 15ch;

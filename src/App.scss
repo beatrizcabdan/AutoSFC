@@ -155,10 +155,30 @@ html {
   padding: 20px;
   $def-control-width: 27rem;
 
-  .second-control-row {
+  .control-row {
     display: flex;
     justify-content: center;
     gap: var(--gap);
+
+    #process-container {
+      .signal-rows {
+        flex-direction: column;
+        display: flex;
+        align-items: flex-end;
+
+        .signal-row {
+          span {
+            font-size: 0.9rem;
+            padding-right: 3rem;
+          }
+
+          input {
+            width: 7ch;
+            margin: 0 0.5rem;
+          }
+        }
+      }
+    }
   }
 
   @media (max-width: 1080px) {
@@ -174,7 +194,7 @@ html {
       order: 2;
     }
 
-    .second-control-row {
+    .control-row {
       flex-direction: column;
       max-width: 100%;
       width: 100%;
@@ -232,6 +252,13 @@ html {
     max-width: $def-control-width;
     justify-content: center;
 
+    .input-label {
+      text-transform: uppercase;
+      font-size: 0.6rem;
+      letter-spacing: 0.02rem;
+      font-weight: 700;
+    }
+
     h3 {
       margin-top: 0;
       padding-bottom: 1rem;
@@ -246,13 +273,6 @@ html {
       display: flex;
       gap: 1rem;
       flex-direction: row;
-
-      label {
-        text-transform: uppercase;
-        font-size: 0.6rem;
-        letter-spacing: 0.02rem;
-        font-weight: 700;
-      }
 
       input {
         width: 15ch;

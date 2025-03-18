@@ -74,10 +74,11 @@ function App() {
     const [startLine, setStartLine] = useState(preset.dataRangeStart)
     const [endLine, setEndLine] = useState(preset.dataRangeEnd)
 
-    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y'])
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'speed'])
 
     const [data, setData] = useState<number[][]>([])
     const [scales, setScales] = useState<number[]>([])
+    const [offsets, setOffsets] = useState<number[]>([])
     const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
     const [finishTimeXTicks, setFinishTimeXTicks] = useState<number>()
     const allDataLabelsRef = useRef<string[]>([])
@@ -317,20 +318,20 @@ function App() {
                             <PlayButton onClick={onPlayClick} status={playStatus}/>
                         </div>
                     </div>
-                    <div className={'second-control-row'}>
+                    <div className={'control-row'}>
                         <div className={'control-container'} id={'range-container'}>
                             <h3>Displayed range</h3>
                             <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
                                              numLines={dataNumLines}
                                              onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
                             <div className={'text-controls'}>
-                                <label>
+                                <label className={'input-label'}>
                                     Start row:
                                     <input type="number" value={startLine}
                                            onChange={(e) => setStartLine(Number(e.target.value))}/>
                                 </label>
                                 &nbsp;
-                                <label>
+                                <label className={'input-label'}>
                                     End row:
                                     <input type="number" value={endLine}
                                            onChange={(e) => setEndLine(Number(e.target.value))}/>
@@ -341,6 +342,28 @@ function App() {
                             <h3>Presets</h3>
                             <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
                                              currentDataFile={fileName.replace(/.\//, '')}/>
+                        </div>
+                    </div>
+                    <div className={'control-row'}>
+                        <div className={'control-container'} id={'process-container'}>
+                            <h3>Scale/transform</h3>
+                            <div className={'signal-rows'}>
+                                {displayedDataLabels?.map(signal =>
+                                    <div className={'signal-row'}>
+                                        <span>{signal}</span>
+                                        <label className={'input-label'}>
+                                            Offset
+                                            <input type="number" value={0}
+                                                   onChange={(e) => setStartLine(Number(e.target.value))}/>
+                                        </label>
+                                        <label className={'input-label'}>
+                                            Scale
+                                            <input type="number" value={1}
+                                                   onChange={(e) => setStartLine(Number(e.target.value))}/>
+                                        </label>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
