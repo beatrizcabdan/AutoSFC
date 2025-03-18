@@ -148,8 +148,7 @@ html {
   box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px 1px;
   padding: 1.2rem 1.8rem;
   flex: 1 1 30rem;
-  margin-right: auto;
-  max-width: calc(50% - var(--gap));
+  max-width: 30rem;
   justify-content: center;
 }
 .controls .control-container h3 {
