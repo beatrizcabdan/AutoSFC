@@ -148,6 +148,7 @@ html {
   flex-direction: column;
   display: flex;
   align-items: flex-end;
+  gap: 0.2rem;
 }
 .controls .control-row #process-container .signal-rows .signal-row {
   display: flex;
