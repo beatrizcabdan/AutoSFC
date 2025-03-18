@@ -41,6 +41,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
 
     @media (max-width: 750px) {
         #preset-list {
@@ -84,6 +85,7 @@
     #preset-button-panel {
         display: flex;
         justify-content: flex-end;
+        width: 100%;
 
         .preset-button {
             margin-top: 0.5rem;
