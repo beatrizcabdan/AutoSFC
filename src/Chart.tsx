@@ -22,7 +22,7 @@ function getSmoothedData(data: number[], smoothing: number) {
 
 export function Chart(props: { name: string, data: number[][], scales: number[], type: string, xAxisName: string, yAxisName: string,
     yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[] | null, currentSignalXVal: number,
-    startTimeXticks?: number, finishTimeXticks?: number, lineDataSmoothing?: number, onLegendClick?: () => void}) {
+    startTimeXticks?: number, finishTimeXticks?: number, lineDataSmoothing?: number, onLegendClick?: () => void, lineColors?: string[]}) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
     const AXIS_PADDING_FACTOR = 0.07
@@ -35,8 +35,6 @@ export function Chart(props: { name: string, data: number[][], scales: number[],
     const MARKER_RADIUS = 12
     const MORTON_BAR_WIDTH = 4
     const MORTON_PIXEL_DIAM = 4
-
-    const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const curvePaddingRef = useRef(0)
@@ -223,7 +221,7 @@ export function Chart(props: { name: string, data: number[][], scales: number[],
             if (props.type == 'line') {
                 props.data.forEach((column, i) => {
                     // Draw lines
-                    ctx.strokeStyle = LINE_COLORS[i]
+                    ctx.strokeStyle = props.lineColors![i]
                     ctx.beginPath()
                     ctx.lineWidth = LINE_WIDTH
                     const smoothedData = props.lineDataSmoothing
@@ -260,7 +258,7 @@ export function Chart(props: { name: string, data: number[][], scales: number[],
                     ctx.shadowBlur = 0
 
                     // Inner circle
-                    ctx.fillStyle = LINE_COLORS[i]
+                    ctx.fillStyle = props.lineColors![i]
                     ctx.beginPath();
                     // noinspection JSSuspiciousNameCombination
                     ctx.arc(x, y, MARKER_RADIUS - 3, 0, 2 * Math.PI);

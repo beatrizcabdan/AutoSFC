@@ -149,9 +149,24 @@ html {
   display: flex;
   align-items: flex-end;
 }
-.controls .control-row #process-container .signal-rows .signal-row span {
+.controls .control-row #process-container .signal-rows .signal-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+}
+.controls .control-row #process-container .signal-rows .signal-row .color-line {
+  display: flex;
+  width: 32px;
+  max-width: 32px;
+  height: 4px;
+  padding: 0;
+  margin-right: 3px;
+}
+.controls .control-row #process-container .signal-rows .signal-row .signal-name {
   font-size: 0.9rem;
   padding-right: 3rem;
+  margin-right: auto;
 }
 .controls .control-row #process-container .signal-rows .signal-row input {
   width: 7ch;

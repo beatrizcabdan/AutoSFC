@@ -65,6 +65,7 @@ export enum PlayStatus {
 function App() {
     const SLIDER_START_VAL = 0
     const EXAMPLE_FILE_PATH = './emergency_braking.csv'
+    const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
 
     const [filePath, setFilePath] = useState(EXAMPLE_FILE_PATH)
     const [fileName, setFileName] = useState(EXAMPLE_FILE_PATH)
@@ -299,7 +300,7 @@ function App() {
                            yAxisName={'Signal'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels}
                            startTimeXticks={startTimeXTicks} finishTimeXticks={finishTimeXTicks}
                            currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
-                           onLegendClick={selectDataColumns}/>
+                           onLegendClick={selectDataColumns} lineColors={LINE_COLORS}/>
                     <Chart name={'Morton plot (with bars)'} data={data} scales={scales} minValue={minChartValue}
                            maxValue={maxChartValue}
                            type={'scatter'} xAxisName={'Morton'}
@@ -348,9 +349,10 @@ function App() {
                         <div className={'control-container'} id={'process-container'}>
                             <h3>Scale/transform</h3>
                             <div className={'signal-rows'}>
-                                {displayedDataLabels?.map(signal =>
-                                    <div className={'signal-row'}>
-                                        <span>{signal}</span>
+                                {displayedDataLabels?.map((signal, i) =>
+                                    <div className={'signal-row'} key={i}>
+                                        <span style={{background: LINE_COLORS[i]}} className={'color-line'}></span>
+                                        <span className={'signal-name'}>{signal}</span>
                                         <label className={'input-label'}>
                                             Offset
                                             <input type="number" value={0}
