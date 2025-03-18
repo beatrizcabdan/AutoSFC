@@ -325,16 +325,15 @@ function App() {
                         </div>
                     </div>
                     <div className={'control-container'}>
-                        <h3>Presets</h3>
-                        <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
-                                         currentDataFile={fileName.replace(/.\//, '')}/>
-                    </div>
-                    <div className={'control-container'}>
                         <h3>Current file</h3>
                         <UploadButton onClick={uploadFile} label={'Upload file...'}
                                       currentFile={fileName.replace(/.\//, '')}/>
                     </div>
-
+                    <div className={'control-container'}>
+                        <h3>Presets</h3>
+                        <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
+                                         currentDataFile={fileName.replace(/.\//, '')}/>
+                    </div>
                 </div>
             </div>
 
