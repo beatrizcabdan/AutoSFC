@@ -62,7 +62,6 @@ html {
   align-items: flex-end;
   flex-direction: row;
   gap: 0.5rem;
-  width: 100%;
 
   .chart {
     justify-content: center;
@@ -146,13 +145,79 @@ html {
 
 .controls {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   width: 100%;
   flex-wrap: wrap;
   --gap: 20px;
   gap: var(--gap);
   padding: 20px;
-  // max-width: 70rem;
+  $def-control-width: 27rem;
+
+  .second-control-row {
+    display: flex;
+    justify-content: center;
+    gap: var(--gap);
+  }
+
+  @media (max-width: 1080px) {
+    .file-container, .position-container {
+      width: 100% !important;
+      border-radius: 10px;
+      border: 0 solid black;
+      box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px 1px;
+      padding: 1.2rem 1.8rem;
+    }
+
+    .file-container {
+      order: 2;
+    }
+
+    .second-control-row {
+      flex-direction: column;
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .control-container {
+      max-height: fit-content;
+    }
+
+    #range-container, #presets-container {
+      max-width: 100%;
+      width: 100%;
+    }
+
+    #first-control-row {
+      flex-direction: column !important;
+      border: none;
+      padding: 0;
+      box-shadow: none;
+    }
+  }
+
+  #first-control-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    max-width: calc(var(--gap) + 2 * $def-control-width);
+    flex: initial;
+    gap: var(--gap);
+
+    .file-container {
+      width: 10rem;
+    }
+
+    .position-container {
+      flex: 1 1 auto;
+      width: auto;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+    }
+  }
 
   .control-container {
     width: 100%;
@@ -163,8 +228,8 @@ html {
     border: 0 solid black;
     box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px 1px;
     padding: 1.2rem 1.8rem;
-    flex: 1 1 30rem;
-    max-width: 30rem;
+    flex: 1 1 $def-control-width;
+    max-width: $def-control-width;
     justify-content: center;
 
     h3 {
@@ -176,7 +241,6 @@ html {
     > :last-child {
       margin-bottom: auto;
     }
-
 
     .text-controls {
       display: flex;

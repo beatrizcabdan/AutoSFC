@@ -56,7 +56,6 @@ html {
   align-items: flex-end;
   flex-direction: row;
   gap: 0.5rem;
-  width: 100%;
 }
 .charts .chart {
   justify-content: center;
@@ -131,12 +130,68 @@ html {
 
 .controls {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   width: 100%;
   flex-wrap: wrap;
   --gap: 20px;
   gap: var(--gap);
   padding: 20px;
+}
+.controls .second-control-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--gap);
+}
+@media (max-width: 1080px) {
+  .controls .file-container, .controls .position-container {
+    width: 100% !important;
+    border-radius: 10px;
+    border: 0 solid black;
+    box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px 1px;
+    padding: 1.2rem 1.8rem;
+  }
+  .controls .file-container {
+    order: 2;
+  }
+  .controls .second-control-row {
+    flex-direction: column;
+    max-width: 100%;
+    width: 100%;
+  }
+  .controls .control-container {
+    max-height: fit-content;
+  }
+  .controls #range-container, .controls #presets-container {
+    max-width: 100%;
+    width: 100%;
+  }
+  .controls #first-control-row {
+    flex-direction: column !important;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+  }
+}
+.controls #first-control-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  max-width: calc(var(--gap) + 54rem);
+  flex: initial;
+  gap: var(--gap);
+}
+.controls #first-control-row .file-container {
+  width: 10rem;
+}
+.controls #first-control-row .position-container {
+  flex: 1 1 auto;
+  width: auto;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
 }
 .controls .control-container {
   width: 100%;
@@ -147,8 +202,8 @@ html {
   border: 0 solid black;
   box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px 1px;
   padding: 1.2rem 1.8rem;
-  flex: 1 1 30rem;
-  max-width: 30rem;
+  flex: 1 1 27rem;
+  max-width: 27rem;
   justify-content: center;
 }
 .controls .control-container h3 {
