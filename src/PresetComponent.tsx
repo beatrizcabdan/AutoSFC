@@ -122,7 +122,6 @@ export function PresetComponent(props: {
     }
 
     return <div className={'preset-list-container'}>
-        <h3>Presets</h3>
         <List id={'preset-list'}>
             {presets?.map((p, i) => <ListItem key={i}>
                  <Zoom appear={i == deletedIndex || p.startRow === props.displayedStartRow && p.endRow === props.displayedEndRow}
