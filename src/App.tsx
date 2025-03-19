@@ -78,6 +78,7 @@ function App() {
     const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y'])
 
     const [data, setData] = useState<number[][]>([])
+    const [scales, setScales] = useState<number[]>([])
     const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
     const [finishTimeXTicks, setFinishTimeXTicks] = useState<number>()
     const allDataLabelsRef = useRef<string[]>([])
@@ -133,7 +134,12 @@ function App() {
                     maxData = Math.max(maxData, sortedData[sortedData.length - 1])
                 })
 
+                // HARDCODED SCALES FOR NUMBERS!
+                const scaleArray: number[] = [];
+                for (let i = 0; i < Math.max(colIndices.length); i++) scaleArray.push(100);
+
                 setData(newData)
+                setScales(scaleArray)
                 setStartTimeXTicks(startTimeXTicks)
                 setFinishTimeXTicks(finishTimeXTicks)
                 setMinChartValue(minData)
@@ -288,13 +294,13 @@ function App() {
 
             <div id={'main'}>
                 <div className={'charts'}>
-                    <Chart name={'Original signals plot'} data={data} minValue={minChartValue} maxValue={maxChartValue}
+                    <Chart name={'Original signals plot'} data={data} scales={scales} minValue={minChartValue} maxValue={maxChartValue}
                            type={'line'} xAxisName={'Time'}
                            yAxisName={'Signal'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels}
                            startTimeXticks={startTimeXTicks} finishTimeXticks={finishTimeXTicks}
                            currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
                            onLegendClick={selectDataColumns}/>
-                    <Chart name={'Morton plot (with bars)'} data={data} minValue={minChartValue}
+                    <Chart name={'Morton plot (with bars)'} data={data} scales={scales} minValue={minChartValue}
                            maxValue={maxChartValue}
                            type={'scatter'} xAxisName={'Morton'}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>

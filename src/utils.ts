@@ -98,27 +98,18 @@ export function hilbertEncode2D( locs: number[][], numDims: number, numBits: num
 
 //MORTON
 
-function assignSlice(c: number, start: number, totalBits: number, step: number, v: number): number {
-  // Determine the indices in the slice
-  const indices: number[] = [];
-  for (let pos = start; pos < totalBits; pos += step) {
-    indices.push(pos);
-  }
-  const L = indices.length;
-  // Compute 2^L
-  const modValue = 1 << L; // assumes L < 31
-  // Compute a non-negative modulus for v (handle negatives properly)
-  const v_mod = ((v % modValue) + modValue) % modValue;
-
-  // For each bit in v_mod, update c's bit at the corresponding position
-  for (let k = 0; k < L; k++) {
-    // Extract k-th bit of v_mod
-    const bit = (v_mod >> k) & 1;
-    // Clear the bit at indices[k] in c
-    c &= ~(1 << indices[k]);
-    // Set the bit if needed
-    if (bit === 1) {
-      c |= (1 << indices[k]);
+function assignSlice(c: bigint, dataPoint: number[], totalBits: number, dims: number ): bigint {
+  for (let i = 0; i < dataPoint.length; i++) {
+    // Convert the number to a bigint on the fly
+    let v = BigInt(dataPoint[i]);
+    let bitIndex = 0;
+    for (let pos = i; pos < totalBits; pos += dims) {
+      const bit = (v >> BigInt(bitIndex)) & 1n;
+      c &= ~(1n << BigInt(pos));
+      if (bit === 1n) {
+        c |= (1n << BigInt(pos));
+      }
+      bitIndex++;
     }
   }
   return c;
@@ -129,20 +120,10 @@ export function morton_interlace(data: number[][], bits_per_dim: number) {
     const resultArr: number[] = []
     data = data[0].map((_, colIndex) => data.map(row => row[colIndex])); //transpose
     data.forEach((x, i) => {
-        x = x.map(dim => Math.trunc(Math.round(dim*10)));
-
-        //not fixing bits per dim
-        // let bigger_x = x.reduce((max, current) => (current > max ? current : max), x[0]);
-        // bigger_x = bigger_x < 2 ? 1 : bigger_x;
-        // let bits_per_dim = Math.floor( Math.log(bigger_x) / Math.log(2) ) + 1
-
         const total_bits = dims * bits_per_dim
 
-        let c = 0;
-        for (let i = 0; i < x.length; i++) {
-          const v = x[i];
-          c = assignSlice(c, i, total_bits, dims, v);
-        }
+        let c = BigInt(0);
+        c = assignSlice(c, x, total_bits, dims);
         resultArr.push(Number(c));
     })
     return resultArr

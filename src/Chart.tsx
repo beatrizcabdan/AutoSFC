@@ -20,7 +20,7 @@ function getSmoothedData(data: number[], smoothing: number) {
     return smoothedArr
 }
 
-export function Chart(props: { name: string, data: number[][], type: string, xAxisName: string, yAxisName: string,
+export function Chart(props: { name: string, data: number[][], scales: number[], type: string, xAxisName: string, yAxisName: string,
     yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[] | null, currentSignalXVal: number,
     startTimeXticks?: number, finishTimeXticks?: number, lineDataSmoothing?: number, onLegendClick?: () => void}) {
     const PLOT_NUM_Y_VALUES = 8
@@ -36,7 +36,7 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
     const MORTON_BAR_WIDTH = 4
     const MORTON_PIXEL_DIAM = 4
 
-    const LINE_COLORS = ['blue', 'orange', 'green']
+    const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const curvePaddingRef = useRef(0)
@@ -158,8 +158,10 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
-            const mortonData = morton_interlace([props.data[0], props.data[1]], 8).reverse()
 
+            const multipliedData = props.data.map((column, colIndex) => column.map(value => Math.trunc(value * props.scales[colIndex])));
+            const mortonData = morton_interlace(multipliedData, 10).reverse()
+            // console.log(mortonData)
 
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]

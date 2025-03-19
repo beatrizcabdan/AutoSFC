@@ -1,5 +1,9 @@
 $line-color-1: blue;
 $line-color-2: orange;
+$line-color-3: darkgreen;
+$line-color-4: red;
+$line-color-5: purple;
+$line-color-6: saddlebrown;
 $line-width: 4px;
 
 .legend-container {
@@ -50,7 +54,18 @@ $line-width: 4px;
             &:nth-of-type(2):before {
                 background: $line-color-2;
             }
-
+            &:nth-of-type(3):before {
+                background: $line-color-3;
+            }
+            &:nth-of-type(4):before {
+                background: $line-color-4;
+            }
+            &:nth-of-type(5):before {
+                background: $line-color-5;
+            }
+            &:nth-of-type(6):before {
+                background: $line-color-6;
+            }
             &:before {
                 content: ' ';
                 width: 2rem;
