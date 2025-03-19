@@ -7,7 +7,6 @@
   display: flex !important;
   justify-content: space-between !important;
   width: max-content !important;
-  gap: 1.5rem;
   transition: all 0.2s !important;
 }
 .MuiListItemButton-root.Mui-selected {
@@ -19,8 +18,11 @@
 }
 
 .MuiListItem-root {
-  width: fit-content !important;
   padding: 0.2rem 0 !important;
+}
+
+.MuiList-root {
+  padding-top: 0 !important;
 }
 
 .MuiListItemText-root {
@@ -36,13 +38,13 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
-.preset-list-container h3 {
-  line-height: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.02rem;
-  font-size: 0.6rem;
-  font-weight: 700;
+@media (max-width: 750px) {
+  .preset-list-container #preset-list {
+    grid-template-columns: repeat(1, 1fr) !important;
+    max-width: 15rem;
+  }
 }
 .preset-list-container #preset-list {
   display: grid;
@@ -52,7 +54,6 @@
 }
 .preset-list-container #preset-list .preset-item-text {
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 0.5rem;
 }
@@ -74,6 +75,7 @@
 .preset-list-container #preset-button-panel {
   display: flex;
   justify-content: flex-end;
+  width: 100%;
 }
 .preset-list-container #preset-button-panel .preset-button, .preset-list-container #preset-button-panel #save-preset-button, .preset-list-container #preset-button-panel #load-preset-button, .preset-list-container #preset-button-panel #add-preset-button {
   margin-top: 0.5rem;

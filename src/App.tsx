@@ -3,7 +3,7 @@
 
 import './App.scss'
 
-import {ChangeEvent, useEffect, useRef, useState} from 'react';
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {Chart} from "./Chart.tsx";
 import {PlaySlider} from "./PlaySlider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
@@ -12,7 +12,6 @@ import {UploadButton} from "./UploadButton.tsx";
 import {debounce} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {PresetComponent} from "./PresetComponent.tsx";
-import {Divider} from "@mui/material";
 
 const demoPreset1 = {
     dataPointInterval: 1,
@@ -306,12 +305,21 @@ function App() {
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
                 </div>
                 <div className={'controls'}>
-                    <div className={'control-container'}>
-                        <PlayButton onClick={onPlayClick} status={playStatus}/>
-                        <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
+                    <div className={'control-container'} id={'first-control-row'}>
+                        <div className={'file-container'}>
+                            <h3>Current file</h3>
+                            <UploadButton onClick={uploadFile} label={'Upload file...'}
+                                          currentFile={fileName.replace(/.\//, '')}/>
+                        </div>
+                        <div className={'position-container'}>
+                            <h3>Current datapoint</h3>
+                            <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
+                            <PlayButton onClick={onPlayClick} status={playStatus}/>
+                        </div>
                     </div>
-                    <div className={'control-container range-container'}>
-                        <div>
+                    <div className={'second-control-row'}>
+                        <div className={'control-container'} id={'range-container'}>
+                            <h3>Displayed range</h3>
                             <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
                                              numLines={dataNumLines}
                                              onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
@@ -329,12 +337,12 @@ function App() {
                                 </label>
                             </div>
                         </div>
-                        <Divider flexItem/>
-                        <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
-                                         currentDataFile={fileName.replace(/.\//, '')}/>
+                        <div className={'control-container'} id={'presets-container'}>
+                            <h3>Presets</h3>
+                            <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
+                                             currentDataFile={fileName.replace(/.\//, '')}/>
+                        </div>
                     </div>
-                    <UploadButton onClick={uploadFile} label={'Upload file...'}
-                                  currentFile={fileName.replace(/.\//, '')}/>
                 </div>
             </div>
 
@@ -383,9 +391,7 @@ function App() {
                         </div>
                     </div>
                 </div>
-
             </div>
-
             <div className="tabcontent" id={'about'}>
                 <h1>Space-Filling Curves (SFCs): what and why?</h1>
                 <div className="papers-container">
