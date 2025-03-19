@@ -16,6 +16,7 @@ export function PresetComponent(props: {
 
     const [presets, setPresets] = useState<Preset[] | null>()
     const [selectedIndex, setSelectedIndex] = useState(0)
+    const [deletedIndex, setDeletedIndex] = useState(-1)
     const inputRef = useRef<HTMLInputElement | null>(null)
 
     function setPresetsFromFileString(content: string) {
@@ -25,6 +26,9 @@ export function PresetComponent(props: {
             const [startRow, endRow] = line.split(/[;,]/)
             presArray.push({startRow: Number(startRow), endRow: Number(endRow)})
         })
+        presArray.sort((p1, p2) =>
+            // Sort first by startRow, then by endRow
+            p1.startRow !== p2.startRow ? p1.startRow - p2.startRow : p1.endRow - p2.endRow)
         setPresets(presArray)
         setSelectedIndex(-1)
     }
@@ -34,7 +38,6 @@ export function PresetComponent(props: {
         fetch(presetPath).then(r => {
             r.text().then(t => setPresetsFromFileString(t))
         })
-        setPresetsFromFileString(presetPath);
     }, [])
 
     useEffect(() => {
@@ -45,12 +48,13 @@ export function PresetComponent(props: {
         for (const p of presets) {
             const i = presets.indexOf(p);
             if (props.displayedStartRow === p.startRow && props.displayedEndRow === p.endRow) {
+                console.log(i)
                 setSelectedIndex(i)
                 return;
             }
         }
         setSelectedIndex(-1)
-    }, [props.displayedStartRow, props.displayedEndRow]);
+    }, [presets, props.displayedStartRow, props.displayedEndRow]);
 
     function onPresetClick(index: number) {
         setSelectedIndex(index)
@@ -62,15 +66,18 @@ export function PresetComponent(props: {
         if (selectedIndex > -1) {
             return
         }
-        setPresets(presets => [...presets!, {startRow: props.displayedStartRow,
-            endRow: props.displayedEndRow}])
-        setSelectedIndex(presets!.length)
+        const newPreset = {startRow: props.displayedStartRow,
+            endRow: props.displayedEndRow}
+        const newPresets = [...presets!, newPreset]
+            .sort((p1, p2) =>
+                p1.startRow !== p2.startRow ? p1.startRow - p2.startRow : p1.endRow - p2.endRow)
+        setPresets(newPresets)
+        setSelectedIndex(newPresets.findIndex(p => p === newPreset))
     }
 
     function onPresetDeleteClick(i: number, e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
-        setPresets(presets => [...presets!.slice(0, i), ...presets!.slice(i + 1)])
-        setSelectedIndex(-1)
+        setDeletedIndex(i)
     }
 
     function onLoadClick() {
@@ -109,11 +116,17 @@ export function PresetComponent(props: {
         hiddenElement.click();
     }
 
+    function removePreset(index: number) {
+        setPresets(presets => [...presets!.slice(0, index), ...presets!.slice(index + 1)])
+        setDeletedIndex(-1)
+    }
+
     return <div className={'preset-list-container'}>
         <h3>Presets</h3>
         <List id={'preset-list'}>
             {presets?.map((p, i) => <ListItem key={i}>
-                <Zoom in={true}>
+                 <Zoom appear={i == deletedIndex || p.startRow === props.displayedStartRow && p.endRow === props.displayedEndRow}
+                       in={i !== deletedIndex} onExited={() => removePreset(i)}>
                     <ListItemButton selected={i === selectedIndex} onClick={() => onPresetClick(i)}>
                         <ListItemText primary={<div className={'preset-item-text'}>
                             <p>{p.startRow}<span>Start</span></p>
