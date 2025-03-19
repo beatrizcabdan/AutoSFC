@@ -3,6 +3,7 @@
 import {useEffect, useRef} from "react";
 import {makeGaussKernel, morton_interlace, mortonEncode2D} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
+import {DEFAULT_SCALING_FACTOR} from "./App.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
     const smoothedArr: number[] = []
@@ -20,7 +21,7 @@ function getSmoothedData(data: number[], smoothing: number) {
     return smoothedArr
 }
 
-export function Chart(props: { name: string, data: number[][], scales: number[], type: string, xAxisName: string, yAxisName: string,
+export function Chart(props: { name: string, data: number[][], scales: (number | undefined)[], type: string, xAxisName: string, yAxisName: string,
     yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[] | null, currentSignalXVal: number,
     startTimeXticks?: number, finishTimeXticks?: number, lineDataSmoothing?: number, onLegendClick?: () => void, lineColors?: string[]}) {
     const PLOT_NUM_Y_VALUES = 8
@@ -157,9 +158,9 @@ export function Chart(props: { name: string, data: number[][], scales: number[],
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
 
-            const multipliedData = props.data.map((column, colIndex) => column.map(value => Math.trunc(value * props.scales[colIndex])));
+            const multipliedData = props.data.map((column, colIndex) => column.map(value =>
+                Math.trunc(value * (props.scales[colIndex] ?? DEFAULT_SCALING_FACTOR))));
             const mortonData = morton_interlace(multipliedData, 10).reverse()
-            // console.log(mortonData)
 
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
@@ -311,7 +312,7 @@ export function Chart(props: { name: string, data: number[][], scales: number[],
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [], CURVE_PADDING_FACTOR, leftExtraPadding)
             drawAxis(canvas, axisPadding, 'top', 2, undefined, undefined, leftExtraPadding)
         }
-    }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal]);
+    }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal, props.scales]);
 
     return <div className={'chart'}>
         <h2 className={'chartitle'}>{props.name}</h2>

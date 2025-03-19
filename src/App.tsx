@@ -62,6 +62,8 @@ export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
 }
 
+export const DEFAULT_SCALING_FACTOR = 100
+
 function App() {
     const SLIDER_START_VAL = 0
     const EXAMPLE_FILE_PATH = './emergency_braking.csv'
@@ -78,7 +80,8 @@ function App() {
     const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'speed'])
 
     const [data, setData] = useState<number[][]>([])
-    const [scales, setScales] = useState<number[]>([])
+    // Use default scaling factor when scale is undefined (this to allow removing all digits in inputs)
+    const [scales, setScales] = useState<(number | undefined)[]>([])
     const [offsets, setOffsets] = useState<number[]>([])
     const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
     const [finishTimeXTicks, setFinishTimeXTicks] = useState<number>()
@@ -277,6 +280,15 @@ function App() {
         setEndLine(endRow)
     }
 
+    function onScalesChanged(index: number, scale: number | undefined) {
+        scales[index] = scale
+        setScales([...scales])
+    }
+
+    function onOffsetsChanged(index: number, offset: number) {
+
+    }
+
     // @ts-ignore
     return (
         <>
@@ -356,12 +368,14 @@ function App() {
                                         <label className={'input-label'}>
                                             Offset
                                             <input type="number" value={0}
-                                                   onChange={(e) => setStartLine(Number(e.target.value))}/>
+                                                   onChange={(e) => onOffsetsChanged(i, Number(e.target.value))}/>
                                         </label>
                                         <label className={'input-label'}>
                                             Scale
-                                            <input type="number" value={1}
-                                                   onChange={(e) => setStartLine(Number(e.target.value))}/>
+                                            <input type="number" value={scales[i]} onBlur={() =>
+                                                onScalesChanged(i, Number(scales[i] ?? DEFAULT_SCALING_FACTOR))}
+                                                   onChange={(e) =>
+                                                       onScalesChanged(i, e.target.value ? Number(e.target.value) : undefined)}/>
                                         </label>
                                     </div>
                                 )}
