@@ -98,11 +98,61 @@ export function hilbertEncode2D( locs: number[][], numDims: number, numBits: num
 
 //MORTON
 
+function assignSlice(c: number, start: number, totalBits: number, step: number, v: number): number {
+  // Determine the indices in the slice
+  const indices: number[] = [];
+  for (let pos = start; pos < totalBits; pos += step) {
+    indices.push(pos);
+  }
+  const L = indices.length;
+  // Compute 2^L
+  const modValue = 1 << L; // assumes L < 31
+  // Compute a non-negative modulus for v (handle negatives properly)
+  const v_mod = ((v % modValue) + modValue) % modValue;
+
+  // For each bit in v_mod, update c's bit at the corresponding position
+  for (let k = 0; k < L; k++) {
+    // Extract k-th bit of v_mod
+    const bit = (v_mod >> k) & 1;
+    // Clear the bit at indices[k] in c
+    c &= ~(1 << indices[k]);
+    // Set the bit if needed
+    if (bit === 1) {
+      c |= (1 << indices[k]);
+    }
+  }
+  return c;
+}
+
+export function morton_interlace(data: number[][], bits_per_dim: number) {
+    const dims = data.length;
+    const resultArr: number[] = []
+    data = data[0].map((_, colIndex) => data.map(row => row[colIndex])); //transpose
+    data.forEach((x, i) => {
+        x = x.map(dim => Math.trunc(Math.round(dim*10)));
+
+        //not fixing bits per dim
+        // let bigger_x = x.reduce((max, current) => (current > max ? current : max), x[0]);
+        // bigger_x = bigger_x < 2 ? 1 : bigger_x;
+        // let bits_per_dim = Math.floor( Math.log(bigger_x) / Math.log(2) ) + 1
+
+        const total_bits = dims * bits_per_dim
+
+        let c = 0;
+        for (let i = 0; i < x.length; i++) {
+          const v = x[i];
+          c = assignSlice(c, i, total_bits, dims, v);
+        }
+        resultArr.push(Number(c));
+    })
+    return resultArr
+}
+
 export function mortonEncode2D(xData: number[], yData: number[]) {
     const resultArr: number[] = []
     xData.forEach((x, i) => {
-        x = Math.trunc(Math.trunc((x + 10.0) * 1000000)/1000000 * 100)
-        const y = Math.trunc(Math.trunc((Number(yData[i]) + 10.0) * 1000000)/1000000 * 100)
+        x = Math.trunc(Math.round(x * 10))
+        const y = Math.trunc(Math.round(Number(yData[i]) * 10))
 
         let xn = BigInt(x)
         xn = (xn | (xn << 16n)) & 0x0000FFFF0000FFFFn

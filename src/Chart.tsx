@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 
 import {useEffect, useRef} from "react";
-import {makeGaussKernel, mortonEncode2D} from "./utils.ts";
+import {makeGaussKernel, morton_interlace, mortonEncode2D} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
@@ -158,7 +158,8 @@ export function Chart(props: { name: string, data: number[][], type: string, xAx
 
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
-            const mortonData = mortonEncode2D(props.data[0], props.data[1]).reverse()
+            const mortonData = morton_interlace([props.data[0], props.data[1]], 8).reverse()
+
 
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
