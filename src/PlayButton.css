@@ -179,9 +179,9 @@ html {
   margin-bottom: initial;
 }
 .horiz-control-wrapper #process-container .signals-grid {
-  width: min-content;
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: auto repeat(2, min-content);
   gap: 0.2rem;
   grid-auto-rows: auto;
 }
