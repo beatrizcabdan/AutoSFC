@@ -16,7 +16,7 @@ export function ProcessingComponent(props: {
             <span className={'input-label offset-label'}>Offset</span>
             <span className={'input-label scale-label'}>Scale</span>
             {props.displayedDataLabels?.map((signal, i) =>
-                <>
+                <React.Fragment key={i}>
                     <div className={'signal-cell'} key={i}>
                         <span style={{background: props.lineColors[i]}} className={'color-line'}></span>
                         <span className={'signal-name'}>{signal}</span>
@@ -33,7 +33,7 @@ export function ProcessingComponent(props: {
                                onChange={(e) =>
                                    props.onScalesChanged(i, e.target.value ? Number(e.target.value) : undefined)}/>
                     </label>
-                </>
+                </React.Fragment>
             )}
         </div>
     </div>;

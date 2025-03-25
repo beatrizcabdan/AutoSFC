@@ -174,10 +174,10 @@ export function Chart(props: {
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
 
-            const multipliedData = props.data.map((column, colIndex) => column.map(value =>
-                Math.trunc(value * (props.scales[colIndex] ?? DEFAULT_SCALING_FACTOR) + (props.offsets[colIndex] ?? 0))));
-            console.log(multipliedData)
-            const mortonData = morton_interlace(multipliedData, 10).reverse()
+            // Add scaling, offsets before processing
+            const transformedData = props.data.map((column, colIndex) => column.map(value =>
+                Math.trunc(value * (props.scales[colIndex] ?? DEFAULT_SCALING_FACTOR) + (props.offsets[colIndex] ?? 0))))
+            const mortonData = morton_interlace(transformedData, 10).reverse()
 
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]

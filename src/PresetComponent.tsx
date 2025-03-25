@@ -48,7 +48,6 @@ export function PresetComponent(props: {
         for (const p of presets) {
             const i = presets.indexOf(p);
             if (props.displayedStartRow === p.startRow && props.displayedEndRow === p.endRow) {
-                console.log(i)
                 setSelectedIndex(i)
                 return;
             }
