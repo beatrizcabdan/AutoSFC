@@ -83,7 +83,7 @@ function App() {
     const [data, setData] = useState<number[][]>([])
     // Use default scaling factor when scale is undefined (this to allow removing all digits in inputs)
     const [scales, setScales] = useState<(number | undefined)[]>([])
-    const [offsets, setOffsets] = useState<number[]>([])
+    const [offsets, setOffsets] = useState<(number | undefined)[]>([])
     const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
     const [finishTimeXTicks, setFinishTimeXTicks] = useState<number>()
     const allDataLabelsRef = useRef<string[]>([])
@@ -139,12 +139,9 @@ function App() {
                     maxData = Math.max(maxData, sortedData[sortedData.length - 1])
                 })
 
-                // HARDCODED SCALES FOR NUMBERS!
-                const scaleArray: number[] = [];
-                for (let i = 0; i < Math.max(colIndices.length); i++) scaleArray.push(100);
-
                 setData(newData)
-                setScales(scaleArray)
+                setScales(Array(colIndices.length).fill(DEFAULT_SCALING_FACTOR))
+                setOffsets(Array(colIndices.length).fill(0))
                 setStartTimeXTicks(startTimeXTicks)
                 setFinishTimeXTicks(finishTimeXTicks)
                 setMinChartValue(minData)
@@ -286,8 +283,9 @@ function App() {
         setScales([...scales])
     }
 
-    function onOffsetsChanged(index: number, offset: number) {
-
+    function onOffsetsChanged(index: number, offset: number | undefined) {
+        offsets[index] = offset
+        setOffsets([...offsets])
     }
 
     // @ts-ignore
@@ -308,15 +306,14 @@ function App() {
 
             <div id={'main'}>
                 <div className={'charts'}>
-                    <Chart name={'Original signals plot'} data={data} scales={scales} minValue={minChartValue} maxValue={maxChartValue}
-                           type={'line'} xAxisName={'Time'}
+                    <Chart name={'Original signals plot'} data={data} scales={scales} offsets={offsets}
+                           minValue={minChartValue} maxValue={maxChartValue} type={'line'} xAxisName={'Time'}
                            yAxisName={'Signal'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels}
                            startTimeXticks={startTimeXTicks} finishTimeXticks={finishTimeXTicks}
                            currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
                            onLegendClick={selectDataColumns} lineColors={LINE_COLORS}/>
-                    <Chart name={'Morton plot (with bars)'} data={data} scales={scales} minValue={minChartValue}
-                           maxValue={maxChartValue}
-                           type={'scatter'} xAxisName={'Morton'}
+                    <Chart name={'Morton plot (with bars)'} data={data} scales={scales} offsets={offsets} minValue={minChartValue}
+                           maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
                 </div>
                 <div className={'controls'}>
@@ -359,7 +356,7 @@ function App() {
                         </div>
                     </div>
                     <div className={'control-row'}>
-                        <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS} scales={scales}
+                        <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS} scales={scales} offsets={offsets}
                                              onScalesChanged={onScalesChanged} onOffsetsChanged={onOffsetsChanged}/>
                     </div>
                 </div>

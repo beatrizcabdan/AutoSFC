@@ -1,8 +1,13 @@
 import React from "react";
 import {DEFAULT_SCALING_FACTOR} from "./App.tsx";
 
-export function ProcessingComponent(props: { displayedDataLabels: string[] | null, lineColors: string[], scales: (number | undefined)[],
-    onScalesChanged: (index: number, scale: (number | undefined)) => void, onOffsetsChanged: (index: number, offset: number) => void
+export function ProcessingComponent(props: {
+    displayedDataLabels: string[] | null,
+    lineColors: string[],
+    scales: (number | undefined)[],
+    onScalesChanged: (index: number, scale: (number | undefined)) => void,
+    onOffsetsChanged: (index: number, offset: (number | undefined)) => void,
+    offsets: (number | undefined)[]
 }) {
     return <div className={'control-container'} id={'process-container'}>
         <h3>Transform</h3>
@@ -17,8 +22,10 @@ export function ProcessingComponent(props: { displayedDataLabels: string[] | nul
                         <span className={'signal-name'}>{signal}</span>
                     </div>
                     <label className={'input-label offset-label'}>
-                        <input type="number" value={0}
-                               onChange={(e) => props.onOffsetsChanged(i, Number(e.target.value))}/>
+                        <input type="number" value={props.offsets[i]} onBlur={() =>
+                            props.onOffsetsChanged(i, Number(props.offsets[i] ?? 0))}
+                               onChange={(e) =>
+                                   props.onOffsetsChanged(i, e.target.value ? Number(e.target.value) : undefined)}/>
                     </label>
                     <label className={'input-label scale-label'}>
                         <input type="number" value={props.scales[i]} onBlur={() =>
