@@ -12,6 +12,7 @@ import {UploadButton} from "./UploadButton.tsx";
 import {debounce} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {PresetComponent} from "./PresetComponent.tsx";
+import {ProcessingComponent} from "./ProcessingComponent.tsx";
 
 const demoPreset1 = {
     dataPointInterval: 1,
@@ -358,29 +359,8 @@ function App() {
                         </div>
                     </div>
                     <div className={'control-row'}>
-                        <div className={'control-container'} id={'process-container'}>
-                            <h3>Scale/transform</h3>
-                            <div className={'signal-rows'}>
-                                {displayedDataLabels?.map((signal, i) =>
-                                    <div className={'signal-row'} key={i}>
-                                        <span style={{background: LINE_COLORS[i]}} className={'color-line'}></span>
-                                        <span className={'signal-name'}>{signal}</span>
-                                        <label className={'input-label'}>
-                                            Offset
-                                            <input type="number" value={0}
-                                                   onChange={(e) => onOffsetsChanged(i, Number(e.target.value))}/>
-                                        </label>
-                                        <label className={'input-label'}>
-                                            Scale
-                                            <input type="number" value={scales[i]} onBlur={() =>
-                                                onScalesChanged(i, Number(scales[i] ?? DEFAULT_SCALING_FACTOR))}
-                                                   onChange={(e) =>
-                                                       onScalesChanged(i, e.target.value ? Number(e.target.value) : undefined)}/>
-                                        </label>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                        <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS} scales={scales}
+                                             onScalesChanged={onScalesChanged} onOffsetsChanged={onOffsetsChanged}/>
                     </div>
                 </div>
             </div>
