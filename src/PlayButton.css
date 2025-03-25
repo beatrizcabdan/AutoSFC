@@ -144,19 +144,20 @@ html {
   justify-content: center;
   gap: var(--gap);
 }
-.controls .control-row #process-container .signal-rows {
-  flex-direction: column;
-  display: flex;
-  align-items: flex-end;
+.controls .control-row #process-container .signals-grid {
+  width: min-content;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.2rem;
+  grid-auto-rows: auto;
 }
-.controls .control-row #process-container .signal-rows .signal-row {
+.controls .control-row #process-container .signals-grid .signal-cell {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   width: 100%;
+  height: fit-content;
 }
-.controls .control-row #process-container .signal-rows .signal-row .color-line {
+.controls .control-row #process-container .signals-grid .signal-cell .color-line {
   display: flex;
   width: 32px;
   max-width: 32px;
@@ -164,12 +165,20 @@ html {
   padding: 0;
   margin-right: 3px;
 }
-.controls .control-row #process-container .signal-rows .signal-row .signal-name {
+.controls .control-row #process-container .signals-grid .signal-cell .signal-name {
   font-size: 0.9rem;
-  padding-right: 3rem;
-  margin-right: auto;
+  padding-right: 2rem;
 }
-.controls .control-row #process-container .signal-rows .signal-row input {
+.controls .control-row #process-container .signals-grid .signal-label {
+  grid-column: 1;
+}
+.controls .control-row #process-container .signals-grid .offset-label {
+  grid-column: 2;
+}
+.controls .control-row #process-container .signals-grid .scale-label {
+  grid-column: 3;
+}
+.controls .control-row #process-container .signals-grid input {
   width: 7ch;
   margin: 0 0.5rem;
 }

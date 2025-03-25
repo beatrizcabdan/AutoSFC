@@ -161,17 +161,18 @@ html {
     gap: var(--gap);
 
     #process-container {
-      .signal-rows {
-        flex-direction: column;
-        display: flex;
-        align-items: flex-end;
+      .signals-grid {
+        width: min-content;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         gap: 0.2rem;
+        grid-auto-rows: auto;
 
-        .signal-row {
+        .signal-cell {
           display: flex;
           align-items: center;
-          justify-content: flex-end;
           width: 100%;
+          height: fit-content;
 
           .color-line {
             display: flex;
@@ -184,14 +185,25 @@ html {
 
           .signal-name {
             font-size: 0.9rem;
-            padding-right: 3rem;
-            margin-right: auto;
+            padding-right: 2rem;
           }
+        }
 
-          input {
-            width: 7ch;
-            margin: 0 0.5rem;
-          }
+        .signal-label {
+          grid-column: 1;
+        }
+
+        .offset-label {
+          grid-column: 2;
+        }
+
+        .scale-label {
+          grid-column: 3;
+        }
+
+        input {
+          width: 7ch;
+          margin: 0 0.5rem;
         }
       }
     }
