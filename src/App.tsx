@@ -316,46 +316,48 @@ function App() {
                            maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
                 </div>
-                <div className={'controls'}>
-                    <div className={'control-container'} id={'first-control-row'}>
-                        <div className={'file-container'}>
-                            <h3>Current file</h3>
-                            <UploadButton onClick={uploadFile} label={'Upload file...'}
-                                          currentFile={fileName.replace(/.\//, '')}/>
-                        </div>
-                        <div className={'position-container'}>
-                            <h3>Current datapoint</h3>
-                            <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
-                            <PlayButton onClick={onPlayClick} status={playStatus}/>
-                        </div>
-                    </div>
-                    <div className={'control-row'}>
-                        <div className={'control-container'} id={'range-container'}>
-                            <h3>Displayed range</h3>
-                            <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
-                                             numLines={dataNumLines}
-                                             onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
-                            <div className={'text-controls'}>
-                                <label className={'input-label'}>
-                                    Start row:
-                                    <input type="number" value={startLine}
-                                           onChange={(e) => setStartLine(Number(e.target.value))}/>
-                                </label>
-                                &nbsp;
-                                <label className={'input-label'}>
-                                    End row:
-                                    <input type="number" value={endLine}
-                                           onChange={(e) => setEndLine(Number(e.target.value))}/>
-                                </label>
+                <div className={'horiz-control-wrapper'}>
+                    <div className={'vert-control-wrapper'}>
+                        <div className={'control-container'} id={'first-control-row'}>
+                            <div className={'file-container'}>
+                                <h3>Current file</h3>
+                                <UploadButton onClick={uploadFile} label={'Upload file...'}
+                                              currentFile={fileName.replace(/.\//, '')}/>
+                            </div>
+                            <div className={'position-container'}>
+                                <h3>Current datapoint</h3>
+                                <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
+                                <PlayButton onClick={onPlayClick} status={playStatus}/>
                             </div>
                         </div>
-                        <div className={'control-container'} id={'presets-container'}>
-                            <h3>Presets</h3>
-                            <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
-                                             currentDataFile={fileName.replace(/.\//, '')}/>
+                        <div className={'control-row'}>
+                            <div className={'control-container'} id={'range-container'}>
+                                <h3>Displayed range</h3>
+                                <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
+                                                 numLines={dataNumLines}
+                                                 onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
+                                <div className={'text-controls'}>
+                                    <label className={'input-label'}>
+                                        Start row:
+                                        <input type="number" value={startLine}
+                                               onChange={(e) => setStartLine(Number(e.target.value))}/>
+                                    </label>
+                                    &nbsp;
+                                    <label className={'input-label'}>
+                                        End row:
+                                        <input type="number" value={endLine}
+                                               onChange={(e) => setEndLine(Number(e.target.value))}/>
+                                    </label>
+                                </div>
+                            </div>
+                            <div className={'control-container'} id={'presets-container'}>
+                                <h3>Presets</h3>
+                                <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
+                                                 currentDataFile={fileName.replace(/.\//, '')}/>
+                            </div>
                         </div>
                     </div>
-                    <div className={'control-row'}>
+                    <div className={'vert-control-wrapper'}>
                         <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS} scales={scales} offsets={offsets}
                                              onScalesChanged={onScalesChanged} onOffsetsChanged={onOffsetsChanged}/>
                     </div>
