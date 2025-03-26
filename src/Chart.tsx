@@ -3,6 +3,7 @@
 import {useEffect, useRef} from "react";
 import {makeGaussKernel, morton_interlace, mortonEncode2D} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
+import {DEFAULT_SCALING_FACTOR} from "./App.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
     const smoothedArr: number[] = []
@@ -20,9 +21,25 @@ function getSmoothedData(data: number[], smoothing: number) {
     return smoothedArr
 }
 
-export function Chart(props: { name: string, data: number[][], scales: number[], type: string, xAxisName: string, yAxisName: string,
-    yAxisLabelPos: string, maxValue: number, minValue: number, legendLabels?: string[] | null, currentSignalXVal: number,
-    startTimeXticks?: number, finishTimeXticks?: number, lineDataSmoothing?: number, onLegendClick?: () => void}) {
+export function Chart(props: {
+    name: string,
+    data: number[][],
+    scales: (number | undefined)[],
+    type: string,
+    xAxisName: string,
+    yAxisName: string,
+    yAxisLabelPos: string,
+    maxValue: number,
+    minValue: number,
+    legendLabels?: string[] | null,
+    currentSignalXVal: number,
+    startTimeXticks?: number,
+    finishTimeXticks?: number,
+    lineDataSmoothing?: number,
+    onLegendClick?: () => void,
+    lineColors?: string[],
+    offsets: (number | undefined)[]
+}) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
     const AXIS_PADDING_FACTOR = 0.07
@@ -35,8 +52,6 @@ export function Chart(props: { name: string, data: number[][], scales: number[],
     const MARKER_RADIUS = 12
     const MORTON_BAR_WIDTH = 4
     const MORTON_PIXEL_DIAM = 4
-
-    const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const curvePaddingRef = useRef(0)
@@ -159,9 +174,10 @@ export function Chart(props: { name: string, data: number[][], scales: number[],
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
 
-            const multipliedData = props.data.map((column, colIndex) => column.map(value => Math.trunc(value * props.scales[colIndex])));
-            const mortonData = morton_interlace(multipliedData, 10).reverse()
-            // console.log(mortonData)
+            // Add scaling, offsets before processing
+            const transformedData = props.data.map((column, colIndex) => column.map(value =>
+                Math.trunc(value * (props.scales[colIndex] ?? DEFAULT_SCALING_FACTOR) + (props.offsets[colIndex] ?? 0))))
+            const mortonData = morton_interlace(transformedData, 10).reverse()
 
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
@@ -223,7 +239,7 @@ export function Chart(props: { name: string, data: number[][], scales: number[],
             if (props.type == 'line') {
                 props.data.forEach((column, i) => {
                     // Draw lines
-                    ctx.strokeStyle = LINE_COLORS[i]
+                    ctx.strokeStyle = props.lineColors![i]
                     ctx.beginPath()
                     ctx.lineWidth = LINE_WIDTH
                     const smoothedData = props.lineDataSmoothing
@@ -260,7 +276,7 @@ export function Chart(props: { name: string, data: number[][], scales: number[],
                     ctx.shadowBlur = 0
 
                     // Inner circle
-                    ctx.fillStyle = LINE_COLORS[i]
+                    ctx.fillStyle = props.lineColors![i]
                     ctx.beginPath();
                     // noinspection JSSuspiciousNameCombination
                     ctx.arc(x, y, MARKER_RADIUS - 3, 0, 2 * Math.PI);
@@ -313,7 +329,7 @@ export function Chart(props: { name: string, data: number[][], scales: number[],
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [], CURVE_PADDING_FACTOR, leftExtraPadding)
             drawAxis(canvas, axisPadding, 'top', 2, undefined, undefined, leftExtraPadding)
         }
-    }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal]);
+    }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal, props.scales, props.offsets]);
 
     return <div className={'chart'}>
         <h2 className={'chartitle'}>{props.name}</h2>

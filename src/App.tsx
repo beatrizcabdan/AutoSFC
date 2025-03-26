@@ -12,6 +12,7 @@ import {UploadButton} from "./UploadButton.tsx";
 import {debounce} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {PresetComponent} from "./PresetComponent.tsx";
+import {ProcessingComponent} from "./ProcessingComponent.tsx";
 
 const demoPreset1 = {
     dataPointInterval: 1,
@@ -62,9 +63,12 @@ export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
 }
 
+export const DEFAULT_SCALING_FACTOR = 100
+
 function App() {
     const SLIDER_START_VAL = 0
     const EXAMPLE_FILE_PATH = './emergency_braking.csv'
+    const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
 
     const [filePath, setFilePath] = useState(EXAMPLE_FILE_PATH)
     const [fileName, setFileName] = useState(EXAMPLE_FILE_PATH)
@@ -74,10 +78,12 @@ function App() {
     const [startLine, setStartLine] = useState(preset.dataRangeStart)
     const [endLine, setEndLine] = useState(preset.dataRangeEnd)
 
-    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y'])
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'speed'])
 
     const [data, setData] = useState<number[][]>([])
-    const [scales, setScales] = useState<number[]>([])
+    // Use default scaling factor when scale is undefined (this to allow removing all digits in inputs)
+    const [scales, setScales] = useState<(number | undefined)[]>([])
+    const [offsets, setOffsets] = useState<(number | undefined)[]>([])
     const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
     const [finishTimeXTicks, setFinishTimeXTicks] = useState<number>()
     const allDataLabelsRef = useRef<string[]>([])
@@ -133,12 +139,9 @@ function App() {
                     maxData = Math.max(maxData, sortedData[sortedData.length - 1])
                 })
 
-                // HARDCODED SCALES FOR NUMBERS!
-                const scaleArray: number[] = [];
-                for (let i = 0; i < Math.max(colIndices.length); i++) scaleArray.push(100);
-
                 setData(newData)
-                setScales(scaleArray)
+                setScales(Array(colIndices.length).fill(DEFAULT_SCALING_FACTOR))
+                setOffsets(Array(colIndices.length).fill(0))
                 setStartTimeXTicks(startTimeXTicks)
                 setFinishTimeXTicks(finishTimeXTicks)
                 setMinChartValue(minData)
@@ -275,6 +278,16 @@ function App() {
         setEndLine(endRow)
     }
 
+    function onScalesChanged(index: number, scale: number | undefined) {
+        scales[index] = scale
+        setScales([...scales])
+    }
+
+    function onOffsetsChanged(index: number, offset: number | undefined) {
+        offsets[index] = offset
+        setOffsets([...offsets])
+    }
+
     // @ts-ignore
     return (
         <>
@@ -293,55 +306,60 @@ function App() {
 
             <div id={'main'}>
                 <div className={'charts'}>
-                    <Chart name={'Original signals plot'} data={data} scales={scales} minValue={minChartValue} maxValue={maxChartValue}
-                           type={'line'} xAxisName={'Time'}
+                    <Chart name={'Original signals plot'} data={data} scales={scales} offsets={offsets}
+                           minValue={minChartValue} maxValue={maxChartValue} type={'line'} xAxisName={'Time'}
                            yAxisName={'Signal'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels}
                            startTimeXticks={startTimeXTicks} finishTimeXticks={finishTimeXTicks}
                            currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
-                           onLegendClick={selectDataColumns}/>
-                    <Chart name={'Morton plot (with bars)'} data={data} scales={scales} minValue={minChartValue}
-                           maxValue={maxChartValue}
-                           type={'scatter'} xAxisName={'Morton'}
+                           onLegendClick={selectDataColumns} lineColors={LINE_COLORS}/>
+                    <Chart name={'Morton plot (with bars)'} data={data} scales={scales} offsets={offsets} minValue={minChartValue}
+                           maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
                 </div>
-                <div className={'controls'}>
-                    <div className={'control-container'} id={'first-control-row'}>
-                        <div className={'file-container'}>
-                            <h3>Current file</h3>
-                            <UploadButton onClick={uploadFile} label={'Upload file...'}
-                                          currentFile={fileName.replace(/.\//, '')}/>
-                        </div>
-                        <div className={'position-container'}>
-                            <h3>Current datapoint</h3>
-                            <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
-                            <PlayButton onClick={onPlayClick} status={playStatus}/>
-                        </div>
-                    </div>
-                    <div className={'second-control-row'}>
-                        <div className={'control-container'} id={'range-container'}>
-                            <h3>Displayed range</h3>
-                            <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
-                                             numLines={dataNumLines}
-                                             onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
-                            <div className={'text-controls'}>
-                                <label>
-                                    Start row:
-                                    <input type="number" value={startLine}
-                                           onChange={(e) => setStartLine(Number(e.target.value))}/>
-                                </label>
-                                &nbsp;
-                                <label>
-                                    End row:
-                                    <input type="number" value={endLine}
-                                           onChange={(e) => setEndLine(Number(e.target.value))}/>
-                                </label>
+                <div className={'horiz-control-wrapper'}>
+                    <div className={'vert-control-wrapper'}>
+                        <div className={'control-container'} id={'first-control-row'}>
+                            <div className={'file-container'}>
+                                <h3>Current file</h3>
+                                <UploadButton onClick={uploadFile} label={'Upload file...'}
+                                              currentFile={fileName.replace(/.\//, '')}/>
+                            </div>
+                            <div className={'position-container'}>
+                                <h3>Current datapoint</h3>
+                                <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag} value={signalMarkerPos}/>
+                                <PlayButton onClick={onPlayClick} status={playStatus}/>
                             </div>
                         </div>
-                        <div className={'control-container'} id={'presets-container'}>
-                            <h3>Presets</h3>
-                            <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
-                                             currentDataFile={fileName.replace(/.\//, '')}/>
+                        <div className={'control-row'}>
+                            <div className={'control-container'} id={'range-container'}>
+                                <h3>Displayed range</h3>
+                                <DataRangeSlider dataRangeChartStart={startLine} dataRangeChartEnd={endLine}
+                                                 numLines={dataNumLines}
+                                                 onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
+                                <div className={'text-controls'}>
+                                    <label className={'input-label'}>
+                                        Start row:
+                                        <input type="number" value={startLine}
+                                               onChange={(e) => setStartLine(Number(e.target.value))}/>
+                                    </label>
+                                    &nbsp;
+                                    <label className={'input-label'}>
+                                        End row:
+                                        <input type="number" value={endLine}
+                                               onChange={(e) => setEndLine(Number(e.target.value))}/>
+                                    </label>
+                                </div>
+                            </div>
+                            <div className={'control-container'} id={'presets-container'}>
+                                <h3>Presets</h3>
+                                <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
+                                                 currentDataFile={fileName.replace(/.\//, '')}/>
+                            </div>
                         </div>
+                    </div>
+                    <div className={'vert-control-wrapper'}>
+                        <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS} scales={scales} offsets={offsets}
+                                             onScalesChanged={onScalesChanged} onOffsetsChanged={onOffsetsChanged}/>
                     </div>
                 </div>
             </div>

@@ -51,6 +51,18 @@
 .legend-container .legend p:nth-of-type(2):before {
   background: orange;
 }
+.legend-container .legend p:nth-of-type(3):before {
+  background: darkgreen;
+}
+.legend-container .legend p:nth-of-type(4):before {
+  background: red;
+}
+.legend-container .legend p:nth-of-type(5):before {
+  background: purple;
+}
+.legend-container .legend p:nth-of-type(6):before {
+  background: saddlebrown;
+}
 .legend-container .legend p:before {
   content: " ";
   width: 2rem;
