@@ -53,8 +53,41 @@
     #preset-list {
         display: grid;
         width: 100%;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(1, 1fr);
         column-gap: 0.5rem;
+        $label-width: 3.5rem;
+
+        #preset-labels {
+            margin: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            padding: 0;
+
+            * {
+                flex: unset;
+            }
+        }
+
+        #start-label, #end-label {
+            line-height: 1rem !important;
+            text-transform: uppercase;
+            letter-spacing: 0.02rem;
+            position: relative;
+            font-size: 0.6rem;
+            font-weight: 700;
+            margin: 0;
+            width: $label-width;
+            display: block;
+            text-align: center;
+        }
+
+        span {
+            margin: 0;
+            line-height: 0 !important;
+        }
 
         .preset-item-text {
             display: flex;
@@ -69,14 +102,6 @@
                 line-height: 1.4rem;
                 margin: 0.1rem 0.2rem;
                 font-size: 0.8333rem;
-
-                span {
-                    line-height: 0.4rem;
-                    text-transform: uppercase;
-                    letter-spacing: 0.02rem;
-                    position: relative;
-                    font-size: 0.5rem;
-                }
             }
 
         }

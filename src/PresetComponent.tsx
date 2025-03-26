@@ -122,13 +122,17 @@ export function PresetComponent(props: {
 
     return <div className={'preset-list-container'}>
         <List id={'preset-list'}>
+            <ListItem id={'preset-labels'}>
+                <ListItemText primary={<span id={'start-label'}>Start</span>}/>
+                <ListItemText primary={<span id={'end-label'}>End</span>}/>
+            </ListItem>
             {presets?.map((p, i) => <ListItem key={i}>
                  <Zoom appear={i == deletedIndex || p.startRow === props.displayedStartRow && p.endRow === props.displayedEndRow}
                        in={i !== deletedIndex} onExited={() => removePreset(i)}>
                     <ListItemButton selected={i === selectedIndex} onClick={() => onPresetClick(i)}>
                         <ListItemText primary={<div className={'preset-item-text'}>
-                            <p>{p.startRow}<span>Start</span></p>
-                            <p>{p.endRow}<span>End</span></p>
+                            <p>{p.startRow}</p>
+                            <p>{p.endRow}</p>
                         </div>} />
                         <IconButton onClick={e => onPresetDeleteClick(i, e)}>
                             <DeleteIcon />
