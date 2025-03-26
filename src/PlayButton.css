@@ -228,6 +228,7 @@ html {
 .horiz-control-wrapper .vert-control-wrapper:nth-of-type(2) {
   height: 100%;
   justify-content: flex-start;
+  width: fit-content;
 }
 .horiz-control-wrapper .vert-control-wrapper .control-row {
   display: flex;

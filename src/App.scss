@@ -262,6 +262,7 @@ html {
     &:nth-of-type(2) {
       height: 100%;
       justify-content: flex-start;
+      width: fit-content;
     }
 
     .control-row {
