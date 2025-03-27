@@ -2,6 +2,8 @@
 
 $canvas-height: 40vh;
 
+// TODO: Fix uniform chart/control width, container sizes (?), small screen layout
+
 * {
   // border: 1px solid green;
   box-sizing: border-box;
@@ -28,6 +30,7 @@ html {
   --button-border: #7a7a7a;
   --light-gray: #e8e8e8;
   --button-active: #d3d3d3;
+  --input-border: #c3c3c3;
 
   --primary-color: #4e4eff;
   --primary-color-light: #b9e0ff;
@@ -143,7 +146,13 @@ html {
   }
 }
 
-.horiz-control-wrapper {
+input[type="number"] {
+  border-radius: 5px;
+  border: 1px solid var(--input-border);
+  padding: 0.1rem 0.2rem;
+}
+
+.controls {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -190,7 +199,7 @@ html {
       flex-direction: row;
 
       input {
-        width: 15ch;
+        width: 8ch;
       }
     }
   }
@@ -272,6 +281,14 @@ html {
 
       #range-container {
         height: fit-content;
+        min-width: 18rem;
+
+        .input-label {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 0.3rem;
+        }
       }
     }
 

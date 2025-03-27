@@ -23,6 +23,7 @@ html {
   --button-border: #7a7a7a;
   --light-gray: #e8e8e8;
   --button-active: #d3d3d3;
+  --input-border: #c3c3c3;
   --primary-color: #4e4eff;
   --primary-color-light: #b9e0ff;
 }
@@ -128,7 +129,13 @@ html {
   background-color: var(--button-active);
 }
 
-.horiz-control-wrapper {
+input[type=number] {
+  border-radius: 5px;
+  border: 1px solid var(--input-border);
+  padding: 0.1rem 0.2rem;
+}
+
+.controls {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -136,7 +143,7 @@ html {
   --gap: 20px;
   gap: var(--gap);
 }
-.horiz-control-wrapper .control-container {
+.controls .control-container {
   width: 100%;
   display: flex;
   align-items: center;
@@ -149,49 +156,49 @@ html {
   max-width: 27rem;
   justify-content: center;
 }
-.horiz-control-wrapper .control-container .input-label {
+.controls .control-container .input-label {
   text-transform: uppercase;
   font-size: 0.6rem;
   letter-spacing: 0.02rem;
   font-weight: 700;
 }
-.horiz-control-wrapper .control-container h3 {
+.controls .control-container h3 {
   margin-top: 0;
   padding-bottom: 1rem;
   margin-bottom: auto;
 }
-.horiz-control-wrapper .control-container > :last-child {
+.controls .control-container > :last-child {
   margin-bottom: auto;
 }
-.horiz-control-wrapper .control-container .text-controls {
+.controls .control-container .text-controls {
   display: flex;
   gap: 1rem;
   flex-direction: row;
 }
-.horiz-control-wrapper .control-container .text-controls input {
-  width: 15ch;
+.controls .control-container .text-controls input {
+  width: 8ch;
 }
-.horiz-control-wrapper #process-container {
+.controls #process-container {
   height: fit-content;
   flex: none;
 }
-.horiz-control-wrapper #process-container h3 {
+.controls #process-container h3 {
   margin-bottom: initial;
 }
-.horiz-control-wrapper #process-container .signals-grid {
+.controls #process-container .signals-grid {
   width: 100%;
   display: grid;
   grid-template-columns: auto repeat(2, min-content);
   gap: 0.2rem;
   grid-auto-rows: auto;
 }
-.horiz-control-wrapper #process-container .signals-grid .signal-cell {
+.controls #process-container .signals-grid .signal-cell {
   display: flex;
   align-items: center;
   width: 100%;
   height: fit-content;
 }
-.horiz-control-wrapper #process-container .signals-grid .signal-cell .color-line {
+.controls #process-container .signals-grid .signal-cell .color-line {
   display: flex;
   width: 32px;
   max-width: 32px;
@@ -199,24 +206,24 @@ html {
   padding: 0;
   margin-right: 3px;
 }
-.horiz-control-wrapper #process-container .signals-grid .signal-cell .signal-name {
+.controls #process-container .signals-grid .signal-cell .signal-name {
   font-size: 0.9rem;
   padding-right: 2rem;
 }
-.horiz-control-wrapper #process-container .signals-grid .signal-label {
+.controls #process-container .signals-grid .signal-label {
   grid-column: 1;
 }
-.horiz-control-wrapper #process-container .signals-grid .offset-label {
+.controls #process-container .signals-grid .offset-label {
   grid-column: 2;
 }
-.horiz-control-wrapper #process-container .signals-grid .scale-label {
+.controls #process-container .signals-grid .scale-label {
   grid-column: 3;
 }
-.horiz-control-wrapper #process-container .signals-grid input {
+.controls #process-container .signals-grid input {
   width: 7ch;
   margin: 0 0.5rem;
 }
-.horiz-control-wrapper .vert-control-wrapper {
+.controls .vert-control-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -225,50 +232,57 @@ html {
   flex-wrap: wrap;
   gap: var(--gap);
 }
-.horiz-control-wrapper .vert-control-wrapper:nth-of-type(2) {
+.controls .vert-control-wrapper:nth-of-type(2) {
   height: 100%;
   justify-content: flex-start;
   width: fit-content;
 }
-.horiz-control-wrapper .vert-control-wrapper .control-row {
+.controls .vert-control-wrapper .control-row {
   display: flex;
   justify-content: center;
   gap: var(--gap);
 }
-.horiz-control-wrapper .vert-control-wrapper .control-row #range-container {
+.controls .vert-control-wrapper .control-row #range-container {
   height: fit-content;
+  min-width: 18rem;
+}
+.controls .vert-control-wrapper .control-row #range-container .input-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.3rem;
 }
 @media (max-width: 1080px) {
-  .horiz-control-wrapper .vert-control-wrapper .file-container, .horiz-control-wrapper .vert-control-wrapper .position-container {
+  .controls .vert-control-wrapper .file-container, .controls .vert-control-wrapper .position-container {
     width: 100% !important;
     border-radius: 10px;
     border: 0 solid black;
     box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px 1px;
     padding: 1.2rem 1.8rem;
   }
-  .horiz-control-wrapper .vert-control-wrapper .file-container {
+  .controls .vert-control-wrapper .file-container {
     order: 2;
   }
-  .horiz-control-wrapper .vert-control-wrapper .control-row {
+  .controls .vert-control-wrapper .control-row {
     flex-direction: column;
     max-width: 100%;
     width: 100%;
   }
-  .horiz-control-wrapper .vert-control-wrapper .control-container {
+  .controls .vert-control-wrapper .control-container {
     max-height: fit-content;
   }
-  .horiz-control-wrapper .vert-control-wrapper #range-container, .horiz-control-wrapper .vert-control-wrapper #presets-container {
+  .controls .vert-control-wrapper #range-container, .controls .vert-control-wrapper #presets-container {
     max-width: 100%;
     width: 100%;
   }
-  .horiz-control-wrapper .vert-control-wrapper #first-control-row {
+  .controls .vert-control-wrapper #first-control-row {
     flex-direction: column !important;
     border: none;
     padding: 0;
     box-shadow: none;
   }
 }
-.horiz-control-wrapper .vert-control-wrapper #first-control-row {
+.controls .vert-control-wrapper #first-control-row {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -277,10 +291,10 @@ html {
   flex: initial;
   gap: var(--gap);
 }
-.horiz-control-wrapper .vert-control-wrapper #first-control-row .file-container {
+.controls .vert-control-wrapper #first-control-row .file-container {
   width: 10rem;
 }
-.horiz-control-wrapper .vert-control-wrapper #first-control-row .position-container {
+.controls .vert-control-wrapper #first-control-row .position-container {
   flex: 1 1 auto;
   width: auto;
   align-items: center;

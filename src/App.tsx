@@ -316,7 +316,7 @@ function App() {
                            maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
                 </div>
-                <div className={'horiz-control-wrapper'}>
+                <div className={'controls'}>
                     <div className={'vert-control-wrapper'}>
                         <div className={'control-container'} id={'first-control-row'}>
                             <div className={'file-container'}>
