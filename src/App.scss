@@ -269,6 +269,10 @@ html {
       display: flex;
       justify-content: center;
       gap: var(--gap);
+
+      #range-container {
+        height: fit-content;
+      }
     }
 
     @media (max-width: 1080px) {

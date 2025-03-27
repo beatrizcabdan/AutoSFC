@@ -235,6 +235,9 @@ html {
   justify-content: center;
   gap: var(--gap);
 }
+.horiz-control-wrapper .vert-control-wrapper .control-row #range-container {
+  height: fit-content;
+}
 @media (max-width: 1080px) {
   .horiz-control-wrapper .vert-control-wrapper .file-container, .horiz-control-wrapper .vert-control-wrapper .position-container {
     width: 100% !important;
