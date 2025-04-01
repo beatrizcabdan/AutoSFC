@@ -342,7 +342,6 @@ function App() {
                                         <input type="number" value={startLine}
                                                onChange={(e) => setStartLine(Number(e.target.value))}/>
                                     </label>
-                                    &nbsp;
                                     <label className={'input-label'}>
                                         End row:
                                         <input type="number" value={endLine}

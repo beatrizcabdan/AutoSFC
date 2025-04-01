@@ -56,7 +56,7 @@ html {
   gap: 1.0rem;
   margin-top: 2rem;
   padding: 0 8rem;
-  width: 100%;
+  width: fit-content;
 }
 
 .charts {
@@ -154,6 +154,7 @@ input[type="number"] {
 }
 
 .controls {
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -163,6 +164,7 @@ input[type="number"] {
   $def-control-width: 27rem;
   $vert-container-padding: 1.2rem;
   $horiz-container-padding: 1.8rem;
+  max-width: 70rem;
 
   .control-container {
     width: 100%;
@@ -174,7 +176,6 @@ input[type="number"] {
     box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px 1px;
     padding: $vert-container-padding $horiz-container-padding;
     flex: 1 1 $def-control-width;
-    max-width: $def-control-width;
     justify-content: center;
 
     .input-label {
@@ -194,10 +195,20 @@ input[type="number"] {
       margin-bottom: auto;
     }
 
+    @media (max-width: 1280px) {
+      .text-controls {
+        flex-direction: column !important;
+        align-items: flex-end;
+      }
+    }
+
     .text-controls {
       display: flex;
-      gap: 1rem;
+      column-gap: 1rem;
+      row-gap: 0.5rem;
       flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-end;
 
       input {
         width: 8ch;
@@ -280,12 +291,14 @@ input[type="number"] {
 
     .control-row {
       display: flex;
-      justify-content: center;
       gap: var(--gap);
+      width: 100%;
+      justify-content: flex-end;
 
       #range-container {
         height: fit-content;
-        min-width: 18rem;
+        flex: 1 1 50rem;
+        max-width: none;
 
         .input-label {
           display: flex;
@@ -337,7 +350,6 @@ input[type="number"] {
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      max-width: calc(var(--gap) + 2 * $def-control-width);
       flex: initial;
       gap: var(--gap);
 
