@@ -18,7 +18,7 @@ export function ProcessingComponent(props: {
             {props.displayedDataLabels?.map((signal, i) =>
                 <React.Fragment key={i}>
                     <div className={'signal-cell'} key={i}>
-                        <span style={{background: props.lineColors[i]}} className={'color-line'}></span>
+                        <span style={{background: props.lineColors[i % props.lineColors.length]}} className={'color-line'}></span>
                         <span className={'signal-name'}>{signal}</span>
                     </div>
                     <label className={'input-label offset-label'}>
