@@ -1,6 +1,7 @@
 @use 'sass:math';
 
 $canvas-height: 40vh;
+$canvas-width: 35vw;
 
 // TODO: Fix uniform chart/control width, container sizes (?), small screen layout
 
@@ -107,7 +108,7 @@ html {
         height: 100%;
         canvas {
           height: $canvas-height;
-          width: 35vw;
+          width: $canvas-width;
           aspect-ratio: 1;
           margin-bottom: -1vh;
         }

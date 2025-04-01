@@ -1,3 +1,5 @@
+@use 'App';
+
 .legend-container {
     position: relative;
 
@@ -24,7 +26,6 @@
     .legend {
         display: flex;
         flex-direction: row;
-        justify-content: center;
         align-items: flex-start;
         gap: 0.5rem;
         padding: 0.5rem;
@@ -33,6 +34,10 @@
         border-color: var(--legend-border);
         cursor: pointer;
         transition: all 0.2s;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        row-gap: 1rem;
+        max-width: App.$canvas-width;
 
         &:hover {
             box-shadow: rgba(0, 0, 0, 0.2) 0 0 6px 1px;

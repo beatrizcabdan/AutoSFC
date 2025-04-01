@@ -17,7 +17,7 @@ export function Legend(props: { labels: string[], onClick: () => void, lineColor
                     marginTop: '0.1rem',
                     background: `${props.lineColors![i % props.lineColors!.length]}`
                 }}></div>
-                <p key={i} data-custom-bg={props.lineColors![i % props.lineColors!.length]}>{label}</p>
+                <p key={i}>{label}</p>
             </>)}
             </div>
         </div>
