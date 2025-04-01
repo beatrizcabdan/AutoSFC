@@ -239,7 +239,7 @@ export function Chart(props: {
             if (props.type == 'line') {
                 props.data.forEach((column, i) => {
                     // Draw lines
-                    ctx.strokeStyle = props.lineColors![i]
+                    ctx.strokeStyle = props.lineColors![i % props.lineColors!.length]
                     ctx.beginPath()
                     ctx.lineWidth = LINE_WIDTH
                     const smoothedData = props.lineDataSmoothing
@@ -276,7 +276,7 @@ export function Chart(props: {
                     ctx.shadowBlur = 0
 
                     // Inner circle
-                    ctx.fillStyle = props.lineColors![i]
+                    ctx.fillStyle = props.lineColors![i % props.lineColors!.length]
                     ctx.beginPath();
                     // noinspection JSSuspiciousNameCombination
                     ctx.arc(x, y, MARKER_RADIUS - 3, 0, 2 * Math.PI);
@@ -342,6 +342,6 @@ export function Chart(props: {
             </div>
             {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
         </div>
-        {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!}/>}
+        {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!} lineColors={props.lineColors}/>}
     </div>;
 }

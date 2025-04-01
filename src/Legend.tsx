@@ -1,7 +1,7 @@
 import './Legend.scss'
 import {useState} from "react";
 
-export function Legend(props: { labels: string[], onClick: () => void }) {
+export function Legend(props: { labels: string[], onClick: () => void, lineColors: string[] | undefined }) {
     const [showMsg, setShowMsg] = useState(false)
     return <div className={'legend-container'}>
             <p className={`legend-msg ${showMsg ? 'show' : ''}`}>Choose columns...</p>
@@ -9,7 +9,16 @@ export function Legend(props: { labels: string[], onClick: () => void }) {
                  onClick={props.onClick}
                  onMouseOver={() => setShowMsg(showMsg => !showMsg)}
                  onMouseOut={() => setShowMsg(showMsg => !showMsg)}>
-            {props.labels.map((label, i) => <p key={i}>{label}</p>)}
+            {props.labels.map((label, i) => <>
+                <div style={{
+                    content: ' ',
+                    width: '2rem',
+                    height: '4px',
+                    marginTop: '0.1rem',
+                    background: `${props.lineColors![i % props.lineColors!.length]}`
+                }}></div>
+                <p key={i} data-custom-bg={props.lineColors![i % props.lineColors!.length]}>{label}</p>
+            </>)}
             </div>
         </div>
 }
