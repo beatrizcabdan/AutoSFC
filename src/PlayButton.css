@@ -209,6 +209,9 @@ input[type=number] {
 .controls #process-container .signals-grid .signal-cell .signal-name {
   font-size: 0.9rem;
   padding-right: 2rem;
+  max-width: 22ch;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .controls #process-container .signals-grid .signal-label {
   grid-column: 1;
