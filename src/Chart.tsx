@@ -3,7 +3,7 @@
 import {useEffect, useRef} from "react";
 import {makeGaussKernel, morton_interlace} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
-import {DEFAULT_SCALING_FACTOR} from "./App.tsx";
+import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_SCALING_FACTOR} from "./App.tsx";
 import {EncodingComponent} from "./EncodingComponent.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
@@ -39,7 +39,8 @@ export function Chart(props: {
     lineDataSmoothing?: number,
     onLegendClick?: () => void,
     lineColors?: string[],
-    offsets: (number | undefined)[]
+    offsets: (number | undefined)[],
+    bitsPerSignal?: number | string
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
@@ -178,7 +179,8 @@ export function Chart(props: {
             // Add scaling, offsets before processing
             const transformedData = props.data.map((column, colIndex) => column.map(value =>
                 Math.trunc(value * (props.scales[colIndex] ?? DEFAULT_SCALING_FACTOR) + (props.offsets[colIndex] ?? 0))))
-            const mortonData = morton_interlace(transformedData, 10).reverse()
+            const bitsPerSignal = Number(typeof props.bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : props.bitsPerSignal)
+            const mortonData = morton_interlace(transformedData, bitsPerSignal).reverse()
 
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
@@ -330,7 +332,8 @@ export function Chart(props: {
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [], CURVE_PADDING_FACTOR, leftExtraPadding)
             drawAxis(canvas, axisPadding, 'top', 2, undefined, undefined, leftExtraPadding)
         }
-    }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal, props.scales, props.offsets]);
+    }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
+        props.offsets, props.bitsPerSignal]);
 
     return <div className={'chart'}>
         <h2 className={'chartitle'}>{props.name}</h2>
