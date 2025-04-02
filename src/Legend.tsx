@@ -1,3 +1,4 @@
+import React from 'react';
 import './Legend.scss'
 import {useState} from "react";
 
@@ -9,7 +10,7 @@ export function Legend(props: { labels: string[], onClick: () => void, lineColor
                  onClick={props.onClick}
                  onMouseOver={() => setShowMsg(showMsg => !showMsg)}
                  onMouseOut={() => setShowMsg(showMsg => !showMsg)}>
-            {props.labels.map((label, i) => <>
+            {props.labels.map((label, i) => <React.Fragment key={i}>
                 <div style={{
                     content: ' ',
                     width: '2rem',
@@ -17,8 +18,8 @@ export function Legend(props: { labels: string[], onClick: () => void, lineColor
                     marginTop: '0.1rem',
                     background: `${props.lineColors![i % props.lineColors!.length]}`
                 }}></div>
-                <p key={i}>{label}</p>
-            </>)}
+                <p >{label}</p>
+            </React.Fragment>)}
             </div>
         </div>
 }
