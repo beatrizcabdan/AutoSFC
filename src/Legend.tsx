@@ -5,7 +5,7 @@ export function Legend(props: { labels: string[], onClick: () => void, lineColor
     const [showMsg, setShowMsg] = useState(false)
     return <div className={'legend-container'}>
             <p className={`legend-msg ${showMsg ? 'show' : ''}`}>Choose columns...</p>
-            <div className={'legend'}
+            <div className={'legend control-container '}
                  onClick={props.onClick}
                  onMouseOver={() => setShowMsg(showMsg => !showMsg)}
                  onMouseOut={() => setShowMsg(showMsg => !showMsg)}>

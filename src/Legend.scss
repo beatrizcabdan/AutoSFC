@@ -24,14 +24,16 @@
     }
 
     .legend {
+        @extend .chart-sub-control;
+
+        border-radius: 5px;
         display: flex;
         flex-direction: row;
         align-items: flex-start;
         gap: 0.5rem;
-        padding: 0.5rem;
-        border: 1px solid;
-        border-radius: 3px;
-        border-color: var(--legend-border);
+        // border: 1px solid;
+        // border-radius: 3px;
+        // border-color: var(--legend-border);
         cursor: pointer;
         transition: all 0.2s;
         flex-wrap: wrap;

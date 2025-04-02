@@ -35,6 +35,10 @@ export function ProcessingComponent(props: {
                     </label>
                 </React.Fragment>
             )}
+            <span className={'input-label bits-label'}>Bits per signal</span>
+            <label className={'input-label bits-label'}>
+                <input type={'number'}/>
+            </label>
         </div>
     </div>;
 }

@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 
 import {useEffect, useRef} from "react";
-import {makeGaussKernel, morton_interlace, mortonEncode2D} from "./utils.ts";
+import {makeGaussKernel, morton_interlace} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 import {DEFAULT_SCALING_FACTOR} from "./App.tsx";
+import {EncodingComponent} from "./EncodingComponent.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
     const smoothedArr: number[] = []
