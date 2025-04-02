@@ -109,7 +109,7 @@ html {
   text-transform: initial;
 }
 
-.chart-sub-control, .legend-container .legend {
+.chart-sub-control, #encoding-container {
   padding: 0.5rem 1rem;
 }
 
@@ -429,52 +429,25 @@ input[type=number] {
   gap: 10px;
 }
 
-.legend-container {
-  position: relative;
+#encoding-container {
+  /*@extend .control-container;*/
+  width: fit-content;
+  height: fit-content;
+  flex: unset;
+  padding-top: 0.1rem;
+  box-shadow: none;
 }
-.legend-container .legend-msg {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  translate: -50% -150%;
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  letter-spacing: 0.03rem;
-  opacity: 0;
-  transition: opacity 0.3s;
-  background: white;
-  border-radius: 3px;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 0 6px 1px;
-  padding: 0.2rem;
+#encoding-container > :last-child {
+  margin-bottom: unset;
 }
-.legend-container .legend-msg.show {
-  opacity: 1;
-}
-.legend-container .legend {
-  border-radius: 5px;
+#encoding-container #encoding-label {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  row-gap: 1rem;
-  max-width: 35vw;
-}
-.legend-container .legend:hover {
-  box-shadow: rgba(0, 0, 0, 0.2) 0 0 6px 1px;
-}
-.legend-container .legend p {
-  margin: 0;
-  line-height: 0.5rem;
-  font-size: 0.9rem;
-  display: flex;
-  flex-direction: row;
-  gap: 0.2rem;
   align-items: center;
-  justify-self: center;
+  gap: 1ch;
+  font-family: Inter, sans-serif;
+}
+#encoding-container #encoding-label input {
+  width: 8ch;
 }
 
-/*# sourceMappingURL=Legend.css.map */
+/*# sourceMappingURL=EncodingComponent.css.map */

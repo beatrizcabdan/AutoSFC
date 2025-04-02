@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 
 import {useEffect, useRef} from "react";
-import {makeGaussKernel, morton_interlace, mortonEncode2D} from "./utils.ts";
+import {makeGaussKernel, morton_interlace} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
-import {DEFAULT_SCALING_FACTOR} from "./App.tsx";
+import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_SCALING_FACTOR} from "./App.tsx";
+import {EncodingComponent} from "./EncodingComponent.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
     const smoothedArr: number[] = []
@@ -38,7 +39,8 @@ export function Chart(props: {
     lineDataSmoothing?: number,
     onLegendClick?: () => void,
     lineColors?: string[],
-    offsets: (number | undefined)[]
+    offsets: (number | undefined)[],
+    bitsPerSignal?: number | string
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
@@ -177,7 +179,8 @@ export function Chart(props: {
             // Add scaling, offsets before processing
             const transformedData = props.data.map((column, colIndex) => column.map(value =>
                 Math.trunc(value * (props.scales[colIndex] ?? DEFAULT_SCALING_FACTOR) + (props.offsets[colIndex] ?? 0))))
-            const mortonData = morton_interlace(transformedData, 10).reverse()
+            const bitsPerSignal = Number(typeof props.bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : props.bitsPerSignal)
+            const mortonData = morton_interlace(transformedData, bitsPerSignal).reverse()
 
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
@@ -239,7 +242,7 @@ export function Chart(props: {
             if (props.type == 'line') {
                 props.data.forEach((column, i) => {
                     // Draw lines
-                    ctx.strokeStyle = props.lineColors![i]
+                    ctx.strokeStyle = props.lineColors![i % props.lineColors!.length]
                     ctx.beginPath()
                     ctx.lineWidth = LINE_WIDTH
                     const smoothedData = props.lineDataSmoothing
@@ -276,7 +279,7 @@ export function Chart(props: {
                     ctx.shadowBlur = 0
 
                     // Inner circle
-                    ctx.fillStyle = props.lineColors![i]
+                    ctx.fillStyle = props.lineColors![i % props.lineColors!.length]
                     ctx.beginPath();
                     // noinspection JSSuspiciousNameCombination
                     ctx.arc(x, y, MARKER_RADIUS - 3, 0, 2 * Math.PI);
@@ -329,7 +332,8 @@ export function Chart(props: {
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [], CURVE_PADDING_FACTOR, leftExtraPadding)
             drawAxis(canvas, axisPadding, 'top', 2, undefined, undefined, leftExtraPadding)
         }
-    }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal, props.scales, props.offsets]);
+    }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
+        props.offsets, props.bitsPerSignal]);
 
     return <div className={'chart'}>
         <h2 className={'chartitle'}>{props.name}</h2>
@@ -342,6 +346,6 @@ export function Chart(props: {
             </div>
             {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
         </div>
-        {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!}/>}
+        {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!} lineColors={props.lineColors}/>}
     </div>;
 }

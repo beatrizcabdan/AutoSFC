@@ -23,6 +23,7 @@ html {
   --button-border: #7a7a7a;
   --light-gray: #e8e8e8;
   --button-active: #d3d3d3;
+  --input-border: #c3c3c3;
   --primary-color: #4e4eff;
   --primary-color-light: #b9e0ff;
 }
@@ -36,6 +37,7 @@ html {
   align-items: center;
   width: 100%;
   color: var(--text-color);
+  font-family: Inter, sans-serif;
 }
 
 #main {
@@ -43,10 +45,10 @@ html {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
   margin-top: 2rem;
   padding: 0 8rem;
-  width: 100%;
+  width: fit-content;
 }
 
 .charts {
@@ -107,6 +109,10 @@ html {
   text-transform: initial;
 }
 
+.chart-sub-control {
+  padding: 0.5rem 1rem;
+}
+
 .button, .play-button {
   padding: 0 0.5rem;
   height: 1.8rem;
@@ -128,15 +134,169 @@ html {
   background-color: var(--button-active);
 }
 
-.horiz-control-wrapper {
+input[type=number] {
+  border-radius: 5px;
+  border: 1px solid var(--input-border);
+  padding: 0.1rem 0.2rem;
+}
+
+.controls {
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   --gap: 20px;
   gap: var(--gap);
+  max-width: 70rem;
 }
-.horiz-control-wrapper .control-container {
+.controls #process-container {
+  height: fit-content;
+  flex: none;
+}
+.controls #process-container h3 {
+  margin-bottom: initial;
+}
+.controls #process-container .signals-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto repeat(2, min-content);
+  gap: 0.2rem;
+  grid-auto-rows: auto;
+}
+.controls #process-container .signals-grid .signal-cell {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: fit-content;
+}
+.controls #process-container .signals-grid .signal-cell .color-line {
+  display: flex;
+  width: 32px;
+  max-width: 32px;
+  height: 4px;
+  padding: 0;
+  margin-right: 3px;
+}
+.controls #process-container .signals-grid .signal-cell .signal-name {
+  font-size: 0.9rem;
+  padding-right: 2rem;
+  max-width: 22ch;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.controls #process-container .signals-grid .signal-label {
+  grid-column: 1;
+}
+.controls #process-container .signals-grid .offset-label {
+  grid-column: 2;
+}
+.controls #process-container .signals-grid .scale-label {
+  grid-column: 3;
+}
+.controls #process-container .signals-grid .bits-label {
+  margin-top: 1rem;
+  text-align: center;
+}
+.controls #process-container .signals-grid span.bits-label {
+  grid-column: 1;
+  padding-top: 0.2rem;
+}
+.controls #process-container .signals-grid label.bits-label {
+  grid-column: 2;
+}
+.controls #process-container .signals-grid input {
+  width: 7ch;
+  margin: 0 0.5rem;
+}
+.controls #process-container .signals-grid .empty-row {
+  content: " ";
+  grid-column: 1/4;
+}
+.controls .vert-control-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: var(--gap);
+}
+.controls .vert-control-wrapper:nth-of-type(2) {
+  height: 100%;
+  justify-content: flex-start;
+  width: fit-content;
+}
+.controls .vert-control-wrapper .control-row {
+  display: flex;
+  gap: var(--gap);
+  width: 100%;
+  justify-content: flex-end;
+}
+.controls .vert-control-wrapper .control-row #range-container {
+  height: fit-content;
+  flex: 1 1 50rem;
+  max-width: none;
+}
+.controls .vert-control-wrapper .control-row #range-container .input-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.3rem;
+}
+@media (max-width: 1080px) {
+  .controls .vert-control-wrapper .file-container, .controls .vert-control-wrapper .position-container {
+    width: 100% !important;
+    border-radius: 10px;
+    border: 0 solid black;
+    box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px 1px;
+    padding: 1.2rem 1.8rem;
+  }
+  .controls .vert-control-wrapper .file-container {
+    order: 2;
+  }
+  .controls .vert-control-wrapper .control-row {
+    flex-direction: column;
+    max-width: 100%;
+    width: 100%;
+  }
+  .controls .vert-control-wrapper .control-container {
+    max-height: fit-content;
+  }
+  .controls .vert-control-wrapper #range-container, .controls .vert-control-wrapper #presets-container {
+    max-width: 100%;
+    width: 100%;
+  }
+  .controls .vert-control-wrapper #presets-container {
+    width: fit-content;
+  }
+  .controls .vert-control-wrapper #first-control-row {
+    flex-direction: column !important;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+  }
+}
+.controls .vert-control-wrapper #first-control-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex: initial;
+  gap: var(--gap);
+}
+.controls .vert-control-wrapper #first-control-row .file-container {
+  width: 10rem;
+}
+.controls .vert-control-wrapper #first-control-row .position-container {
+  flex: 1 1 auto;
+  width: auto;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.control-container {
   width: 100%;
   display: flex;
   align-items: center;
@@ -146,142 +306,38 @@ html {
   box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px 1px;
   padding: 1.2rem 1.8rem;
   flex: 1 1 27rem;
-  max-width: 27rem;
   justify-content: center;
 }
-.horiz-control-wrapper .control-container .input-label {
+.control-container .input-label {
   text-transform: uppercase;
   font-size: 0.6rem;
   letter-spacing: 0.02rem;
   font-weight: 700;
 }
-.horiz-control-wrapper .control-container h3 {
+.control-container h3 {
   margin-top: 0;
   padding-bottom: 1rem;
   margin-bottom: auto;
 }
-.horiz-control-wrapper .control-container > :last-child {
+.control-container > :last-child {
   margin-bottom: auto;
 }
-.horiz-control-wrapper .control-container .text-controls {
-  display: flex;
-  gap: 1rem;
-  flex-direction: row;
-}
-.horiz-control-wrapper .control-container .text-controls input {
-  width: 15ch;
-}
-.horiz-control-wrapper #process-container {
-  height: fit-content;
-  flex: none;
-}
-.horiz-control-wrapper #process-container h3 {
-  margin-bottom: initial;
-}
-.horiz-control-wrapper #process-container .signals-grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto repeat(2, min-content);
-  gap: 0.2rem;
-  grid-auto-rows: auto;
-}
-.horiz-control-wrapper #process-container .signals-grid .signal-cell {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: fit-content;
-}
-.horiz-control-wrapper #process-container .signals-grid .signal-cell .color-line {
-  display: flex;
-  width: 32px;
-  max-width: 32px;
-  height: 4px;
-  padding: 0;
-  margin-right: 3px;
-}
-.horiz-control-wrapper #process-container .signals-grid .signal-cell .signal-name {
-  font-size: 0.9rem;
-  padding-right: 2rem;
-}
-.horiz-control-wrapper #process-container .signals-grid .signal-label {
-  grid-column: 1;
-}
-.horiz-control-wrapper #process-container .signals-grid .offset-label {
-  grid-column: 2;
-}
-.horiz-control-wrapper #process-container .signals-grid .scale-label {
-  grid-column: 3;
-}
-.horiz-control-wrapper #process-container .signals-grid input {
-  width: 7ch;
-  margin: 0 0.5rem;
-}
-.horiz-control-wrapper .vert-control-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  flex-wrap: wrap;
-  gap: var(--gap);
-}
-.horiz-control-wrapper .vert-control-wrapper:nth-of-type(2) {
-  height: 100%;
-  justify-content: flex-start;
-}
-.horiz-control-wrapper .vert-control-wrapper .control-row {
-  display: flex;
-  justify-content: center;
-  gap: var(--gap);
-}
-@media (max-width: 1080px) {
-  .horiz-control-wrapper .vert-control-wrapper .file-container, .horiz-control-wrapper .vert-control-wrapper .position-container {
-    width: 100% !important;
-    border-radius: 10px;
-    border: 0 solid black;
-    box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px 1px;
-    padding: 1.2rem 1.8rem;
-  }
-  .horiz-control-wrapper .vert-control-wrapper .file-container {
-    order: 2;
-  }
-  .horiz-control-wrapper .vert-control-wrapper .control-row {
-    flex-direction: column;
-    max-width: 100%;
-    width: 100%;
-  }
-  .horiz-control-wrapper .vert-control-wrapper .control-container {
-    max-height: fit-content;
-  }
-  .horiz-control-wrapper .vert-control-wrapper #range-container, .horiz-control-wrapper .vert-control-wrapper #presets-container {
-    max-width: 100%;
-    width: 100%;
-  }
-  .horiz-control-wrapper .vert-control-wrapper #first-control-row {
+@media (max-width: 1280px) {
+  .control-container .text-controls {
     flex-direction: column !important;
-    border: none;
-    padding: 0;
-    box-shadow: none;
+    align-items: flex-end;
   }
 }
-.horiz-control-wrapper .vert-control-wrapper #first-control-row {
+.control-container .text-controls {
   display: flex;
+  column-gap: 1rem;
+  row-gap: 0.5rem;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  max-width: calc(var(--gap) + 54rem);
-  flex: initial;
-  gap: var(--gap);
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
-.horiz-control-wrapper .vert-control-wrapper #first-control-row .file-container {
-  width: 10rem;
-}
-.horiz-control-wrapper .vert-control-wrapper #first-control-row .position-container {
-  flex: 1 1 auto;
-  width: auto;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
+.control-container .text-controls input {
+  width: 8ch;
 }
 
 /* HEADER AND FOOTER */

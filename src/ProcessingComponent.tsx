@@ -1,5 +1,5 @@
 import React from "react";
-import {DEFAULT_SCALING_FACTOR} from "./App.tsx";
+import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_SCALING_FACTOR} from "./App.tsx";
 
 export function ProcessingComponent(props: {
     displayedDataLabels: string[] | null,
@@ -7,7 +7,9 @@ export function ProcessingComponent(props: {
     scales: (number | undefined)[],
     onScalesChanged: (index: number, scale: (number | undefined)) => void,
     onOffsetsChanged: (index: number, offset: (number | undefined)) => void,
-    offsets: (number | undefined)[]
+    offsets: (number | undefined)[],
+    bitsPerSignal: number | string,
+    onBitsPerSignalChanged: (bits: number | string) => void
 }) {
     return <div className={'control-container'} id={'process-container'}>
         <h3>Transform</h3>
@@ -18,7 +20,7 @@ export function ProcessingComponent(props: {
             {props.displayedDataLabels?.map((signal, i) =>
                 <React.Fragment key={i}>
                     <div className={'signal-cell'} key={i}>
-                        <span style={{background: props.lineColors[i]}} className={'color-line'}></span>
+                        <span style={{background: props.lineColors[i % props.lineColors.length]}} className={'color-line'}></span>
                         <span className={'signal-name'}>{signal}</span>
                     </div>
                     <label className={'input-label offset-label'}>
@@ -35,6 +37,14 @@ export function ProcessingComponent(props: {
                     </label>
                 </React.Fragment>
             )}
+            <span className={'input-label bits-label'}>Bits per signal</span>
+            <label className={'input-label bits-label'}>
+                <input type={'number'} value={props.bitsPerSignal} min={0}
+                       onBlur={() =>
+                           props.onBitsPerSignalChanged(Number(props.bitsPerSignal === '' ? DEFAULT_BITS_PER_SIGNAL : props.bitsPerSignal))}
+                       onChange={(e) =>
+                           props.onBitsPerSignalChanged(e.target.value ? Number(e.target.value) : '')}/>
+            </label>
         </div>
     </div>;
 }
