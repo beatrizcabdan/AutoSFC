@@ -442,12 +442,12 @@ function App() {
                         </div>
                     </div>
                     <div className="paper-block">
-                        <h2 className="paper-title">Paper Title 1</h2>
+                        <h2 className="paper-title">Comparing Optical Flow and Deep Learning to Enable Computationally Efficient Traffic Event Detection with Space-Filling Curves</h2>
                         <p className="paper-description">
-                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                            We compare Optical Flow (OF) and Deep Learning (DL) to feed computationally efficient event detection via space-filling curves on video data from a forward-facing, in-vehicle camera. Our results yield that the OF approach excels in specificity and reduces false positives, while the DL approach demonstrates superior sensitivity. Both approaches offer comparable processing speed, making them suitable for real-time applications.
                         </p>
                         <div className="paper-buttons">
-                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10919665">View PDF</a></button>
                             <button className="button">More info</button>
                         </div>
                     </div>
@@ -487,16 +487,14 @@ function App() {
             <div className="tabcontent" id={'contact'}>
                 <h1>Want to collaborate? Contact us!</h1>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Bork Quamquam ab iis philosophiam et omnes
-                    ingenuas disciplinas habemus; Hoc sic expositum dissimile est superiori. Quis hoc dicit? Ad eas enim
-                    res ab Epicuro praecepta dantur. Duo Reges: constructio interrete. </p>
+                <p>This website is under construction. If you want to know more about Space-Filling Curves (SFCs), or
+                    driving event detection using them, feel free to send us an email to: <a href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a></p>
 
-                <h2>Sed fortuna fortis:</h2>
+                <h2>This is a placeholder:</h2>
 
                 <p>Si id dicis, vicimus. Igitur ne dolorem quidem. Ut pulsi recurrant? Quae sequuntur igitur? Videsne
-                    quam sit magna dissensio? Ergo, inquit, tibi Q. Cur id non ita fit? </p>
-
-                <p>At ille pellit, qui permulcet sensum voluptate. Bork Haec igitur Epicuri non probo, inquam. </p>
+                    quam sit magna dissensio? Ergo, inquit, tibi Q. Cur id non ita fit?</p>
+                <p>At ille pellit, qui permulcet sensum voluptate. Bork Haec igitur Epicuri non probo, inquam.</p>
             </div>
 
             <div className="footer">
