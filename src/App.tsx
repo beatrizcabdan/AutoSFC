@@ -320,7 +320,7 @@ function App() {
                            startTimeXticks={startTimeXTicks} finishTimeXticks={finishTimeXTicks}
                            currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
                            onLegendClick={selectDataColumns} lineColors={LINE_COLORS}/>
-                    <Chart name={'Morton plot (with bars)'} data={data} scales={scales} offsets={offsets} minValue={minChartValue}
+                    <Chart name={'Morton plot (CSP)'} data={data} scales={scales} offsets={offsets} minValue={minChartValue}
                            maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'} bitsPerSignal={bitsPerSignal}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
                 </div>
