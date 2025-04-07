@@ -1,10 +1,4 @@
-$line-color-1: blue;
-$line-color-2: orange;
-$line-color-3: darkgreen;
-$line-color-4: red;
-$line-color-5: purple;
-$line-color-6: saddlebrown;
-$line-width: 4px;
+@use 'App';
 
 .legend-container {
     position: relative;
@@ -30,17 +24,22 @@ $line-width: 4px;
     }
 
     .legend {
+        @extend .chart-sub-control;
+
+        border-radius: 5px;
         display: flex;
         flex-direction: row;
-        justify-content: center;
         align-items: flex-start;
         gap: 0.5rem;
-        padding: 0.5rem;
-        border: 1px solid;
-        border-radius: 3px;
-        border-color: var(--legend-border);
+        // border: 1px solid;
+        // border-radius: 3px;
+        // border-color: var(--legend-border);
         cursor: pointer;
         transition: all 0.2s;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        row-gap: 1rem;
+        max-width: App.$canvas-width;
 
         &:hover {
             box-shadow: rgba(0, 0, 0, 0.2) 0 0 6px 1px;
@@ -55,32 +54,6 @@ $line-width: 4px;
             gap: 0.2rem;
             align-items: center;
             justify-self: center;
-
-            &:nth-of-type(1):before {
-                background: $line-color-1;
-            }
-
-            &:nth-of-type(2):before {
-                background: $line-color-2;
-            }
-            &:nth-of-type(3):before {
-                background: $line-color-3;
-            }
-            &:nth-of-type(4):before {
-                background: $line-color-4;
-            }
-            &:nth-of-type(5):before {
-                background: $line-color-5;
-            }
-            &:nth-of-type(6):before {
-                background: $line-color-6;
-            }
-            &:before {
-                content: ' ';
-                width: 2rem;
-                height: $line-width;
-                margin-top: 0.1rem;
-            }
         }
     }
 }

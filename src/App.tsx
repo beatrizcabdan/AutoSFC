@@ -64,6 +64,7 @@ export enum PlayStatus {
 }
 
 export const DEFAULT_SCALING_FACTOR = 100
+export const DEFAULT_BITS_PER_SIGNAL = 10
 
 function App() {
     const SLIDER_START_VAL = 0
@@ -81,9 +82,12 @@ function App() {
     const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'speed'])
 
     const [data, setData] = useState<number[][]>([])
+
     // Use default scaling factor when scale is undefined (this to allow removing all digits in inputs)
     const [scales, setScales] = useState<(number | undefined)[]>([])
     const [offsets, setOffsets] = useState<(number | undefined)[]>([])
+    const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(10)
+
     const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
     const [finishTimeXTicks, setFinishTimeXTicks] = useState<number>()
     const allDataLabelsRef = useRef<string[]>([])
@@ -287,6 +291,10 @@ function App() {
         offsets[index] = offset
         setOffsets([...offsets])
     }
+    
+    function onBitsPerSignalChanged(bits: number | string) {
+        setBitsPerSignal(bits)
+    }
 
     // @ts-ignore
     return (
@@ -313,10 +321,10 @@ function App() {
                            currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
                            onLegendClick={selectDataColumns} lineColors={LINE_COLORS}/>
                     <Chart name={'Morton plot (with bars)'} data={data} scales={scales} offsets={offsets} minValue={minChartValue}
-                           maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'}
+                           maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'} bitsPerSignal={bitsPerSignal}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
                 </div>
-                <div className={'horiz-control-wrapper'}>
+                <div className={'controls'}>
                     <div className={'vert-control-wrapper'}>
                         <div className={'control-container'} id={'first-control-row'}>
                             <div className={'file-container'}>
@@ -342,7 +350,6 @@ function App() {
                                         <input type="number" value={startLine}
                                                onChange={(e) => setStartLine(Number(e.target.value))}/>
                                     </label>
-                                    &nbsp;
                                     <label className={'input-label'}>
                                         End row:
                                         <input type="number" value={endLine}
@@ -359,7 +366,8 @@ function App() {
                     </div>
                     <div className={'vert-control-wrapper'}>
                         <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS} scales={scales} offsets={offsets}
-                                             onScalesChanged={onScalesChanged} onOffsetsChanged={onOffsetsChanged}/>
+                                             bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
+                                             onOffsetsChanged={onOffsetsChanged} onBitsPerSignalChanged={onBitsPerSignalChanged}/>
                     </div>
                 </div>
             </div>

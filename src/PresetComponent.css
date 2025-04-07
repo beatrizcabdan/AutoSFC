@@ -18,7 +18,8 @@
 }
 
 .MuiListItem-root {
-  padding: 0.2rem 0 !important;
+  padding: 0.1rem 0 !important;
+  max-width: 18rem;
 }
 
 .MuiList-root {
@@ -30,12 +31,18 @@
 }
 
 .MuiSvgIcon-root {
-  width: 1.3rem !important;
-  height: 1.3rem !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  padding: 0;
+}
+
+#presets-container {
+  width: fit-content;
+  flex: none;
 }
 
 .preset-list-container {
-  width: 100%;
+  width: fit-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,13 +55,45 @@
 }
 .preset-list-container #preset-list {
   display: grid;
-  width: 100%;
-  grid-template-columns: repeat(3, 1fr);
+  width: 13rem;
+  grid-template-columns: repeat(1, 1fr);
   column-gap: 0.5rem;
+}
+.preset-list-container #preset-list .MuiIconButton-root {
+  padding: 0.3rem;
+}
+.preset-list-container #preset-list #preset-labels {
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  gap: 0.5rem;
+  padding: 0 0.5rem !important;
+}
+.preset-list-container #preset-list #preset-labels * {
+  flex: unset;
+}
+.preset-list-container #preset-list #start-label, .preset-list-container #preset-list #end-label {
+  line-height: 1rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.02rem;
+  position: relative;
+  font-size: 0.6rem;
+  font-weight: 700;
+  margin: 0;
+  width: 3rem;
+  display: block;
+  text-align: center;
+}
+.preset-list-container #preset-list span {
+  margin: 0;
+  line-height: 0 !important;
 }
 .preset-list-container #preset-list .preset-item-text {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
 }
 .preset-list-container #preset-list .preset-item-text p {
@@ -62,19 +101,14 @@
   flex-direction: column;
   align-items: center;
   line-height: 1.4rem;
-  margin: 0.1rem 0.2rem;
+  margin: 0.1rem 0;
   font-size: 0.8333rem;
-}
-.preset-list-container #preset-list .preset-item-text p span {
-  line-height: 0.4rem;
-  text-transform: uppercase;
-  letter-spacing: 0.02rem;
-  position: relative;
-  font-size: 0.5rem;
+  width: 3rem;
+  text-align: center;
 }
 .preset-list-container #preset-button-panel {
-  display: flex;
-  justify-content: flex-end;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   width: 100%;
 }
 .preset-list-container #preset-button-panel .preset-button, .preset-list-container #preset-button-panel #save-preset-button, .preset-list-container #preset-button-panel #load-preset-button, .preset-list-container #preset-button-panel #add-preset-button {
@@ -91,7 +125,12 @@
 }
 .preset-list-container #preset-button-panel #add-preset-button {
   border-width: 2px;
-  margin-right: auto;
+  grid-column: 1/3;
+  grid-row: 1;
+  width: 100%;
+}
+.preset-list-container #preset-button-panel #save-preset-button, .preset-list-container #preset-button-panel #load-preset-button {
+  grid-row: 2;
 }
 .preset-list-container #preset-button-panel .file-input {
   display: none;
