@@ -458,7 +458,7 @@ function App() {
             </div>
 
             <div className="footer">
-                Demo of SFC encoding and barcode formation for automotive data. Work in progress. Contact Beatriz Cabrero-Daniel at <a
+                Demo of SFC encoding for automotive data. Site under construction. Contact Beatriz Cabrero-Daniel at <a
                 href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a> for more info.
             </div>
 
