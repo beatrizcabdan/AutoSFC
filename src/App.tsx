@@ -369,22 +369,22 @@ function App() {
 
                 <div className="papers-container">
                     <div className="paper-block">
-                        <h2 className="paper-title">Paper Title 1</h2>
+                        <h2 className="paper-title">Zebra: Z-order curve-based event retrieval approach to efficiently explore automotive data</h2>
                         <p className="paper-description">
-                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                            In this paper, we leverage Z-order space-filling curves to systematically reduce data dimensionality while preserving domain-specific data properties, which allows us to explore even large-scale field data sets to spot interesting events orders of magnitude faster than processing time-series data directly.
                         </p>
                         <div className="paper-buttons">
-                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10186770">View PDF</a></button>
                             <button className="button">More info</button>
                         </div>
                     </div>
                     <div className="paper-block">
-                        <h2 className="paper-title">Paper Title 1</h2>
+                        <h2 className="paper-title">Systematic evaluation of applying space-filling curves to automotive maneuver detection</h2>
                         <p className="paper-description">
-                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                            Identifying driving maneuvers plays an essential role on-board vehicles to monitor driving and driver states. We find that encoding just longitudinal and lateral accelerations sampled at 10 Hz using a Hilbert space-filling curve is already successfully identifying roundabout maneuvers.
                         </p>
                         <div className="paper-buttons">
-                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10422366/">View PDF</a></button>
                             <button className="button">More info</button>
                         </div>
                     </div>
@@ -414,22 +414,22 @@ function App() {
                 <h1>Space-Filling Curves (SFCs): what and why?</h1>
                 <div className="papers-container">
                     <div className="paper-block">
-                        <h2 className="paper-title">Paper Title 1</h2>
+                        <h2 className="paper-title">Zebra: Z-order curve-based event retrieval approach to efficiently explore automotive data</h2>
                         <p className="paper-description">
-                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                            In this paper, we leverage Z-order space-filling curves to systematically reduce data dimensionality while preserving domain-specific data properties, which allows us to explore even large-scale field data sets to spot interesting events orders of magnitude faster than processing time-series data directly.
                         </p>
                         <div className="paper-buttons">
-                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10186770">View PDF</a></button>
                             <button className="button">More info</button>
                         </div>
                     </div>
                     <div className="paper-block">
-                        <h2 className="paper-title">Paper Title 1</h2>
+                        <h2 className="paper-title">Systematic evaluation of applying space-filling curves to automotive maneuver detection</h2>
                         <p className="paper-description">
-                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                            Identifying driving maneuvers plays an essential role on-board vehicles to monitor driving and driver states. We find that encoding just longitudinal and lateral accelerations sampled at 10 Hz using a Hilbert space-filling curve is already successfully identifying roundabout maneuvers.
                         </p>
                         <div className="paper-buttons">
-                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10422366/">View PDF</a></button>
                             <button className="button">More info</button>
                         </div>
                     </div>
