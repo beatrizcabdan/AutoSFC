@@ -377,22 +377,48 @@ function App() {
 
                 <div className="papers-container">
                     <div className="paper-block">
-                        <h2 className="paper-title">Zebra: Z-order curve-based event retrieval approach to efficiently explore automotive data</h2>
+                        <h2 className="paper-title">Zebra: Z-order curve-based event retrieval approach to efficiently
+                            explore automotive data</h2>
                         <p className="paper-description">
-                            In this paper, we leverage Z-order space-filling curves to systematically reduce data dimensionality while preserving domain-specific data properties, which allows us to explore even large-scale field data sets to spot interesting events orders of magnitude faster than processing time-series data directly.
+                            In this paper, we leverage Z-order space-filling curves to systematically reduce data
+                            dimensionality while preserving domain-specific data properties, which allows us to explore
+                            even large-scale field data sets to spot interesting events orders of magnitude faster than
+                            processing time-series data directly.
                         </p>
                         <div className="paper-buttons">
-                            <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10186770">View PDF</a></button>
+                            <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10186770">View
+                                PDF</a></button>
                             <button className="button">More info</button>
                         </div>
                     </div>
                     <div className="paper-block">
-                        <h2 className="paper-title">Systematic evaluation of applying space-filling curves to automotive maneuver detection</h2>
+                        <h2 className="paper-title">Systematic evaluation of applying space-filling curves to automotive
+                            maneuver detection</h2>
                         <p className="paper-description">
-                            Identifying driving maneuvers plays an essential role on-board vehicles to monitor driving and driver states. We find that encoding just longitudinal and lateral accelerations sampled at 10 Hz using a Hilbert space-filling curve is already successfully identifying roundabout maneuvers.
+                            Identifying driving maneuvers plays an essential role on-board vehicles to monitor driving
+                            and driver states. We find that encoding just longitudinal and lateral accelerations sampled
+                            at 10 Hz using a Hilbert space-filling curve is already successfully identifying roundabout
+                            maneuvers.
                         </p>
                         <div className="paper-buttons">
-                            <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10422366/">View PDF</a></button>
+                            <button className="button"><a
+                                href="https://ieeexplore.ieee.org/abstract/document/10422366/">View PDF</a></button>
+                            <button className="button">More info</button>
+                        </div>
+                    </div>
+                    <div className="paper-block">
+                        <h2 className="paper-title">Comparing Optical Flow and Deep Learning to Enable Computationally
+                            Efficient Traffic Event Detection with Space-Filling Curves</h2>
+                        <p className="paper-description">
+                            We compare Optical Flow (OF) and Deep Learning (DL) to feed computationally efficient event
+                            detection via space-filling curves on video data from a forward-facing, in-vehicle camera.
+                            Our results yield that the OF approach excels in specificity and reduces false positives,
+                            while the DL approach demonstrates superior sensitivity. Both approaches offer comparable
+                            processing speed, making them suitable for real-time applications.
+                        </p>
+                        <div className="paper-buttons">
+                            <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10919665">View
+                                PDF</a></button>
                             <button className="button">More info</button>
                         </div>
                     </div>
@@ -402,12 +428,17 @@ function App() {
                 <h1>Space-Filling Curves (SFCs): what and why?</h1>
                 <div className="papers-container">
                     <div className="paper-block">
-                        <h2 className="paper-title">Zebra: Z-order curve-based event retrieval approach to efficiently explore automotive data</h2>
+                        <h2 className="paper-title">Zebra: Z-order curve-based event retrieval approach to efficiently
+                            explore automotive data</h2>
                         <p className="paper-description">
-                            In this paper, we leverage Z-order space-filling curves to systematically reduce data dimensionality while preserving domain-specific data properties, which allows us to explore even large-scale field data sets to spot interesting events orders of magnitude faster than processing time-series data directly.
+                            In this paper, we leverage Z-order space-filling curves to systematically reduce data
+                            dimensionality while preserving domain-specific data properties, which allows us to explore
+                            even large-scale field data sets to spot interesting events orders of magnitude faster than
+                            processing time-series data directly.
                         </p>
                         <div className="paper-buttons">
-                            <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10186770">View PDF</a></button>
+                            <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10186770">View
+                                PDF</a></button>
                             <button className="button">More info</button>
                         </div>
                     </div>
@@ -418,16 +449,6 @@ function App() {
                         </p>
                         <div className="paper-buttons">
                             <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10422366/">View PDF</a></button>
-                            <button className="button">More info</button>
-                        </div>
-                    </div>
-                    <div className="paper-block">
-                        <h2 className="paper-title">Comparing Optical Flow and Deep Learning to Enable Computationally Efficient Traffic Event Detection with Space-Filling Curves</h2>
-                        <p className="paper-description">
-                            We compare Optical Flow (OF) and Deep Learning (DL) to feed computationally efficient event detection via space-filling curves on video data from a forward-facing, in-vehicle camera. Our results yield that the OF approach excels in specificity and reduces false positives, while the DL approach demonstrates superior sensitivity. Both approaches offer comparable processing speed, making them suitable for real-time applications.
-                        </p>
-                        <div className="paper-buttons">
-                            <button className="button"><a href="https://ieeexplore.ieee.org/abstract/document/10919665">View PDF</a></button>
                             <button className="button">More info</button>
                         </div>
                     </div>
@@ -448,13 +469,8 @@ function App() {
                 <h1>Want to collaborate? Contact us!</h1>
 
                 <p>This website is under construction. If you want to know more about Space-Filling Curves (SFCs), or
-                    driving event detection using them, feel free to send us an email to: <a href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a></p>
-
-                <h2>This is a placeholder:</h2>
-
-                <p>Si id dicis, vicimus. Igitur ne dolorem quidem. Ut pulsi recurrant? Quae sequuntur igitur? Videsne
-                    quam sit magna dissensio? Ergo, inquit, tibi Q. Cur id non ita fit?</p>
-                <p>At ille pellit, qui permulcet sensum voluptate. Bork Haec igitur Epicuri non probo, inquam.</p>
+                    driving event detection using them, feel free to send us an email to Beatriz Cabrero-Daniel at <a
+                href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a> for more info.</p>
             </div>
 
             <div className="footer">
