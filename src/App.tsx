@@ -452,12 +452,12 @@ function App() {
                         </div>
                     </div>
                     <div className="paper-block">
-                        <h2 className="paper-title">Paper Title 1</h2>
+                        <h2 className="paper-title">Clustering Analyses of Two-Dimensional Space-Filling Curves: Hilbert and z-Order Curves</h2>
                         <p className="paper-description">
-                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
+                            This paper presents two analytical studies on clustering analyses of the 2-dimensional Hilbert and z-order curve families. The underlying measure is the mean number of cluster over all identically shaped subgrids. We derive the exact formulas for the clustering statistics for the 2-dimensional Hilbert and z-order curve families.
                         </p>
                         <div className="paper-buttons">
-                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
+                            <button className="button"><a href="https://link.springer.com/article/10.1007/s42979-022-01320-9">View PDF</a></button>
                             <button className="button">More info</button>
                         </div>
                     </div>
