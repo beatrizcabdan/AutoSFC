@@ -396,26 +396,6 @@ function App() {
                             <button className="button">More info</button>
                         </div>
                     </div>
-                    <div className="paper-block">
-                        <h2 className="paper-title">Paper Title 1</h2>
-                        <p className="paper-description">
-                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
-                        </p>
-                        <div className="paper-buttons">
-                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
-                            <button className="button">More info</button>
-                        </div>
-                    </div>
-                    <div className="paper-block">
-                        <h2 className="paper-title">Paper Title 1</h2>
-                        <p className="paper-description">
-                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
-                        </p>
-                        <div className="paper-buttons">
-                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
-                            <button className="button">More info</button>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div className="tabcontent" id={'about'}>
@@ -461,26 +441,6 @@ function App() {
                             <button className="button">More info</button>
                         </div>
                     </div>
-                    <div className="paper-block">
-                        <h2 className="paper-title">Paper Title 1</h2>
-                        <p className="paper-description">
-                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
-                        </p>
-                        <div className="paper-buttons">
-                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
-                            <button className="button">More info</button>
-                        </div>
-                    </div>
-                    <div className="paper-block">
-                        <h2 className="paper-title">Paper Title 1</h2>
-                        <p className="paper-description">
-                            This is a short description of Paper 1. It summarizes the key points in a concise manner.
-                        </p>
-                        <div className="paper-buttons">
-                            <button className="button"><a href="paper1.pdf">View PDF</a></button>
-                            <button className="button">More info</button>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -498,7 +458,8 @@ function App() {
             </div>
 
             <div className="footer">
-                Demo of SFC encoding and barcode formation for automotive data.
+                Demo of SFC encoding and barcode formation for automotive data. Work in progress. Contact Beatriz Cabrero-Daniel at <a
+                href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a> for more info.
             </div>
 
             <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels}
