@@ -120,7 +120,8 @@ function App() {
                 }
                 const colIndices = displayedDataLabels?.map(label => dataLabels
                     .findIndex(col => col === label)
-                ).filter(index => index !== -1) ?? [dataLabels.length - 2, dataLabels.length - 1]
+                ).filter(index => index !== -1).sort() ?? [dataLabels.length - 2, dataLabels.length - 1]
+                console.log(colIndices)
 
                 const beginTime = Number(lines[1]?.split(/;/)[0]) * 1000000 + Number(lines[1]?.split(/;/)[1]);
                 let startTimeXTicks = Number(0 < startLine ? Number(lines[startLine + 1]?.split(/;/)[0]) * 1000000 + Number(lines[startLine + 1]?.split(/;/)[1]) : beginTime);
@@ -132,18 +133,17 @@ function App() {
                 const newTransformedData: number[][] = []
                 let minData = Infinity
                 let maxData = 0
-                colIndices.forEach(index => {
+                colIndices.forEach((colIndex, i) => {
                     const column: number[] = lines
                         .slice(1) // Skip headers
-                        .slice(startLine >= 0 ? startLine : 0,
-                            endLine >= 0 ? endLine : undefined)
+                        .slice(startLine >= 0 ? startLine : 0, endLine >= 0 ? endLine : undefined)
                         .map(l => l.split(/;/))
-                        .map(arr => Number(arr[index]))
+                        .map(arr => Number(arr[colIndex]))
                         .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
                     newData.push(column)
                     const transformedColumn =
-                        column.map((val) => Math.trunc(val * (scales[index] ?? DEFAULT_SCALING_FACTOR)
-                            + (offsets[index] ?? 0)))
+                        column.map((val) => val * (scales[i] ?? DEFAULT_SCALING_FACTOR)
+                            + (offsets[i] ?? 0))
                     newTransformedData.push(transformedColumn)
 
                     const sortedData = (showSignalTransforms ? [...transformedColumn] : [...column])
@@ -300,9 +300,11 @@ function App() {
     const recomputeMinMaxChartValue = (data: number[][]) => {
         let min = Infinity
         let max = -Infinity
-        data.forEach(col => col.forEach(val => {
-            min = Math.min(min, val)
-            max = Math.max(max, val)
+        data.forEach(col => col
+            .slice(startLine >= 0 ? startLine : 0, endLine >= 0 ? endLine : undefined)
+            .forEach(val => {
+                min = Math.min(min, val)
+                max = Math.max(max, val)
         }))
         setMinChartValue(min)
         setMaxChartValue(max)
@@ -314,6 +316,7 @@ function App() {
         transformedData[index] = data[index].map(val => val * (scale ?? DEFAULT_SCALING_FACTOR) + (offsets[index] ?? 0))
         setTransformedData(transformedData)
         recomputeMinMaxChartValue(showSignalTransforms ? transformedData : data)
+        console.log(transformedData[0])
     };
 
     const onOffsetsChanged = (index: number, offset: number | undefined) => {
