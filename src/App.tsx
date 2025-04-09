@@ -296,7 +296,7 @@ function App() {
         setEndLine(endRow)
     }
 
-    const recomputeMinMaxChartValue = (data: number[][]) => {
+    const setMinMaxChartValues = (data: number[][]) => {
         let min = Infinity
         let max = -Infinity
         data.forEach(col => col
@@ -313,7 +313,7 @@ function App() {
         setScales([...scales])
         transformedData[index] = data[index].map(val => val * (scale ?? DEFAULT_SCALING_FACTOR) + (offsets[index] ?? 0))
         setTransformedData(transformedData)
-        recomputeMinMaxChartValue(showSignalTransforms ? transformedData : data)
+        setMinMaxChartValues(showSignalTransforms ? transformedData : data)
     };
 
     const onOffsetsChanged = (index: number, offset: number | undefined) => {
@@ -321,7 +321,7 @@ function App() {
         setOffsets([...offsets])
         transformedData[index] = data[index].map(val => val * (scales[index] ?? DEFAULT_SCALING_FACTOR) + (offset ?? 0))
         setTransformedData(transformedData)
-        recomputeMinMaxChartValue(showSignalTransforms ? transformedData : data)
+        setMinMaxChartValues(showSignalTransforms ? transformedData : data)
     };
     
     const onBitsPerSignalChanged = (bits: number | string) => {
@@ -329,7 +329,7 @@ function App() {
     };
 
     function onShowSignalTransformsChanged(show: boolean) {
-        recomputeMinMaxChartValue(show ? transformedData : data)
+        setMinMaxChartValues(show ? transformedData : data)
         setShowSignalTransforms(show)
     }
 
