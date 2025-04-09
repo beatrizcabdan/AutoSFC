@@ -48,7 +48,7 @@ export function ProcessingComponent(props: {
                        onChange={(e) =>
                            props.onBitsPerSignalChanged(e.target.value ? Number(e.target.value) : '')}/>
             </label>
-            <span className={'input-label show-transforms-label'}>Show transforms in signals chart</span>
+            <span className={'input-label show-transforms-label'}>Plot transformed signals</span>
             <div className={'input-label show-transforms-label'}>
                 <Checkbox size={'small'} checked={props.showSignalTransforms}
                           onChange={() => props.setShowSignalTransforms(!props.showSignalTransforms)}/>

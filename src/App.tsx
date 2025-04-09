@@ -359,7 +359,7 @@ function App() {
                            yAxisName={'Signal'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels}
                            startTimeXticks={startTimeXTicks} finishTimeXticks={finishTimeXTicks}
                            currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
-                           onLegendClick={selectDataColumns} lineColors={LINE_COLORS} transformedData={transformedData} /*showSignalTransforms={showSignalTransforms}*//>
+                           onLegendClick={selectDataColumns} lineColors={LINE_COLORS} transformedData={transformedData} />
                     <Chart name={'Morton plot (with bars)'} data={data} transformedData={transformedData} scales={scales}
                            offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'} bitsPerSignal={bitsPerSignal}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
