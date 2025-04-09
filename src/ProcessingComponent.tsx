@@ -10,7 +10,9 @@ export function ProcessingComponent(props: {
     onOffsetsChanged: (index: number, offset: (number | undefined)) => void,
     offsets: (number | undefined)[],
     bitsPerSignal: number | string,
-    onBitsPerSignalChanged: (bits: number | string) => void
+    onBitsPerSignalChanged: (bits: number | string) => void,
+    showSignalTransforms: boolean,
+    setShowSignalTransforms: (show: boolean) => void
 }) {
     return <div className={'control-container'} id={'process-container'}>
         <h3>Transform</h3>
@@ -48,7 +50,8 @@ export function ProcessingComponent(props: {
             </label>
             <span className={'input-label show-transforms-label'}>Show transforms in signals chart</span>
             <div className={'input-label show-transforms-label'}>
-                <Checkbox size={'small'} onChange={() => console.log('Click!')}/>
+                <Checkbox size={'small'} checked={props.showSignalTransforms}
+                          onChange={() => props.setShowSignalTransforms(!props.showSignalTransforms)}/>
             </div>
         </div>
     </div>;

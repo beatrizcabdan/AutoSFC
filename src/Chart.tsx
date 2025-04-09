@@ -4,7 +4,6 @@ import {useEffect, useRef} from "react";
 import {makeGaussKernel, morton_interlace} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_SCALING_FACTOR} from "./App.tsx";
-import {EncodingComponent} from "./EncodingComponent.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
     const smoothedArr: number[] = []
@@ -40,7 +39,8 @@ export function Chart(props: {
     onLegendClick?: () => void,
     lineColors?: string[],
     offsets: (number | undefined)[],
-    bitsPerSignal?: number | string
+    bitsPerSignal?: number | string,
+    transformedData: number[][]
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
@@ -173,14 +173,15 @@ export function Chart(props: {
         return (canvas.height - curvePadding * 2) * (props.maxValue - point) / (props.maxValue - props.minValue) + curvePadding;
     }
 
+    // TODO: Decouple signal/Morton charts
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
 
-            // Add scaling, offsets before processing
-            const transformedData = props.data.map((column, colIndex) => column.map(value =>
-                Math.trunc(value * (props.scales[colIndex] ?? DEFAULT_SCALING_FACTOR) + (props.offsets[colIndex] ?? 0))))
+            // Add truncating processing
+            const truncatedData = props.transformedData.map(column => column.map(value =>
+                Math.trunc(value)))
             const bitsPerSignal = Number(typeof props.bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : props.bitsPerSignal)
-            const mortonData = morton_interlace(transformedData, bitsPerSignal).reverse()
+            const mortonData = morton_interlace(truncatedData, bitsPerSignal).reverse()
 
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
             const minMorton = mortonSorted[0]
@@ -239,7 +240,9 @@ export function Chart(props: {
                 }
             }
 
+            // Signals chart
             if (props.type == 'line') {
+                // const data = props.showSignalTransforms ? transformedData : props.data
                 props.data.forEach((column, i) => {
                     // Draw lines
                     ctx.strokeStyle = props.lineColors![i % props.lineColors!.length]
@@ -332,7 +335,7 @@ export function Chart(props: {
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [], CURVE_PADDING_FACTOR, leftExtraPadding)
             drawAxis(canvas, axisPadding, 'top', 2, undefined, undefined, leftExtraPadding)
         }
-    }, [canvasRef.current, props.data, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
+    }, [canvasRef.current, props.data, props.transformedData, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
         props.offsets, props.bitsPerSignal]);
 
     return <div className={'chart'}>
