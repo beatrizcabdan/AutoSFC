@@ -228,13 +228,30 @@ input[type="number"] {
         text-align: center;
       }
 
-      span.bits-label {
+      span.bits-label, span.show-transforms-label {
         grid-column: 1;
-        padding-top: 0.2rem;
       }
 
-      label.bits-label {
+      label.bits-label, div.show-transforms-label {
         grid-column: 2;
+      }
+
+      div.show-transforms-label {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        pointer-events: none;
+
+        .MuiButtonBase-root {
+          aspect-ratio: 1;
+          height: fit-content;
+          width: fit-content;
+          pointer-events: auto;
+        }
+      }
+
+      span.bits-label {
+        padding-top: 0.2rem;
       }
 
       input {

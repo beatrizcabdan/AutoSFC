@@ -1,5 +1,6 @@
 import React from "react";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_SCALING_FACTOR} from "./App.tsx";
+import {Checkbox} from "@mui/material";
 
 export function ProcessingComponent(props: {
     displayedDataLabels: string[] | null,
@@ -45,6 +46,10 @@ export function ProcessingComponent(props: {
                        onChange={(e) =>
                            props.onBitsPerSignalChanged(e.target.value ? Number(e.target.value) : '')}/>
             </label>
+            <span className={'input-label show-transforms-label'}>Show transforms in signals chart</span>
+            <div className={'input-label show-transforms-label'}>
+                <Checkbox size={'small'} onChange={() => console.log('Click!')}/>
+            </div>
         </div>
     </div>;
 }
