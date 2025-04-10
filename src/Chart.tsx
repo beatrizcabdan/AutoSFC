@@ -242,7 +242,6 @@ export function Chart(props: {
 
             // Signals chart
             if (props.type == 'line') {
-                // const data = props.showSignalTransforms ? transformedData : props.data
                 props.data.forEach((column, i) => {
                     // Draw lines
                     ctx.strokeStyle = props.lineColors![i % props.lineColors!.length]
