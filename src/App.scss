@@ -255,6 +255,25 @@ input[type="number"] {
         padding-top: 0.2rem;
       }
 
+      // TODO: Refactor into generic outlined, blue-border button
+      #reset-button {
+        grid-column: 1 / 4;
+        width: fit-content;
+        justify-self: center;
+        border-width: 2px;
+        margin-top: 0.5rem;
+        border-radius: 6px;
+        color: var(--text-color-light);
+        font-weight: 700;
+        font-size: 0.6rem;
+        letter-spacing: 0.02rem;
+        transition: all 0.2s;
+
+        &.Mui-disabled {
+          color: var(--button-active);
+        }
+      }
+
       input {
         width: 7ch;
         margin: 0 0.5rem;
