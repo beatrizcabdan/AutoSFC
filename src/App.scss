@@ -2,6 +2,7 @@
 
 $canvas-height: 26vw;
 $canvas-width: 35vw;
+$curve-padding-factor: 0.04;
 
 $def-control-width: 27rem;
 $vert-container-padding: 1.2rem;
@@ -82,8 +83,7 @@ html {
     align-self: flex-start;
 
     .chartitle {
-        margin: 0;
-        margin-bottom: -1vh;
+        margin: 0.5rem;
       }
 
     .canvas-container {
@@ -105,19 +105,32 @@ html {
       align-items: flex-start;
       display: flex;
       flex-direction: row;
-      width: 100%;
-      height: 100%;
 
       .canvas-wrapper {
-        width: 100%;
-        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0;
+
         canvas {
           height: $canvas-height;
           width: $canvas-width;
-          // aspect-ratio: 1;
-          margin-bottom: -1vh;
+          border: 1px solid black;
+        }
 
-          // border: 1px solid green;
+        .chartXLabel {
+          width: 100%;
+          height: fit-content;
+          display: flex;
+          justify-content: space-between;
+          padding: 0 $canvas-height * $curve-padding-factor;
+
+          span {
+            margin: 0;
+            border-left: 1px solid black;
+            height: 5px;
+            width: 1px;
+          }
         }
 
         h2 {

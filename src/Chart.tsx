@@ -44,10 +44,10 @@ export function Chart(props: {
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
-    const AXIS_PADDING_FACTOR = 0.09
-    const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.04
-    const LEFT_AXIS_EXTRA_PADDING = 25
-    const LEFT_AXIS_E_NOTATION_EXTRA_PADDING = 60
+    const AXIS_PADDING_FACTOR = 0 // 0.09
+    const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.04 // TODO: Get val from CSS
+    const LEFT_AXIS_EXTRA_PADDING = 0 // 25
+    const LEFT_AXIS_E_NOTATION_EXTRA_PADDING = 0 // 60
     const MAX_Y_AXIS_DIGITS = 4
 
     const LINE_WIDTH = 4
@@ -75,7 +75,7 @@ export function Chart(props: {
         const axisColor= rootElem ? getComputedStyle(rootElem).color : 'black'
         ctx.strokeStyle = axisColor
 
-        ctx.beginPath()
+        // ctx.beginPath()
 
         let startPos: {x: number, y: number} = {x: -1, y: -1}
         let endPos: {x: number, y: number} = {x: -1, y: -1}
@@ -103,9 +103,9 @@ export function Chart(props: {
             }
         }
 
-        ctx.moveTo(startPos.x, startPos.y)
+        /* ctx.moveTo(startPos.x, startPos.y)
         ctx.lineTo(endPos.x, endPos.y)
-        ctx.stroke()
+        ctx.stroke() */
 
         if (tickMarks) {
             const tickLength = 10
@@ -117,6 +117,11 @@ export function Chart(props: {
             ctx.textAlign = 'center'
             ctx.textBaseline = 'middle'
             ctx.fillStyle = axisColor
+
+            const axisWidth = canvas.width - tickPadding * 2 - leftExtraPadding
+            const intervalLen = axisWidth / (tickMarks.length - 1)
+            /*console.log('axisWidth canvas: ' + axisWidth)
+            console.log('intervalLen canvas: ' + intervalLen)*/
 
             tickMarks.forEach((_, i) => {
                 switch (position) {
@@ -148,16 +153,16 @@ export function Chart(props: {
                 }
 
                 ctx.font = '24px sans-serif';
-                ctx.fillText(tickMarks[i], textPos.x - (position === 'left' ? leftExtraPadding * 0.5 : 0), textPos.y)
+                // ctx.fillText(tickMarks[i], textPos.x - (position === 'left' ? leftExtraPadding * 0.5 : 0), textPos.y)
 
                 ctx.lineWidth = 1
                 ctx.strokeStyle = axisColor
 
-                ctx.beginPath()
+                /* ctx.beginPath()
                 ctx.moveTo(tickStartPos.x, tickStartPos.y)
                 ctx.lineTo(tickEndPos.x, tickEndPos.y)
                 ctx.closePath()
-                ctx.stroke()
+                ctx.stroke() */
             })
         }
     }
@@ -330,6 +335,8 @@ export function Chart(props: {
             // @ts-ignore
             ctx = canvas.getContext('2d')
 
+            // console.log('leftExtraPadding: ' + leftExtraPadding)
+
             drawAxis(canvas, axisPadding, 'left', 2, yTickMarks, leftTickPaddingFactor, leftExtraPadding)
             drawAxis(canvas, axisPadding, 'bottom', 2, xTickMarks, undefined, leftExtraPadding)
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [], CURVE_PADDING_FACTOR, leftExtraPadding)
@@ -337,14 +344,16 @@ export function Chart(props: {
         }
     }, [canvasRef.current, props.data, props.transformedData, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
         props.offsets, props.bitsPerSignal]);
-
     return <div className={'chart'}>
         <h2 className={'chartitle'}>{props.name}</h2>
-
         <div className={'canvas-container'}>
             {props.yAxisLabelPos === 'left' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
             <div className={'canvas-wrapper'}>
                 <canvas ref={canvasRef} className={props.type}></canvas>
+                <div className={'chartXLabel'}>{
+                    Array.from(Array(PLOT_NUM_X_VALUES).keys()).map(_ => {
+                    return <span />})}
+                </div>
                 <p>{props.xAxisName}</p>
             </div>
             {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
