@@ -1,6 +1,6 @@
 @use 'sass:math';
 
-$canvas-height: 40vh;
+$canvas-height: 26vw;
 $canvas-width: 35vw;
 
 $def-control-width: 27rem;
@@ -114,8 +114,10 @@ html {
         canvas {
           height: $canvas-height;
           width: $canvas-width;
-          aspect-ratio: 1;
+          // aspect-ratio: 1;
           margin-bottom: -1vh;
+
+          // border: 1px solid green;
         }
 
         h2 {
@@ -275,7 +277,7 @@ input[type="number"] {
       }
 
       input {
-        width: 7ch;
+        width: 9ch;
         margin: 0 0.5rem;
       }
 

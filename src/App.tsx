@@ -79,7 +79,7 @@ function App() {
     const [startLine, setStartLine] = useState(preset.dataRangeStart)
     const [endLine, setEndLine] = useState(preset.dataRangeEnd)
 
-    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'speed'])
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'lat']) // TODO: Revert to 'accel_x', 'accel_y', 'speed'
 
     const [data, setData] = useState<number[][]>([])
     const [transformedData, setTransformedData] = useState<number[][]>([]) // Transformed in "Transform" panel
@@ -89,7 +89,7 @@ function App() {
     const [offsets, setOffsets] = useState<(number | undefined)[]>([])
     const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(10)
     // Show transformed signals in signal chart
-    const [showSignalTransforms, setShowSignalTransforms] = useState(true)
+    const [showSignalTransforms, setShowSignalTransforms] = useState(false)
 
     const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
     const [finishTimeXTicks, setFinishTimeXTicks] = useState<number>()

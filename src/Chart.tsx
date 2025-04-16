@@ -3,7 +3,7 @@
 import {useEffect, useRef} from "react";
 import {makeGaussKernel, morton_interlace} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
-import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_SCALING_FACTOR} from "./App.tsx";
+import {DEFAULT_BITS_PER_SIGNAL} from "./App.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
     const smoothedArr: number[] = []
@@ -46,8 +46,8 @@ export function Chart(props: {
     const PLOT_NUM_X_VALUES = 9
     const AXIS_PADDING_FACTOR = 0.07
     const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.04
-    const LEFT_AXIS_EXTRA_PADDING = 10
-    const LINE_CHART_LEFT_AXIS_EXTRA_PADDING = 50
+    const LEFT_AXIS_EXTRA_PADDING = 25
+    const LEFT_AXIS_E_NOTATION_EXTRA_PADDING = 60
     const MAX_Y_AXIS_DIGITS = 4
 
     const LINE_WIDTH = 4
@@ -62,6 +62,7 @@ export function Chart(props: {
     //@ts-ignore
     let ctx: CanvasRenderingContext2D
 
+    // Draw axis & axis labels
     function drawAxis(canvas: HTMLCanvasElement, axisPadding: number, position: string, lineWidth: number,
                       tickMarks?: string[], tickPaddingFactor = CURVE_PADDING_FACTOR, leftExtraPadding: number = 10) {
         const ulCorner = {x: axisPadding + leftExtraPadding, y: axisPadding}
@@ -236,7 +237,7 @@ export function Chart(props: {
                     b.length - a.length)[0]
                 if (longestLabelNum.length > MAX_Y_AXIS_DIGITS) {
                     yTickMarks = lineYValues.map(n => n.toExponential(1))
-                    leftExtraPadding = LINE_CHART_LEFT_AXIS_EXTRA_PADDING
+                    leftExtraPadding = LEFT_AXIS_E_NOTATION_EXTRA_PADDING
                 }
             }
 
