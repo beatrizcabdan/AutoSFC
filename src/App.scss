@@ -71,7 +71,7 @@ html {
   justify-content: space-between;
   align-items: flex-end;
   flex-direction: row;
-  gap: 0.5rem;
+  gap: 2.0rem;
 
   .chart {
     justify-content: center;
@@ -89,6 +89,7 @@ html {
     .canvas-container {
       p {
         line-height: 0;
+        margin-top: 2.0rem;
       }
 
       .y-axis-label {
@@ -125,11 +126,27 @@ html {
           justify-content: space-between;
           padding: 0 $canvas-height * $curve-padding-factor;
 
-          span {
-            margin: 0;
-            border-left: 1px solid black;
-            height: 5px;
-            width: 1px;
+          .x-tick-mark {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            height: fit-content;
+
+            .x-tick-line {
+              margin: 0;
+              border-left: 1px solid black;
+              height: 5px;
+              width: 1px;
+            }
+
+            .x-tick-mark-label {
+              position: absolute;
+              top: 0.3rem;
+              font-family: Inter, sans-serif;
+              font-size: 0.7rem;
+            }
           }
         }
 
@@ -185,7 +202,7 @@ input[type="number"] {
   align-items: center;
   --gap: 20px;
   gap: var(--gap);
-  max-width: 70rem;
+  max-width: 75rem;
 
   #process-container {
     height: fit-content;

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {makeGaussKernel, morton_interlace} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 import {DEFAULT_BITS_PER_SIGNAL} from "./App.tsx";
@@ -55,6 +55,7 @@ export function Chart(props: {
     const MORTON_BAR_WIDTH = 4
     const MORTON_PIXEL_DIAM = 4
 
+    const [xTickMarks, setXTickMarks] = useState<string[]>([])
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const curvePaddingRef = useRef(0)
 
@@ -225,6 +226,7 @@ export function Chart(props: {
             }
 
             const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
+            setXTickMarks(xTickMarks)
 
             const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
                 .map(i => props.minValue + i * (props.maxValue - props.minValue) / (PLOT_NUM_Y_VALUES - 1))
@@ -335,8 +337,6 @@ export function Chart(props: {
             // @ts-ignore
             ctx = canvas.getContext('2d')
 
-            // console.log('leftExtraPadding: ' + leftExtraPadding)
-
             drawAxis(canvas, axisPadding, 'left', 2, yTickMarks, leftTickPaddingFactor, leftExtraPadding)
             drawAxis(canvas, axisPadding, 'bottom', 2, xTickMarks, undefined, leftExtraPadding)
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [], CURVE_PADDING_FACTOR, leftExtraPadding)
@@ -351,8 +351,11 @@ export function Chart(props: {
             <div className={'canvas-wrapper'}>
                 <canvas ref={canvasRef} className={props.type}></canvas>
                 <div className={'chartXLabel'}>{
-                    Array.from(Array(PLOT_NUM_X_VALUES).keys()).map(_ => {
-                    return <span />})}
+                    Array.from(Array(PLOT_NUM_X_VALUES).keys()).map(i => {
+                        return <div className={'x-tick-mark'}>
+                            <span className={'x-tick-line'}/>
+                            <span className={'x-tick-mark-label'}>{xTickMarks[i]}</span>
+                        </div>})}
                 </div>
                 <p>{props.xAxisName}</p>
             </div>
