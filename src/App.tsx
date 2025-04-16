@@ -359,7 +359,7 @@ function App() {
                            onLegendClick={selectDataColumns} lineColors={LINE_COLORS} transformedData={transformedData} />
                     <Chart name={'Morton plot (CSP)'} data={data} transformedData={transformedData} scales={scales}
                            offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'} bitsPerSignal={bitsPerSignal}
-                           onLegendClick={selectDataColumns} lineColors={LINE_COLORS}/>
+                           yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
                 </div>
                 <div className={'controls'}>
                     <div className={'vert-control-wrapper'}>
