@@ -44,7 +44,7 @@ export function Chart(props: {
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
-    const AXIS_PADDING_FACTOR = 0.07
+    const AXIS_PADDING_FACTOR = 0.09
     const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.04
     const LEFT_AXIS_EXTRA_PADDING = 25
     const LEFT_AXIS_E_NOTATION_EXTRA_PADDING = 60
