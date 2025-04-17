@@ -228,13 +228,50 @@ input[type="number"] {
         text-align: center;
       }
 
-      span.bits-label {
+      span.bits-label, span.show-transforms-label {
         grid-column: 1;
+        text-align: left;
+      }
+
+      label.bits-label, div.show-transforms-label {
+        grid-column: 2;
+      }
+
+      div.show-transforms-label {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        pointer-events: none;
+
+        .MuiButtonBase-root {
+          aspect-ratio: 1;
+          height: fit-content;
+          width: fit-content;
+          pointer-events: auto;
+        }
+      }
+
+      span.bits-label {
         padding-top: 0.2rem;
       }
 
-      label.bits-label {
-        grid-column: 2;
+      // TODO: Refactor into generic outlined, blue-border button
+      #reset-button {
+        grid-column: 1 / 4;
+        width: fit-content;
+        justify-self: center;
+        border-width: 2px;
+        margin-top: 0.5rem;
+        border-radius: 6px;
+        color: var(--text-color-light);
+        font-weight: 700;
+        font-size: 0.6rem;
+        letter-spacing: 0.02rem;
+        transition: all 0.2s;
+
+        &.Mui-disabled {
+          color: var(--button-active);
+        }
       }
 
       input {
@@ -395,6 +432,11 @@ input[type="number"] {
       width: 8ch;
     }
   }
+}
+
+.MuiSlider-thumb {
+  width: 17px !important;
+  height: 17px !important;
 }
 
 /* HEADER AND FOOTER */

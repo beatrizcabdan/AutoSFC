@@ -1,5 +1,6 @@
 import React from "react";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_SCALING_FACTOR} from "./App.tsx";
+import {Button, Checkbox} from "@mui/material";
 
 export function ProcessingComponent(props: {
     displayedDataLabels: string[] | null,
@@ -9,8 +10,20 @@ export function ProcessingComponent(props: {
     onOffsetsChanged: (index: number, offset: (number | undefined)) => void,
     offsets: (number | undefined)[],
     bitsPerSignal: number | string,
-    onBitsPerSignalChanged: (bits: number | string) => void
+    onBitsPerSignalChanged: (bits: number | string) => void,
+    showSignalTransforms: boolean,
+    setShowSignalTransforms: (show: boolean) => void
 }) {
+
+    // TODO: Decide on how reset should work when presets are used
+    function onResetClicked() {
+        for (let i = 0; i < props.offsets.length; i++) {
+            props.onOffsetsChanged(i, 0)
+            props.onScalesChanged(i, DEFAULT_SCALING_FACTOR)
+        }
+        props.onBitsPerSignalChanged(DEFAULT_BITS_PER_SIGNAL)
+    }
+
     return <div className={'control-container'} id={'process-container'}>
         <h3>Transform</h3>
         <div className={'signals-grid'}>
@@ -45,6 +58,15 @@ export function ProcessingComponent(props: {
                        onChange={(e) =>
                            props.onBitsPerSignalChanged(e.target.value ? Number(e.target.value) : '')}/>
             </label>
+            <span className={'input-label show-transforms-label'}>Plot transformed signals</span>
+            <div className={'input-label show-transforms-label'}>
+                <Checkbox size={'small'} checked={props.showSignalTransforms}
+                          onChange={() => props.setShowSignalTransforms(!props.showSignalTransforms)}/>
+            </div>
+            <Button id={'reset-button'} variant='outlined' onClick={onResetClicked}
+                    disabled={props.offsets.every(v => v === 0) // Disable if no transforms have been made
+                        && props.scales.every(v => v === DEFAULT_SCALING_FACTOR)
+                        && props.bitsPerSignal === DEFAULT_BITS_PER_SIGNAL}>Reset</Button>
         </div>
     </div>;
 }

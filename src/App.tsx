@@ -82,11 +82,14 @@ function App() {
     const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'speed'])
 
     const [data, setData] = useState<number[][]>([])
+    const [transformedData, setTransformedData] = useState<number[][]>([]) // Transformed in "Transform" panel
 
     // Use default scaling factor when scale is undefined (this to allow removing all digits in inputs)
     const [scales, setScales] = useState<(number | undefined)[]>([])
     const [offsets, setOffsets] = useState<(number | undefined)[]>([])
     const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(10)
+    // Show transformed signals in signal chart
+    const [showSignalTransforms, setShowSignalTransforms] = useState(true)
 
     const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
     const [finishTimeXTicks, setFinishTimeXTicks] = useState<number>()
@@ -117,7 +120,7 @@ function App() {
                 }
                 const colIndices = displayedDataLabels?.map(label => dataLabels
                     .findIndex(col => col === label)
-                ).filter(index => index !== -1) ?? [dataLabels.length - 2, dataLabels.length - 1]
+                ).filter(index => index !== -1).sort() ?? [dataLabels.length - 2, dataLabels.length - 1]
 
                 const beginTime = Number(lines[1]?.split(/;/)[0]) * 1000000 + Number(lines[1]?.split(/;/)[1]);
                 let startTimeXTicks = Number(0 < startLine ? Number(lines[startLine + 1]?.split(/;/)[0]) * 1000000 + Number(lines[startLine + 1]?.split(/;/)[1]) : beginTime);
@@ -126,26 +129,37 @@ function App() {
                 finishTimeXTicks = (finishTimeXTicks - beginTime) / 1000000;
 
                 const newData: number[][] = []
+                const newTransformedData: number[][] = []
                 let minData = Infinity
                 let maxData = 0
-                colIndices.forEach(index => {
+                colIndices.forEach((colIndex, i) => {
                     const column: number[] = lines
                         .slice(1) // Skip headers
-                        .slice(startLine >= 0 ? startLine : 0,
-                            endLine >= 0 ? endLine : undefined)
+                        .slice(startLine >= 0 ? startLine : 0, endLine >= 0 ? endLine : undefined)
                         .map(l => l.split(/;/))
-                        .map(arr => Number(arr[index]))
+                        .map(arr => Number(arr[colIndex]))
                         .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
                     newData.push(column)
+                    const transformedColumn =
+                        column.map((val) => val * (scales[i] ?? DEFAULT_SCALING_FACTOR)
+                            + (offsets[i] ?? 0))
+                    newTransformedData.push(transformedColumn)
 
-                    const sortedData = [...column].sort((a, b) => a - b)
+                    const sortedData = (showSignalTransforms ? [...transformedColumn] : [...column])
+                        .sort((a, b) => a - b)
+
                     minData = Math.min(minData, sortedData[0])
                     maxData = Math.max(maxData, sortedData[sortedData.length - 1])
                 })
 
                 setData(newData)
-                setScales(Array(colIndices.length).fill(DEFAULT_SCALING_FACTOR))
-                setOffsets(Array(colIndices.length).fill(0))
+                setTransformedData(newTransformedData)
+                if (scales.length == 0) {
+                    setScales(Array(colIndices.length).fill(DEFAULT_SCALING_FACTOR))
+                }
+                if (offsets.length == 0) {
+                    setOffsets(Array(colIndices.length).fill(0))
+                }
                 setStartTimeXTicks(startTimeXTicks)
                 setFinishTimeXTicks(finishTimeXTicks)
                 setMinChartValue(minData)
@@ -272,28 +286,51 @@ function App() {
         }
     }
 
-    function onZoomSliderChange(_: Event, newValue: number[] | number) {
+    const onZoomSliderChange = (_: Event, newValue: number[] | number) => {
         setStartLine((newValue as number[])[0])
         setEndLine((newValue as number[])[1])
-    }
+    };
 
     const presetSelected = (startRow: number, endRow: number) => {
         setStartLine(startRow)
         setEndLine(endRow)
     }
 
-    function onScalesChanged(index: number, scale: number | undefined) {
-        scales[index] = scale
-        setScales([...scales])
+    const setMinMaxChartValues = (data: number[][]) => {
+        let min = Infinity
+        let max = -Infinity
+        data.forEach(col => col
+            .forEach(val => {
+                min = Math.min(min, val)
+                max = Math.max(max, val)
+        }))
+        setMinChartValue(min)
+        setMaxChartValue(max)
     }
 
-    function onOffsetsChanged(index: number, offset: number | undefined) {
+    const onScalesChanged = (index: number, scale: number | undefined) => {
+        scales[index] = scale
+        setScales([...scales])
+        transformedData[index] = data[index].map(val => val * (scale ?? DEFAULT_SCALING_FACTOR) + (offsets[index] ?? 0))
+        setTransformedData(transformedData)
+        setMinMaxChartValues(showSignalTransforms ? transformedData : data)
+    };
+
+    const onOffsetsChanged = (index: number, offset: number | undefined) => {
         offsets[index] = offset
         setOffsets([...offsets])
-    }
+        transformedData[index] = data[index].map(val => val * (scales[index] ?? DEFAULT_SCALING_FACTOR) + (offset ?? 0))
+        setTransformedData(transformedData)
+        setMinMaxChartValues(showSignalTransforms ? transformedData : data)
+    };
     
-    function onBitsPerSignalChanged(bits: number | string) {
+    const onBitsPerSignalChanged = (bits: number | string) => {
         setBitsPerSignal(bits)
+    };
+
+    function onShowSignalTransformsChanged(show: boolean) {
+        setMinMaxChartValues(show ? transformedData : data)
+        setShowSignalTransforms(show)
     }
 
     // @ts-ignore
@@ -314,15 +351,15 @@ function App() {
 
             <div id={'main'}>
                 <div className={'charts'}>
-                    <Chart name={'Original signals plot'} data={data} scales={scales} offsets={offsets}
+                    <Chart name={'Original signals plot'} data={showSignalTransforms ? transformedData : data} scales={scales} offsets={offsets}
                            minValue={minChartValue} maxValue={maxChartValue} type={'line'} xAxisName={'Time'}
                            yAxisName={'Signal'} yAxisLabelPos={'left'} legendLabels={displayedDataLabels}
                            startTimeXticks={startTimeXTicks} finishTimeXticks={finishTimeXTicks}
                            currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
+                           onLegendClick={selectDataColumns} lineColors={LINE_COLORS} transformedData={transformedData} />
+                    <Chart name={'Morton plot (CSP)'} data={data} transformedData={transformedData} scales={scales}
+                           offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'} bitsPerSignal={bitsPerSignal}
                            onLegendClick={selectDataColumns} lineColors={LINE_COLORS}/>
-                    <Chart name={'Morton plot (CSP)'} data={data} scales={scales} offsets={offsets} minValue={minChartValue}
-                           maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'} bitsPerSignal={bitsPerSignal}
-                           yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
                 </div>
                 <div className={'controls'}>
                     <div className={'vert-control-wrapper'}>
@@ -367,6 +404,7 @@ function App() {
                     <div className={'vert-control-wrapper'}>
                         <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS} scales={scales} offsets={offsets}
                                              bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
+                                             showSignalTransforms={showSignalTransforms} setShowSignalTransforms={onShowSignalTransformsChanged}
                                              onOffsetsChanged={onOffsetsChanged} onBitsPerSignalChanged={onBitsPerSignalChanged}/>
                     </div>
                 </div>
