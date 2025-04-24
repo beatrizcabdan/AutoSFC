@@ -67,7 +67,7 @@ export const DEFAULT_SCALING_FACTOR = 100
 export const DEFAULT_BITS_PER_SIGNAL = 10
 
 function App() {
-    const SLIDER_START_VAL = 0
+    const SLIDER_START_VAL = 100
     const EXAMPLE_FILE_PATH = './emergency_braking.csv'
     const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
 
@@ -162,6 +162,7 @@ function App() {
                 }
                 setStartTimeXTicks(startTimeXTicks)
                 setFinishTimeXTicks(finishTimeXTicks)
+                // setSignalMarkerPos(maxData)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
                 setDataNumLines(lines.length - 1)
