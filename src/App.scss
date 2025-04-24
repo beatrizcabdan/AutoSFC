@@ -92,13 +92,6 @@ html {
         margin-top: 2.0rem;
       }
 
-      .y-axis-label {
-        writing-mode: tb;
-        rotate: 180deg;
-        margin-top: math.div($canvas-height, 2);
-        translate: 0 -50%;
-      }
-
       text-transform: uppercase;
       font-size: 1rem;
       gap: 0;
@@ -112,15 +105,49 @@ html {
         grid-auto-rows: auto;
         gap: 0;
 
-        &#left-canvas {
-          grid-template-columns: auto auto;
+        h2 {
+          grid-column: 3;
+          grid-row: 1;
+          font-weight: 900;
+          color: var(--text-color-light);
+          margin: 1rem 0 0.5rem;
+          text-transform: initial;
         }
 
-        &#right-canvas {
+        .y-axis-label {
+          width: fit-content;
+          height: fit-content;
+          writing-mode: tb;
+          rotate: 180deg;
+          grid-row: 2;
+          grid-column: 1;
+          align-self: center;
+        }
+
+        &#left-canvas {
           grid-template-columns: auto auto auto;
         }
 
+        &#right-canvas {
+          grid-template-columns: auto auto auto auto;
+
+          .chartYTicks {
+            grid-column: 1;
+          }
+
+          canvas, h2, .chart-x-axis-name, .chartXTicks {
+            grid-column: 2;
+          }
+
+          .y-axis-label {
+            grid-column: 4;
+            grid-row: 2;
+          }
+        }
+
         canvas {
+          grid-column: 3;
+          grid-row: 2;
           height: $canvas-height;
           width: $canvas-width;
           border: 1px solid black;
@@ -138,11 +165,11 @@ html {
           align-items: flex-end;
           display: flex;
           flex-direction: column-reverse;
-          grid-column: 1;
+          grid-column: 2;
           // Create a small (0.4rem, hard-coded) offset to make ticks align with curve padding. If we change tick
           // font/size, we might need to change here as well!
           padding: calc($canvas-height * $curve-padding-factor - 0.4rem) 0;
-          grid-row: 1;
+          grid-row: 2;
 
           &#right-axis {
             grid-column: 3;
@@ -164,11 +191,6 @@ html {
               height: 1px;
               width: 5px;
             }
-
-            .y-tick-mark-label {
-              //position: absolute;
-              //right: 9px;
-            }
           }
         }
 
@@ -178,7 +200,7 @@ html {
           display: flex;
           justify-content: space-between;
           padding: 0 $canvas-height * $curve-padding-factor;
-          grid-column: 2;
+          grid-column: 3;
 
           .x-tick-mark {
             display: flex;
@@ -203,14 +225,7 @@ html {
         }
 
         .chart-x-axis-name {
-          grid-column: 2;
-        }
-
-        h2 {
-          font-weight: 500;
-          color: var(--text-color-light);
-          margin: 1rem 0 0.5rem;
-          text-transform: initial;
+          grid-column: 3;
         }
       }
     }

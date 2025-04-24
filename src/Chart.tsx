@@ -352,10 +352,10 @@ export function Chart(props: {
     }, [canvasRef.current, props.data, props.transformedData, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
         props.offsets, props.bitsPerSignal]);
     return <div className={'chart'}>
-        <h2 className={'chartitle'}>{props.name}</h2>
         <div className={'canvas-container'}>
-            {props.yAxisLabelPos === 'left' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
             <div className={'canvas-wrapper'} id={props.type === 'line' ? 'left-canvas' : 'right-canvas'}>
+                <h2 className={'chartitle'}>{props.name}</h2>
+                {props.yAxisLabelPos === 'left' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
                 <div className={'chartYTicks'}>{
                     Array.from(Array(props.type === 'line' ? PLOT_NUM_Y_VALUES : MORTON_PLOT_LEFT_Y_VALUES.length).keys()).map(i => {
                         return <div key={i} className={'y-tick-mark'}>
@@ -379,8 +379,8 @@ export function Chart(props: {
                             <span className={'y-tick-mark-label'}>{mortonRightYValues[i]}</span>
                         </div>})}
                 </div>}
+                {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
             </div>
-            {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
         </div>
         {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!} lineColors={props.lineColors}/>}
     </div>;
