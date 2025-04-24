@@ -380,8 +380,8 @@ export function Chart(props: {
                         </div>})}
                 </div>}
                 {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
+                {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!} lineColors={props.lineColors}/>}
             </div>
         </div>
-        {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!} lineColors={props.lineColors}/>}
     </div>;
 }
