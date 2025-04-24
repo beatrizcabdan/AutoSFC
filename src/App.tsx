@@ -162,7 +162,6 @@ function App() {
                 }
                 setStartTimeXTicks(startTimeXTicks)
                 setFinishTimeXTicks(finishTimeXTicks)
-                // setSignalMarkerPos(maxData)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
                 setDataNumLines(lines.length - 1)
