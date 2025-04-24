@@ -253,7 +253,6 @@ export function Chart(props: {
                     leftExtraPadding = LEFT_AXIS_E_NOTATION_EXTRA_PADDING
                 }
             }
-            console.log(leftYTickMarks)
             setYTickMarks(leftYTickMarks)
 
             // Signals chart
