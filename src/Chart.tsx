@@ -350,7 +350,7 @@ export function Chart(props: {
             {props.yAxisLabelPos === 'left' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
             <div className={'canvas-wrapper'}>
                 <canvas ref={canvasRef} className={props.type}></canvas>
-                <div className={'chartXLabel'}>{
+                <div className={'chartXTicks'}>{
                     Array.from(Array(PLOT_NUM_X_VALUES).keys()).map(i => {
                         return <div className={'x-tick-mark'}>
                             <span className={'x-tick-line'}/>
