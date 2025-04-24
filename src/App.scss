@@ -108,15 +108,68 @@ html {
       flex-direction: row;
 
       .canvas-wrapper {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        display: grid;
+        grid-auto-rows: auto;
         gap: 0;
+
+        &#left-canvas {
+          grid-template-columns: auto auto;
+        }
+
+        &#right-canvas {
+          grid-template-columns: auto auto auto;
+        }
 
         canvas {
           height: $canvas-height;
           width: $canvas-width;
           border: 1px solid black;
+        }
+
+        .x-tick-mark-label, .y-tick-mark-label {
+          font-family: Inter, sans-serif;
+          font-size: 0.7rem;
+        }
+
+        .chartYTicks {
+          width: fit-content;
+          height: 100%;
+          justify-content: space-between;
+          align-items: flex-end;
+          display: flex;
+          flex-direction: column-reverse;
+          grid-column: 1;
+          // Create a small (0.4rem, hard-coded) offset to make ticks align with curve padding. If we change tick
+          // font/size, we might need to change here as well!
+          padding: calc($canvas-height * $curve-padding-factor - 0.4rem) 0;
+          grid-row: 1;
+
+          &#right-axis {
+            grid-column: 3;
+            align-items: flex-start;
+          }
+
+          .y-tick-mark {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: fit-content;
+            gap: 3px;
+
+            .y-tick-line {
+              margin: 0;
+              border-top: 1px solid black;
+              height: 1px;
+              width: 5px;
+            }
+
+            .y-tick-mark-label {
+              //position: absolute;
+              //right: 9px;
+            }
+          }
         }
 
         .chartXTicks {
@@ -125,6 +178,7 @@ html {
           display: flex;
           justify-content: space-between;
           padding: 0 $canvas-height * $curve-padding-factor;
+          grid-column: 2;
 
           .x-tick-mark {
             display: flex;
@@ -142,12 +196,14 @@ html {
             }
 
             .x-tick-mark-label {
-              position: absolute;
               top: 0.3rem;
-              font-family: Inter, sans-serif;
-              font-size: 0.7rem;
+              position: absolute;
             }
           }
+        }
+
+        .chart-x-axis-name {
+          grid-column: 2;
         }
 
         h2 {

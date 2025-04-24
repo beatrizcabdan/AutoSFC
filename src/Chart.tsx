@@ -44,6 +44,8 @@ export function Chart(props: {
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
+    const MORTON_PLOT_LEFT_Y_VALUES = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
+
     const AXIS_PADDING_FACTOR = 0 // 0.09
     const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.04 // TODO: Get val from CSS
     const LEFT_AXIS_EXTRA_PADDING = 0 // 25
@@ -56,6 +58,9 @@ export function Chart(props: {
     const MORTON_PIXEL_DIAM = 4
 
     const [xTickMarks, setXTickMarks] = useState<string[]>([])
+    const [yTickMarks, setYTickMarks] = useState<string[]>([])
+    const [mortonRightYValues, setMortonRightYValues] = useState<string[]>([])
+
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const curvePaddingRef = useRef(0)
 
@@ -210,11 +215,12 @@ export function Chart(props: {
             const columns: number[][] = []
             const markerIndex = Math.floor((props.data[0].length - 1) * props.currentSignalXVal / 100)
 
-            const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
+            // const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
             const mortonXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
                 .map(i => (i * (maxMorton - minMorton) / (PLOT_NUM_X_VALUES - 1) + minMorton).toExponential(1))
             const mortonRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
                 .map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_Y_VALUES - 1)).toString())
+            setMortonRightYValues(mortonRightYValues)
 
             let lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()].map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_X_VALUES - 1)).toString())
 
@@ -234,19 +240,21 @@ export function Chart(props: {
             const leftTickPaddingFactor = props.type === 'line' ? CURVE_PADDING_FACTOR : AXIS_PADDING_FACTOR
             let leftExtraPadding = LEFT_AXIS_EXTRA_PADDING
 
-            let yTickMarks: string[]
+            let leftYTickMarks: string[]
 
             if (props.type === 'scatter') {
-                yTickMarks = mortonLeftYValues.map(n => n.toFixed(1))
+                leftYTickMarks = MORTON_PLOT_LEFT_Y_VALUES.map(n => n.toFixed(1))
             } else {
-                yTickMarks = lineYValues.map(n => n.toFixed(1))
-                const longestLabelNum = [...yTickMarks].sort((a, b) =>
+                leftYTickMarks = lineYValues.map(n => n.toFixed(1))
+                const longestLabelNum = [...leftYTickMarks].sort((a, b) =>
                     b.length - a.length)[0]
                 if (longestLabelNum.length > MAX_Y_AXIS_DIGITS) {
-                    yTickMarks = lineYValues.map(n => n.toExponential(1))
+                    leftYTickMarks = lineYValues.map(n => n.toExponential(1))
                     leftExtraPadding = LEFT_AXIS_E_NOTATION_EXTRA_PADDING
                 }
             }
+            console.log(leftYTickMarks)
+            setYTickMarks(leftYTickMarks)
 
             // Signals chart
             if (props.type == 'line') {
@@ -337,7 +345,7 @@ export function Chart(props: {
             // @ts-ignore
             ctx = canvas.getContext('2d')
 
-            drawAxis(canvas, axisPadding, 'left', 2, yTickMarks, leftTickPaddingFactor, leftExtraPadding)
+            drawAxis(canvas, axisPadding, 'left', 2, leftYTickMarks, leftTickPaddingFactor, leftExtraPadding)
             drawAxis(canvas, axisPadding, 'bottom', 2, xTickMarks, undefined, leftExtraPadding)
             drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [], CURVE_PADDING_FACTOR, leftExtraPadding)
             drawAxis(canvas, axisPadding, 'top', 2, undefined, undefined, leftExtraPadding)
@@ -348,16 +356,30 @@ export function Chart(props: {
         <h2 className={'chartitle'}>{props.name}</h2>
         <div className={'canvas-container'}>
             {props.yAxisLabelPos === 'left' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
-            <div className={'canvas-wrapper'}>
+            <div className={'canvas-wrapper'} id={props.type === 'line' ? 'left-canvas' : 'right-canvas'}>
+                <div className={'chartYTicks'}>{
+                    Array.from(Array(props.type === 'line' ? PLOT_NUM_Y_VALUES : MORTON_PLOT_LEFT_Y_VALUES.length).keys()).map(i => {
+                        return <div key={i} className={'y-tick-mark'}>
+                            <span className={'y-tick-mark-label'}>{yTickMarks[i]}</span>
+                            <span className={'y-tick-line'}/>
+                        </div>})}
+                </div>
                 <canvas ref={canvasRef} className={props.type}></canvas>
                 <div className={'chartXTicks'}>{
                     Array.from(Array(PLOT_NUM_X_VALUES).keys()).map(i => {
-                        return <div className={'x-tick-mark'}>
+                        return <div key={i} className={'x-tick-mark'}>
                             <span className={'x-tick-line'}/>
                             <span className={'x-tick-mark-label'}>{xTickMarks[i]}</span>
                         </div>})}
                 </div>
-                <p>{props.xAxisName}</p>
+                <p className={'chart-x-axis-name'}>{props.xAxisName}</p>
+                {props.type === 'scatter' && <div className={'chartYTicks'} id={'right-axis'}>{
+                    Array.from(Array(PLOT_NUM_Y_VALUES).keys()).map(i => {
+                        return <div key={i} className={'y-tick-mark'}>
+                            <span className={'y-tick-line'}/>
+                            <span className={'y-tick-mark-label'}>{mortonRightYValues[i]}</span>
+                        </div>})}
+                </div>}
             </div>
             {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
         </div>
