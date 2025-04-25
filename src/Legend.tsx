@@ -15,7 +15,6 @@ export function Legend(props: { labels: string[], onClick: () => void, lineColor
                     content: ' ',
                     width: '2rem',
                     height: '4px',
-                    marginTop: '0.1rem',
                     background: `${props.lineColors![i % props.lineColors!.length]}`
                 }}></div>
                 <p >{label}</p>
