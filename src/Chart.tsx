@@ -40,7 +40,9 @@ export function Chart(props: {
     lineColors?: string[],
     offsets: (number | undefined)[],
     bitsPerSignal?: number | string,
-    transformedData: number[][]
+    transformedData: number[][],
+    minSFCrange: number,
+    maxSFCrange: number,
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
@@ -53,7 +55,7 @@ export function Chart(props: {
     const LINE_WIDTH = 4
     const MARKER_RADIUS = 12
     const MORTON_BAR_WIDTH = 4
-    const MORTON_PIXEL_DIAM = 4
+    const MORTON_PIXEL_DIAM = 8
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const curvePaddingRef = useRef(0)
@@ -183,9 +185,13 @@ export function Chart(props: {
             const bitsPerSignal = Number(typeof props.bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : props.bitsPerSignal)
             const mortonData = morton_interlace(truncatedData, bitsPerSignal).reverse()
 
-            const mortonSorted = [...mortonData].sort((a, b) => a - b)
-            const minMorton = mortonSorted[0]
-            const maxMorton = mortonSorted[mortonSorted.length - 1]
+            // const mortonSorted = [...mortonData].sort((a, b) => a - b)
+            // const minMorton = mortonSorted[0]
+            // const maxMorton = mortonSorted[mortonSorted.length - 1]
+            const minMorton = props.minSFCrange;
+            const maxMorton = props.maxSFCrange;
+
+            console.log(minMorton);
 
             const canvas: HTMLCanvasElement = canvasRef.current!
             // TODO: Dynamic canvas res?
@@ -335,7 +341,7 @@ export function Chart(props: {
             drawAxis(canvas, axisPadding, 'top', 2, undefined, undefined, leftExtraPadding)
         }
     }, [canvasRef.current, props.data, props.transformedData, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
-        props.offsets, props.bitsPerSignal]);
+        props.offsets, props.bitsPerSignal, props.minSFCrange, props.maxSFCrange]);
 
     return <div className={'chart'}>
         <h2 className={'chartitle'}>{props.name}</h2>

@@ -52,7 +52,7 @@ export function ProcessingComponent(props: {
             )}
             <span className={'input-label bits-label'}>Bits per signal</span>
             <label className={'input-label bits-label'}>
-                <input type={'number'} value={props.bitsPerSignal} min={0}
+                <input type={'number'} value={props.bitsPerSignal} min={1}
                        onBlur={() =>
                            props.onBitsPerSignalChanged(Number(props.bitsPerSignal === '' ? DEFAULT_BITS_PER_SIGNAL : props.bitsPerSignal))}
                        onChange={(e) =>

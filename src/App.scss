@@ -172,6 +172,10 @@ input[type="number"] {
   gap: var(--gap);
   max-width: 70rem;
 
+  #sfcrangecontrol {
+    flex: 1 1 7rem;
+  }
+
   #process-container {
     height: fit-content;
     flex: none;

@@ -53,7 +53,9 @@ const demoPreset5 = {
     dataPointInterval: 1,
     dataRangeStart: 0,
     dataRangeEnd: 236,
-    lineDataSmoothing: 0
+    lineDataSmoothing: 0,
+    sfcRangeMin: 0,
+    sfcRangeMax: 1000000000
 }
 
 const preset = demoPreset5
@@ -78,6 +80,8 @@ function App() {
     const [dataNumLines, setDataNumLines] = useState(-1)
     const [startLine, setStartLine] = useState(preset.dataRangeStart)
     const [endLine, setEndLine] = useState(preset.dataRangeEnd)
+    const [minSFCvalue, setMinSFCvalue] = useState(preset.sfcRangeMin)
+    const [maxSFCvalue, setMaxSFCvalue] = useState(preset.sfcRangeMax)
 
     const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'speed'])
 
@@ -291,6 +295,11 @@ function App() {
         setEndLine((newValue as number[])[1])
     };
 
+    const onSFCZoomSliderChange = (_: Event, newValue: number[] | number) => {
+        setMinSFCvalue((newValue as number[])[0])
+        setMaxSFCvalue((newValue as number[])[1])
+    };
+
     const presetSelected = (startRow: number, endRow: number) => {
         setStartLine(startRow)
         setEndLine(endRow)
@@ -359,7 +368,7 @@ function App() {
                            onLegendClick={selectDataColumns} lineColors={LINE_COLORS} transformedData={transformedData} />
                     <Chart name={'Morton plot (CSP)'} data={data} transformedData={transformedData} scales={scales}
                            offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'} bitsPerSignal={bitsPerSignal}
-                           yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}/>
+                           yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue}/>
                 </div>
                 <div className={'controls'}>
                     <div className={'vert-control-wrapper'}>
@@ -396,16 +405,37 @@ function App() {
                             </div>
                             <div className={'control-container'} id={'presets-container'}>
                                 <h3>Presets</h3>
-                                <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected} displayedStartRow={startLine} displayedEndRow={endLine}
+                                <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected}
+                                                 displayedStartRow={startLine} displayedEndRow={endLine}
                                                  currentDataFile={fileName.replace(/.\//, '')}/>
                             </div>
                         </div>
                     </div>
                     <div className={'vert-control-wrapper'}>
-                        <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS} scales={scales} offsets={offsets}
-                                             bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
-                                             showSignalTransforms={showSignalTransforms} setShowSignalTransforms={onShowSignalTransformsChanged}
-                                             onOffsetsChanged={onOffsetsChanged} onBitsPerSignalChanged={onBitsPerSignalChanged}/>
+                        <div className={'vert-control-wrapper'}>
+                            <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS}
+                                                 scales={scales} offsets={offsets}
+                                                 bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
+                                                 showSignalTransforms={showSignalTransforms}
+                                                 setShowSignalTransforms={onShowSignalTransformsChanged}
+                                                 onOffsetsChanged={onOffsetsChanged}
+                                                 onBitsPerSignalChanged={onBitsPerSignalChanged}/>
+                        </div>
+                        <div className={'control-container'} id={"sfcrangecontrol"}>
+                            <h3>SFC (right plot) index range</h3>
+                            <div className={'text-controls'}>
+                                <label className={'input-label'}>
+                                    Min value:
+                                    <input type="number" value={minSFCvalue}
+                                           onChange={(e) => setMinSFCvalue(Number(e.target.value))}/>
+                                </label>
+                                <label className={'input-label'}>
+                                    Max value:
+                                    <input type="number" value={maxSFCvalue}
+                                           onChange={(e) => setMaxSFCvalue(Number(e.target.value))}/>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
