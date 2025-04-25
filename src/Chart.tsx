@@ -46,10 +46,10 @@ export function Chart(props: {
     const PLOT_NUM_X_VALUES = 9
     const MORTON_PLOT_LEFT_Y_VALUES = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
 
-    const AXIS_PADDING_FACTOR = 0 // 0.09
+    const AXIS_PADDING_FACTOR = 0
     const CURVE_PADDING_FACTOR = AXIS_PADDING_FACTOR + 0.04 // TODO: Get val from CSS
-    const LEFT_AXIS_EXTRA_PADDING = 0 // 25
-    const LEFT_AXIS_E_NOTATION_EXTRA_PADDING = 0 // 60
+    const LEFT_AXIS_EXTRA_PADDING = 0
+    const LEFT_AXIS_E_NOTATION_EXTRA_PADDING = 0
     const MAX_Y_AXIS_DIGITS = 4
 
     const LINE_WIDTH = 4
@@ -69,110 +69,6 @@ export function Chart(props: {
     let ctx: CanvasRenderingContext2D
 
     // Draw axis & axis labels
-    function drawAxis(canvas: HTMLCanvasElement, axisPadding: number, position: string, lineWidth: number,
-                      tickMarks?: string[], tickPaddingFactor = CURVE_PADDING_FACTOR, leftExtraPadding: number = 10) {
-        const ulCorner = {x: axisPadding + leftExtraPadding, y: axisPadding}
-        const urCorner = {x: canvas.width - axisPadding, y: axisPadding}
-        const blCorner = {x: axisPadding + leftExtraPadding, y: canvas.height - axisPadding}
-        const brCorner = {x: canvas.width - axisPadding, y: canvas.height - axisPadding}
-
-        ctx.lineWidth = lineWidth
-        const rootElem = document.querySelector('#root');
-        const axisColor= rootElem ? getComputedStyle(rootElem).color : 'black'
-        ctx.strokeStyle = axisColor
-
-        // ctx.beginPath()
-
-        let startPos: {x: number, y: number} = {x: -1, y: -1}
-        let endPos: {x: number, y: number} = {x: -1, y: -1}
-
-        switch (position) {
-            case 'left': {
-                startPos = {x: blCorner.x, y: blCorner.y}
-                endPos = {x: ulCorner.x, y: ulCorner.y}
-                break
-            }
-            case 'bottom': {
-                startPos = {x: blCorner.x, y: blCorner.y}
-                endPos = {x: brCorner.x, y: brCorner.y}
-                break
-            }
-            case 'right': {
-                startPos = {x: brCorner.x, y: brCorner.y}
-                endPos = {x: urCorner.x, y: urCorner.y}
-                break
-            }
-            case 'top': {
-                startPos = {x: ulCorner.x, y: ulCorner.y}
-                endPos = {x: urCorner.x, y: urCorner.y}
-                break
-            }
-        }
-
-        /* ctx.moveTo(startPos.x, startPos.y)
-        ctx.lineTo(endPos.x, endPos.y)
-        ctx.stroke() */
-
-        if (tickMarks) {
-            const tickLength = 10
-            const tickTextMargin = 20
-            let tickStartPos: {x: number, y: number} = {x: -1, y: -1}
-            let tickEndPos: {x: number, y: number} = {x: -1, y: -1}
-            let textPos: {x: number, y: number} = {x: -1, y: -1}
-            const tickPadding = canvas.height * tickPaddingFactor
-            ctx.textAlign = 'center'
-            ctx.textBaseline = 'middle'
-            ctx.fillStyle = axisColor
-
-            const axisWidth = canvas.width - tickPadding * 2 - leftExtraPadding
-            const intervalLen = axisWidth / (tickMarks.length - 1)
-            /*console.log('axisWidth canvas: ' + axisWidth)
-            console.log('intervalLen canvas: ' + intervalLen)*/
-
-            tickMarks.forEach((_, i) => {
-                switch (position) {
-                    case 'left': {
-                        const axisLen = canvas.height - tickPadding * 2
-                        const intervalLen = axisLen / (tickMarks.length - 1)
-                        tickStartPos = {x: axisPadding + leftExtraPadding, y: canvas.height - tickPadding - intervalLen * i}
-                        tickEndPos = {x: tickStartPos.x - tickLength, y: tickStartPos.y}
-                        textPos = {x: tickEndPos.x - tickTextMargin, y: tickEndPos.y}
-                        break
-                    }
-                    case 'bottom': {
-                        const axisWidth = canvas.width - tickPadding * 2 - leftExtraPadding
-                        const intervalLen = axisWidth / (tickMarks.length - 1)
-                        tickStartPos = {x: tickPadding + intervalLen * i + leftExtraPadding, y: canvas.height - axisPadding}
-                        tickEndPos = {x: tickStartPos.x, y: tickStartPos.y + tickLength}
-                        textPos = {x: tickEndPos.x, y: tickEndPos.y + tickTextMargin}
-                        break
-                    }
-                    case 'right': {
-                        const axisLen = canvas.height - tickPadding * 2
-                        const intervalLen = axisLen / (tickMarks.length - 1)
-                        tickStartPos = {x: canvas.width - axisPadding, y: canvas.height - tickPadding - intervalLen * i}
-                        tickEndPos = {x: tickStartPos.x + tickLength, y: tickStartPos.y}
-                        textPos = {x: tickEndPos.x + tickTextMargin, y: tickEndPos.y}
-                        break
-                    }
-                    case 'top': {}
-                }
-
-                ctx.font = '24px sans-serif';
-                // ctx.fillText(tickMarks[i], textPos.x - (position === 'left' ? leftExtraPadding * 0.5 : 0), textPos.y)
-
-                ctx.lineWidth = 1
-                ctx.strokeStyle = axisColor
-
-                /* ctx.beginPath()
-                ctx.moveTo(tickStartPos.x, tickStartPos.y)
-                ctx.lineTo(tickEndPos.x, tickEndPos.y)
-                ctx.closePath()
-                ctx.stroke() */
-            })
-        }
-    }
-
     function getLineX(i: number, canvas: HTMLCanvasElement, padding: number, leftExtraPadding: number) {
         return (i / (props.data[0].length - 1)) * (canvas.width - padding * 2 - leftExtraPadding) + padding + leftExtraPadding;
     }
@@ -236,8 +132,6 @@ export function Chart(props: {
 
             const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
                 .map(i => props.minValue + i * (props.maxValue - props.minValue) / (PLOT_NUM_Y_VALUES - 1))
-
-            const leftTickPaddingFactor = props.type === 'line' ? CURVE_PADDING_FACTOR : AXIS_PADDING_FACTOR
             let leftExtraPadding = LEFT_AXIS_EXTRA_PADDING
 
             let leftYTickMarks: string[]
@@ -343,11 +237,6 @@ export function Chart(props: {
 
             // @ts-ignore
             ctx = canvas.getContext('2d')
-
-            drawAxis(canvas, axisPadding, 'left', 2, leftYTickMarks, leftTickPaddingFactor, leftExtraPadding)
-            drawAxis(canvas, axisPadding, 'bottom', 2, xTickMarks, undefined, leftExtraPadding)
-            drawAxis(canvas, axisPadding, 'right', 2, props.type === 'scatter' ? mortonRightYValues : [], CURVE_PADDING_FACTOR, leftExtraPadding)
-            drawAxis(canvas, axisPadding, 'top', 2, undefined, undefined, leftExtraPadding)
         }
     }, [canvasRef.current, props.data, props.transformedData, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
         props.offsets, props.bitsPerSignal]);
