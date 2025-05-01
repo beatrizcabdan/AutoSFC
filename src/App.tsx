@@ -80,8 +80,11 @@ function App() {
     const [dataNumLines, setDataNumLines] = useState(-1)
     const [startLine, setStartLine] = useState(preset.dataRangeStart)
     const [endLine, setEndLine] = useState(preset.dataRangeEnd)
+
     const [minSFCvalue, setMinSFCvalue] = useState(preset.sfcRangeMin)
     const [maxSFCvalue, setMaxSFCvalue] = useState(preset.sfcRangeMax)
+    const [initialMinSFCvalue, setInitialMinSFCvalue] = useState(preset.sfcRangeMin)
+    const [initialMaxSFCvalue, setInitialMaxSFCvalue] = useState(preset.sfcRangeMax)
 
     const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'speed']) // TODO: Revert to 'accel_x', 'accel_y', 'speed'
 
@@ -157,7 +160,7 @@ function App() {
                     maxData = Math.max(maxData, sortedData[sortedData.length - 1])
                 })
 
-                computeSetSFCData(newTransformedData, bitsPerSignal, true);
+                computeSetSFCData(newTransformedData, bitsPerSignal, true, true);
 
                 setData(newData)
                 setTransformedData(newTransformedData)
@@ -348,7 +351,7 @@ function App() {
         setShowSignalTransforms(show)
     }
 
-    const computeSetSFCData = (transformedData: number[][], bitsPerSignal: number | string, setMinMaxValues?: boolean) => {
+    const computeSetSFCData = (transformedData: number[][], bitsPerSignal: number | string, setMinMaxValues?: boolean, initialMinMaxValues?: boolean) => {
         const truncatedData = transformedData.map(column => column.map(value =>
             Math.trunc(value))) // Add truncating processing
         const sfcData = morton_interlace(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
@@ -356,6 +359,11 @@ function App() {
             const mortonSorted = [...sfcData!].sort((a, b) => a - b)
             setMinSFCvalue(mortonSorted[0])
             setMaxSFCvalue(mortonSorted[mortonSorted.length - 1])
+
+            if (initialMinMaxValues) {
+                setInitialMinSFCvalue(mortonSorted[0])
+                setInitialMaxSFCvalue(mortonSorted[mortonSorted.length - 1])
+            }
         }
         setSfcData(sfcData)
     }
@@ -437,23 +445,10 @@ function App() {
                                                  bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
                                                  showSignalTransforms={showSignalTransforms}
                                                  setShowSignalTransforms={onShowSignalTransformsChanged}
-                                                 onOffsetsChanged={onOffsetsChanged}
+                                                 onOffsetsChanged={onOffsetsChanged} minSFCvalue={minSFCvalue}
+                                                 setMinSFCvalue={setMinSFCvalue} setMaxSFCvalue={setMaxSFCvalue} maxSFCvalue={maxSFCvalue}
+                                                 initialMinSFCvalue={initialMinSFCvalue} initialMaxSFCvalue={initialMaxSFCvalue}
                                                  onBitsPerSignalChanged={onBitsPerSignalChanged}/>
-                        </div>
-                        <div className={'control-container'} id={"sfcrangecontrol"}>
-                            <h3>SFC (right plot) index range</h3>
-                            <div className={'text-controls'}>
-                                <label className={'input-label'}>
-                                    Min value:
-                                    <input type="number" value={minSFCvalue}
-                                           onChange={(e) => setMinSFCvalue(Number(e.target.value))}/>
-                                </label>
-                                <label className={'input-label'}>
-                                    Max value:
-                                    <input type="number" value={maxSFCvalue}
-                                           onChange={(e) => setMaxSFCvalue(Number(e.target.value))}/>
-                                </label>
-                            </div>
                         </div>
                     </div>
                 </div>

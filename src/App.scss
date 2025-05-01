@@ -8,8 +8,6 @@ $def-control-width: 27rem;
 $vert-container-padding: 1.2rem;
 $horiz-container-padding: 1.8rem;
 
-// TODO: Fix uniform chart/control width, container sizes (?), small screen layout
-
 * {
   // border: 1px solid green;
   box-sizing: border-box;
@@ -377,13 +375,34 @@ input[type="number"] {
         padding-top: 0.2rem;
       }
 
+      span.min-sfc-label, span.max-sfc-label {
+        grid-column: 1;
+        text-align: left;
+        display: flex;
+        align-items: center;
+      }
+
+      label.min-sfc-label, label.max-sfc-label {
+        grid-column: 2 / 4;
+        display: flex;
+
+        input {
+          width: 15ch;
+        }
+      }
+
+      #sfc-header {
+        margin-top: 1.0rem;
+        grid-column: 1 / 4;
+      }
+
       // TODO: Refactor into generic outlined, blue-border button
       #reset-button {
+        margin-top: 1rem;
         grid-column: 1 / 4;
         width: fit-content;
         justify-self: center;
         border-width: 2px;
-        margin-top: 0.5rem;
         border-radius: 6px;
         color: var(--text-color-light);
         font-weight: 700;

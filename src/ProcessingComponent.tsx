@@ -12,7 +12,13 @@ export function ProcessingComponent(props: {
     bitsPerSignal: number | string,
     onBitsPerSignalChanged: (bits: number | string) => void,
     showSignalTransforms: boolean,
-    setShowSignalTransforms: (show: boolean) => void
+    setShowSignalTransforms: (show: boolean) => void,
+    minSFCvalue: number,
+    setMinSFCvalue: (value: (((prevState: number) => number) | number)) => void,
+    setMaxSFCvalue: (value: (((prevState: number) => number) | number)) => void,
+    maxSFCvalue: number,
+    initialMinSFCvalue: number,
+    initialMaxSFCvalue: number
 }) {
 
     // TODO: Decide on how reset should work when presets are used
@@ -22,6 +28,8 @@ export function ProcessingComponent(props: {
             props.onScalesChanged(i, DEFAULT_SCALING_FACTOR)
         }
         props.onBitsPerSignalChanged(DEFAULT_BITS_PER_SIGNAL)
+        props.setMinSFCvalue(props.initialMinSFCvalue)
+        props.setMaxSFCvalue(props.initialMaxSFCvalue)
     }
 
     return <div className={'control-container'} id={'process-container'}>
@@ -63,10 +71,23 @@ export function ProcessingComponent(props: {
                 <Checkbox size={'small'} checked={props.showSignalTransforms}
                           onChange={() => props.setShowSignalTransforms(!props.showSignalTransforms)}/>
             </div>
+            <h3 id={'sfc-header'}>SFC (right plot) index range</h3>
+            <span className={'input-label min-sfc-label'}>Min value</span>
+            <label className={'input-label min-sfc-label'}>
+                <input type="number" value={props.minSFCvalue}
+                       onChange={(e) => props.setMinSFCvalue(Number(e.target.value))}/>
+            </label>
+            <span className={'input-label max-sfc-label'}>Max value</span>
+            <label className={'input-label max-sfc-label'}>
+                <input type="number" value={props.maxSFCvalue}
+                       onChange={(e) => props.setMaxSFCvalue(Number(e.target.value))}/>
+            </label>
             <Button id={'reset-button'} variant='outlined' onClick={onResetClicked}
                     disabled={props.offsets.every(v => v === 0) // Disable if no transforms have been made
                         && props.scales.every(v => v === DEFAULT_SCALING_FACTOR)
-                        && props.bitsPerSignal === DEFAULT_BITS_PER_SIGNAL}>Reset</Button>
+                        && props.bitsPerSignal === DEFAULT_BITS_PER_SIGNAL
+                        && props.initialMinSFCvalue == props.minSFCvalue
+                        && props.initialMaxSFCvalue == props.maxSFCvalue}>Reset all transforms</Button>
         </div>
     </div>;
 }
