@@ -41,8 +41,9 @@ export function Chart(props: {
     offsets: (number | undefined)[],
     bitsPerSignal?: number | string,
     transformedData: number[][],
-    minSFCrange: number,
-    maxSFCrange: number,
+    minSFCrange?: number,
+    maxSFCrange?: number,
+    sfcData?: number[]
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
@@ -86,18 +87,8 @@ export function Chart(props: {
     // TODO: Decouple signal/Morton charts
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
-
-            // Add truncating processing
-            const truncatedData = props.transformedData.map(column => column.map(value =>
-                Math.trunc(value)))
-            const bitsPerSignal = Number(typeof props.bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : props.bitsPerSignal)
-            const mortonData = morton_interlace(truncatedData, bitsPerSignal).reverse()
-
-            // const mortonSorted = [...mortonData].sort((a, b) => a - b)
-            // const minMorton = mortonSorted[0]
-            // const maxMorton = mortonSorted[mortonSorted.length - 1]
-            const minMorton = props.minSFCrange;
-            const maxMorton = props.maxSFCrange;
+            const minMorton = props.minSFCrange ?? -1
+            const maxMorton = props.maxSFCrange ?? -1
 
             const canvas: HTMLCanvasElement = canvasRef.current!
             // TODO: Dynamic canvas res?
@@ -204,12 +195,12 @@ export function Chart(props: {
             } else {
                 // Morton scatterplot
                 // Draw bar
-                mortonData.forEach((m) => {
+                props.sfcData!.forEach((m) => {
                     const curveCanvasWidth = canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING
                     const y = curveCanvasWidth * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
 
                     const barX = y - MORTON_BAR_WIDTH / 2
-                    const signalX = curveCanvasWidth * (mortonData[mortonData.length - 1 - markerIndex] - minMorton)
+                    const signalX = curveCanvasWidth * (props.sfcData![props.sfcData!.length - 1 - markerIndex] - minMorton)
                         / (maxMorton - minMorton) + curvePadding
                     const currentBarDistance = Math.abs(barX - signalX) / curveCanvasWidth
 
@@ -225,11 +216,11 @@ export function Chart(props: {
                 })
 
                 // Draw points
-                mortonData.forEach((m, i) => {
+                props.sfcData!.forEach((m, i) => {
                     const x = getScatterX(i, canvas, curvePadding)
                     const y = (canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING) * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
                     // Draw point
-                    ctx.fillStyle = (mortonData.length - i) <= markerIndex ? 'black' : 'transparent'
+                    ctx.fillStyle = (props.sfcData!.length - i) <= markerIndex ? 'black' : 'transparent'
                     ctx.beginPath();
                     ctx.lineWidth = 0.5
                     // noinspection JSSuspiciousNameCombination
@@ -243,7 +234,7 @@ export function Chart(props: {
             ctx = canvas.getContext('2d')
         }
     }, [canvasRef.current, props.data, props.transformedData, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
-        props.offsets, props.bitsPerSignal, props.minSFCrange, props.maxSFCrange]);
+        props.offsets, props.bitsPerSignal, props.sfcData, props.minSFCrange, props.maxSFCrange]);
 
     return <div className={'chart'}>
         <div className={'canvas-container'}>

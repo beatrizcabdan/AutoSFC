@@ -9,7 +9,7 @@ import {PlaySlider} from "./PlaySlider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {UploadButton} from "./UploadButton.tsx";
-import {debounce} from "./utils.ts";
+import {debounce, morton_interlace} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {PresetComponent} from "./PresetComponent.tsx";
 import {ProcessingComponent} from "./ProcessingComponent.tsx";
@@ -87,6 +87,7 @@ function App() {
 
     const [data, setData] = useState<number[][]>([])
     const [transformedData, setTransformedData] = useState<number[][]>([]) // Transformed in "Transform" panel
+    const [sfcData, setSfcData] = useState<number[]>([])
 
     // Use default scaling factor when scale is undefined (this to allow removing all digits in inputs)
     const [scales, setScales] = useState<(number | undefined)[]>([])
@@ -155,6 +156,8 @@ function App() {
                     minData = Math.min(minData, sortedData[0])
                     maxData = Math.max(maxData, sortedData[sortedData.length - 1])
                 })
+
+                computeSetSFCData(newTransformedData, bitsPerSignal, true);
 
                 setData(newData)
                 setTransformedData(newTransformedData)
@@ -323,6 +326,7 @@ function App() {
         transformedData[index] = data[index].map(val => val * (scale ?? DEFAULT_SCALING_FACTOR) + (offsets[index] ?? 0))
         setTransformedData(transformedData)
         setMinMaxChartValues(showSignalTransforms ? transformedData : data)
+        computeSetSFCData(transformedData, bitsPerSignal)
     };
 
     const onOffsetsChanged = (index: number, offset: number | undefined) => {
@@ -331,15 +335,29 @@ function App() {
         transformedData[index] = data[index].map(val => val * (scales[index] ?? DEFAULT_SCALING_FACTOR) + (offset ?? 0))
         setTransformedData(transformedData)
         setMinMaxChartValues(showSignalTransforms ? transformedData : data)
+        computeSetSFCData(transformedData, bitsPerSignal)
     };
     
     const onBitsPerSignalChanged = (bits: number | string) => {
         setBitsPerSignal(bits)
+        computeSetSFCData(transformedData, bits)
     };
 
     function onShowSignalTransformsChanged(show: boolean) {
         setMinMaxChartValues(show ? transformedData : data)
         setShowSignalTransforms(show)
+    }
+
+    const computeSetSFCData = (transformedData: number[][], bitsPerSignal: number | string, setMinMaxValues?: boolean) => {
+        const truncatedData = transformedData.map(column => column.map(value =>
+            Math.trunc(value))) // Add truncating processing
+        const sfcData = morton_interlace(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
+        if (setMinMaxValues) {
+            const mortonSorted = [...sfcData!].sort((a, b) => a - b)
+            setMinSFCvalue(mortonSorted[0])
+            setMaxSFCvalue(mortonSorted[mortonSorted.length - 1])
+        }
+        setSfcData(sfcData)
     }
 
     // @ts-ignore
@@ -368,7 +386,8 @@ function App() {
                            onLegendClick={selectDataColumns} lineColors={LINE_COLORS} transformedData={transformedData} />
                     <Chart name={'Morton plot (CSP)'} data={data} transformedData={transformedData} scales={scales}
                            offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'} bitsPerSignal={bitsPerSignal}
-                           yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue}/>
+                           yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}
+                           sfcData={sfcData} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue}/>
                 </div>
                 <div className={'controls'}>
                     <div className={'vert-control-wrapper'}>

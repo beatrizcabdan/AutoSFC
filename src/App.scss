@@ -277,6 +277,16 @@ input[type="number"] {
 
   #sfcrangecontrol {
     flex: 1 1 7rem;
+
+    .text-controls {
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+    }
+
+    input {
+      width: 10ch;
+    }
   }
 
   #process-container {
