@@ -11,6 +11,8 @@
     }
 
     p {
+        text-overflow: ellipsis;
+        overflow: hidden;
         line-height: 0.6rem;
         text-transform: uppercase;
         letter-spacing: 0.02rem;

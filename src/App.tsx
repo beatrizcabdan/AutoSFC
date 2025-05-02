@@ -69,7 +69,7 @@ export const DEFAULT_SCALING_FACTOR = 100
 export const DEFAULT_BITS_PER_SIGNAL = 10
 
 function App() {
-    const SLIDER_START_VAL = 0
+    const SLIDER_START_VAL = 100
     const EXAMPLE_FILE_PATH = './emergency_braking.csv'
     const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
 
@@ -83,7 +83,7 @@ function App() {
     const [minSFCvalue, setMinSFCvalue] = useState(preset.sfcRangeMin)
     const [maxSFCvalue, setMaxSFCvalue] = useState(preset.sfcRangeMax)
 
-    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'speed'])
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'speed']) // TODO: Revert to 'accel_x', 'accel_y', 'speed'
 
     const [data, setData] = useState<number[][]>([])
     const [transformedData, setTransformedData] = useState<number[][]>([]) // Transformed in "Transform" panel
@@ -93,7 +93,7 @@ function App() {
     const [offsets, setOffsets] = useState<(number | undefined)[]>([])
     const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(10)
     // Show transformed signals in signal chart
-    const [showSignalTransforms, setShowSignalTransforms] = useState(true)
+    const [showSignalTransforms, setShowSignalTransforms] = useState(false)
 
     const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
     const [finishTimeXTicks, setFinishTimeXTicks] = useState<number>()

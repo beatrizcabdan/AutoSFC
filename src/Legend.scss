@@ -2,21 +2,28 @@
 
 .legend-container {
     position: relative;
+    grid-column: 3;
+    grid-row: 5;
+    align-self: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 
     .legend-msg {
         position: absolute;
         top: 0;
         left: 50%;
-        translate: -50% -150%;
+        translate: -50% -250%;
         text-transform: uppercase;
         font-size: 0.7rem;
         letter-spacing: 0.03rem;
         opacity: 0;
         transition: opacity 0.3s;
         background: white;
-        border-radius: 3px;
+        border-radius: 5px;
         box-shadow: rgba(0, 0, 0, 0.2) 0 0 6px 1px;
-        padding: 0.2rem;
+        padding: 0.8rem;
+        height: fit-content;
 
         &.show {
             opacity: 1;
@@ -29,24 +36,25 @@
         border-radius: 5px;
         display: flex;
         flex-direction: row;
-        align-items: flex-start;
         gap: 0.5rem;
-        // border: 1px solid;
-        // border-radius: 3px;
-        // border-color: var(--legend-border);
         cursor: pointer;
         transition: all 0.2s;
         flex-wrap: wrap;
-        justify-content: flex-start;
+        justify-content: center;
         row-gap: 1rem;
         max-width: App.$canvas-width;
+        align-items: center;
+        height: fit-content;
+        width: fit-content !important;
+        text-transform: initial;
+        flex: none;
 
         &:hover {
             box-shadow: rgba(0, 0, 0, 0.2) 0 0 6px 1px;
         }
 
         p {
-            margin: 0;
+            margin: 0 !important;
             line-height: 0.5rem;
             font-size: 0.9rem;
             display: flex;
