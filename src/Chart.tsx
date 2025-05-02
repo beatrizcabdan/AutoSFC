@@ -99,8 +99,6 @@ export function Chart(props: {
             const minMorton = props.minSFCrange;
             const maxMorton = props.maxSFCrange;
 
-            console.log(minMorton);
-
             const canvas: HTMLCanvasElement = canvasRef.current!
             // TODO: Dynamic canvas res?
             // @ts-ignore
