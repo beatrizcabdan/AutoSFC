@@ -18,7 +18,7 @@ function bitArrayToBigInt(bits: boolean[]): bigint {
     return result;
 }
 
-export function hilbert_encode(transposed: number[][], raw_num_bits: number): BigUint64Array {
+export function hilbertEncode(transposed: number[][], raw_num_bits: number): number[] {
     const locs: number[][] = transposed[0].map((_, dim) => transposed.map(row => row[dim]));
 
     if (!locs.length || !Array.isArray(locs[0])) {
@@ -69,7 +69,7 @@ export function hilbert_encode(transposed: number[][], raw_num_bits: number): Bi
     }
 
     // Convert to bits and truncate to num_bits
-    let gray: boolean[][][] = locs_uint8.map((vec) =>
+    const gray: boolean[][][] = locs_uint8.map((vec) =>
         vec.map((byteArr) => {
             const bits: boolean[] = [];
             for (const b of byteArr) {
@@ -158,7 +158,7 @@ export function hilbert_encode(transposed: number[][], raw_num_bits: number): Bi
     // Convert to BigUint64Array (simulate packbits + uint64 view)
     const hh_uint64 = padded.map((bits) => bitArrayToBigInt(bits));
 
-    return BigUint64Array.from(hh_uint64);
+    return bigUint64ToNumberArray(BigUint64Array.from(hh_uint64));
 }
 
 //MORTON
@@ -185,7 +185,7 @@ function assignSlice(
     return c;
 }
 
-export function morton_interlace(data: number[][], bits_per_dim: number) {
+export function mortonInterlace(data: number[][], bits_per_dim: number) {
     const dims = data.length;
     const resultArr: number[] = [];
     data = data[0].map((_, colIndex) => data.map((row) => row[colIndex])); //transpose
@@ -199,34 +199,6 @@ export function morton_interlace(data: number[][], bits_per_dim: number) {
     return resultArr;
 }
 
-export function mortonEncode2D(xData: number[], yData: number[]) {
-    const resultArr: number[] = [];
-    xData.forEach((x, i) => {
-        x = Math.trunc(Math.round(x * 10));
-        const y = Math.trunc(Math.round(Number(yData[i]) * 10));
-
-        let xn = BigInt(x);
-        xn = (xn | (xn << 16n)) & 0x0000ffff0000ffffn;
-        xn = (xn | (xn << 8n)) & 0x00ff00ff00ff00ffn;
-        xn = (xn | (xn << 4n)) & 0x0f0f0f0f0f0f0f0fn;
-        xn = (xn | (xn << 2n)) & 0x3333333333333333n;
-        xn = (xn | (xn << 1n)) & 0x5555555555555555n;
-
-        let yn = BigInt(y);
-        yn = (yn | (yn << 16n)) & 0x0000ffff0000ffffn;
-        yn = (yn | (yn << 8n)) & 0x00ff00ff00ff00ffn;
-        yn = (yn | (yn << 4n)) & 0x0f0f0f0f0f0f0f0fn;
-        yn = (yn | (yn << 2n)) & 0x3333333333333333n;
-        yn = (yn | (yn << 1n)) & 0x5555555555555555n;
-
-        const result = xn | (yn << 1n);
-        // console.log(x, y, xn, yn, result)
-
-        resultArr.push(Number(result)); //todo: final conversion might lead to precision loss!
-    });
-    return resultArr;
-}
-
 // https://fiveko.com/gaussian-filter-in-pure-javascript/
 export function makeGaussKernel(sigma: number) {
     const GAUSSKERN = 6.0;
@@ -235,7 +207,8 @@ export function makeGaussKernel(sigma: number) {
     const s2 = 2.0 * sigma * sigma;
     let sum = 0.0;
 
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const kernel = new Float32Array(dim - !(dim & 1)); // Make it odd number
     const half = Math.floor(kernel.length / 2);
     for (let j = 0, i = -half; j < kernel.length; i++, j++) {
@@ -257,4 +230,14 @@ export function debounce(func: () => void, time = 200) {
         }
         timer = setTimeout(func, time);
     };
+}
+
+function bigUint64ToNumberArray(bigArray: BigUint64Array): number[] {
+    return Array.from(bigArray, (x) => {
+        const num = Number(x);
+        if (!Number.isSafeInteger(num)) {
+            throw new Error(`Value ${x} exceeds safe integer limit`);
+        }
+        return num;
+    });
 }

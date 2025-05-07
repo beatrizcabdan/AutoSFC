@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 
 import React, {useEffect, useRef, useState} from "react";
-import {makeGaussKernel, morton_interlace} from "./utils.ts";
+import {makeGaussKernel, mortonInterlace} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 import {DEFAULT_BITS_PER_SIGNAL} from "./App.tsx";
 
@@ -84,17 +84,6 @@ export function Chart(props: {
     function getLineY(canvas: HTMLCanvasElement, curvePadding: number, point: number) {
         return (canvas.height - curvePadding * 2) * (props.maxValue - point) / (props.maxValue - props.minValue) + curvePadding;
     }
-
-    function bigUint64ToNumberArray(bigArray: BigUint64Array): number[] {
-        return Array.from(bigArray, (x) => {
-            const num = Number(x);
-            if (!Number.isSafeInteger(num)) {
-                throw new Error(`Value ${x} exceeds safe integer limit`);
-            }
-            return num;
-        });
-    }
-
 
     // TODO: Decouple signal/Morton charts
     useEffect(() => {

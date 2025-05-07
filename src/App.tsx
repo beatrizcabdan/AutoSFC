@@ -9,7 +9,7 @@ import {PlaySlider} from "./PlaySlider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {UploadButton} from "./UploadButton.tsx";
-import {debounce, morton_interlace, hilbert_encode} from "./utils.ts";
+import {debounce, mortonInterlace, hilbertEncode} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {PresetComponent} from "./PresetComponent.tsx";
 import {ProcessingComponent} from "./ProcessingComponent.tsx";
@@ -81,6 +81,8 @@ function App() {
     const [dataNumLines, setDataNumLines] = useState(-1)
     const [startLine, setStartLine] = useState(preset.dataRangeStart)
     const [endLine, setEndLine] = useState(preset.dataRangeEnd)
+
+    const [encoder, setEncoder] = useState('morton')
 
     const [minSFCvalue, setMinSFCvalue] = useState(preset.sfcRangeMin)
     const [maxSFCvalue, setMaxSFCvalue] = useState(preset.sfcRangeMax)
@@ -161,7 +163,7 @@ function App() {
                     maxData = Math.max(maxData, sortedData[sortedData.length - 1])
                 })
 
-                computeSetSFCData(newTransformedData, bitsPerSignal, true, true);
+                computeSetSFCData(newTransformedData, bitsPerSignal, encoder, true, true);
 
                 setData(newData)
                 setTransformedData(newTransformedData)
@@ -352,24 +354,33 @@ function App() {
         setShowSignalTransforms(show)
     }
 
-    const computeSetSFCData = (transformedData: number[][], bitsPerSignal: number | string, setMinMaxValues?: boolean, initialMinMaxValues?: boolean) => {
+    const computeSetSFCData = (transformedData: number[][], bitsPerSignal: number | string,
+                               newEncoder?:string, setMinMaxValues?: boolean, initialMinMaxValues?: boolean) => {
         const truncatedData = transformedData.map(column => column.map(value =>
             Math.trunc(value))) // Add truncating processing
-        const sfcData = morton_interlace(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
+        const currentEncoder = newEncoder ?? encoder
+        const sfcData = currentEncoder == 'morton' ? mortonInterlace(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
+            : hilbertEncode(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
         if (setMinMaxValues) {
-            const mortonSorted = [...sfcData!].sort((a, b) => a - b)
-            setMinSFCvalue(mortonSorted[0])
-            setMaxSFCvalue(mortonSorted[mortonSorted.length - 1])
+            const sfcSorted = [...sfcData!].sort((a, b) => a - b)
+            setMinSFCvalue(sfcSorted[0])
+            setMaxSFCvalue(sfcSorted[sfcSorted.length - 1])
 
             if (initialMinMaxValues) {
-                setInitialMinSFCvalue(mortonSorted[0])
-                setInitialMaxSFCvalue(mortonSorted[mortonSorted.length - 1])
+                setInitialMinSFCvalue(sfcSorted[0])
+                setInitialMaxSFCvalue(sfcSorted[sfcSorted.length - 1])
             }
         }
         setSfcData(sfcData)
     }
 
     // @ts-ignore
+    const onEncoderSwitch = () => {
+        const newEncoder = encoder === 'morton' ? 'hilbert' : 'morton'
+        computeSetSFCData(transformedData, bitsPerSignal, newEncoder)
+        setEncoder(newEncoder)
+    };
+
     return (
         <>
             <div className="landing-section">
@@ -396,7 +407,8 @@ function App() {
                     <Chart name={'Encoded signals plot (CSP)'} data={data} transformedData={transformedData} scales={scales}
                            offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'} bitsPerSignal={bitsPerSignal}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}
-                           sfcData={sfcData} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue} encoderSwitch={<EncoderSwitch />}/>
+                           sfcData={sfcData} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue}
+                           encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch}/>}/>
                 </div>
                 <div className={'controls'}>
                     <div className={'vert-control-wrapper'}>

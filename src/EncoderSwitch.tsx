@@ -1,7 +1,6 @@
 import {Stack, styled, Switch, Typography} from "@mui/material";
-import {useState} from "react";
 
-const AntSwitch = styled(Switch)(({ theme }) => ({
+const AntSwitch = styled(Switch)(({theme}) => ({
     width: 32,
     height: 16,
     padding: 0,
@@ -48,17 +47,10 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
     },
 }));
 
-export const EncoderSwitch = () => {
-    const [hilbert, setHilbert] = useState(false)
-
-    function onSwitch(e: React.ChangeEvent<HTMLInputElement>) {
-        console.log(e.currentTarget.checked)
-        setHilbert(e.currentTarget.checked)
-    }
-
-    return <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }} className={'encoder-switch'}>
-        <Typography className={`encoding-label ${hilbert ? 'unchecked' : 'checked'}`}>Morton</Typography>
-        <AntSwitch defaultChecked={hilbert} inputProps={{ 'aria-label': 'ant design' }} onChange={e => onSwitch(e)}/>
-        <Typography className={`encoding-label ${hilbert ? 'checked' : 'unchecked'}`}>Hilbert</Typography>
+export const EncoderSwitch = (props: {encoder: string, onSwitch: () => void}) => {
+    return <Stack direction="row" spacing={1} sx={{alignItems: 'center'}} className={'encoder-switch'}>
+        <Typography className={`encoding-label ${props.encoder === 'hilbert' ? 'unchecked' : 'checked'}`}>Morton</Typography>
+        <AntSwitch defaultChecked={props.encoder === 'hilbert'} inputProps={{'aria-label': 'ant design'}} onChange={props.onSwitch}/>
+        <Typography className={`encoding-label ${props.encoder === 'hilbert' ? 'checked' : 'unchecked'}`}>Hilbert</Typography>
     </Stack>
 };
