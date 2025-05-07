@@ -392,7 +392,7 @@ function App() {
                            startTimeXticks={startTimeXTicks} finishTimeXticks={finishTimeXTicks}
                            currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
                            onLegendClick={selectDataColumns} lineColors={LINE_COLORS} transformedData={transformedData} />
-                    <Chart name={'Morton plot (CSP)'} data={data} transformedData={transformedData} scales={scales}
+                    <Chart name={'Encoded signals plot (CSP)'} data={data} transformedData={transformedData} scales={scales}
                            offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'} bitsPerSignal={bitsPerSignal}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}
                            sfcData={sfcData} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue}/>
