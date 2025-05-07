@@ -13,6 +13,7 @@ import {debounce, morton_interlace} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {PresetComponent} from "./PresetComponent.tsx";
 import {ProcessingComponent} from "./ProcessingComponent.tsx";
+import {EncoderSwitch} from "./EncoderSwitch.tsx";
 
 const demoPreset1 = {
     dataPointInterval: 1,
@@ -395,7 +396,7 @@ function App() {
                     <Chart name={'Encoded signals plot (CSP)'} data={data} transformedData={transformedData} scales={scales}
                            offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={'scatter'} xAxisName={'Morton'} bitsPerSignal={bitsPerSignal}
                            yAxisName={'Time steps'} yAxisLabelPos={'right'} currentSignalXVal={signalMarkerPos}
-                           sfcData={sfcData} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue}/>
+                           sfcData={sfcData} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue} encoderSwitch={<EncoderSwitch />}/>
                 </div>
                 <div className={'controls'}>
                     <div className={'vert-control-wrapper'}>

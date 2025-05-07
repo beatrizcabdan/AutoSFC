@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {makeGaussKernel, morton_interlace} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 import {DEFAULT_BITS_PER_SIGNAL} from "./App.tsx";
@@ -43,7 +43,8 @@ export function Chart(props: {
     transformedData: number[][],
     minSFCrange?: number,
     maxSFCrange?: number,
-    sfcData?: number[]
+    sfcData?: number[],
+    encoderSwitch?: React.JSX.Element
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
@@ -256,7 +257,7 @@ export function Chart(props: {
                             <span className={'x-tick-mark-label'}>{xTickMarks[i]}</span>
                         </div>})}
                 </div>
-                <p className={'chart-x-axis-name'}>{props.xAxisName}</p>
+                {props.type === 'line' ? <p className={'chart-x-axis-name'}>{props.xAxisName}</p> : props.encoderSwitch}
                 {props.type === 'scatter' && <div className={'chartYTicks'} id={'right-axis'}>{
                     Array.from(Array(PLOT_NUM_Y_VALUES).keys()).map(i => {
                         return <div key={i} className={'y-tick-mark'}>
