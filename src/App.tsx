@@ -347,7 +347,7 @@ function App() {
     
     const onBitsPerSignalChanged = (bits: number | string) => {
         setBitsPerSignal(bits)
-        computeSetSFCData(transformedData, bits, "", true)
+        computeSetSFCData(transformedData, bits, undefined, true)
     };
 
     function onShowSignalTransformsChanged(show: boolean) {
@@ -360,7 +360,8 @@ function App() {
         const truncatedData = transformedData.map(column => column.map(value =>
             Math.trunc(value))) // Add truncating processing
         const currentEncoder = newEncoder ?? encoder
-        const sfcData = currentEncoder == 'morton' ? mortonInterlace(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
+        console.log(newEncoder, newEncoder ?? encoder, currentEncoder)
+        const sfcData = currentEncoder === 'morton' ? mortonInterlace(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
             : hilbertEncode(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
         if (setMinMaxValues) {
             const sfcSorted = [...sfcData!].sort((a, b) => a - b)
