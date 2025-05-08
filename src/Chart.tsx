@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 
-import {useEffect, useRef, useState} from "react";
-import {makeGaussKernel, morton_interlace} from "./utils.ts";
+import React, {useEffect, useRef, useState} from "react";
+import {makeGaussKernel, mortonInterlace} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 import {DEFAULT_BITS_PER_SIGNAL} from "./App.tsx";
 
@@ -43,7 +43,8 @@ export function Chart(props: {
     transformedData: number[][],
     minSFCrange?: number,
     maxSFCrange?: number,
-    sfcData?: number[]
+    sfcData?: number[],
+    encoderSwitch?: React.JSX.Element
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
@@ -86,9 +87,29 @@ export function Chart(props: {
 
     // TODO: Decouple signal/Morton charts
     useEffect(() => {
+        let bitsPerSignal = Number(typeof props.bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : props.bitsPerSignal)
+        if (!Number.isFinite(props.bitsPerSignal) || !Number.isInteger(props.bitsPerSignal)) {
+            bitsPerSignal = DEFAULT_BITS_PER_SIGNAL;
+        }
+
         if (props.data.length > 0 && canvasRef.current) {
             const minMorton = props.minSFCrange ?? -1
             const maxMorton = props.maxSFCrange ?? -1
+
+            // Add truncating processing
+            // const truncatedData = props.transformedData.map(column => column.map(value =>
+            //     Math.trunc(value)))
+
+            // IF MORTON TOGGLE
+            // const mortonData = morton_interlace(truncatedData, bitsPerSignal).reverse()
+            // const mortonSorted = [...mortonData].sort((a, b) => a - b)
+
+            // IF HILBERT TOGGLE
+            // const mortonData = bigUint64ToNumberArray(hilbert_encode(truncatedData, bitsPerSignal)).reverse();
+            // const mortonSorted = [...mortonData].sort((a, b) => a - b)
+
+            // const minMorton = mortonSorted[0];
+            // const maxMorton = mortonSorted[mortonSorted.length - 1];
 
             const canvas: HTMLCanvasElement = canvasRef.current!
             // TODO: Dynamic canvas res?
@@ -256,7 +277,7 @@ export function Chart(props: {
                             <span className={'x-tick-mark-label'}>{xTickMarks[i]}</span>
                         </div>})}
                 </div>
-                <p className={'chart-x-axis-name'}>{props.xAxisName}</p>
+                {props.type === 'line' ? <p className={'chart-x-axis-name'}>{props.xAxisName}</p> : props.encoderSwitch}
                 {props.type === 'scatter' && <div className={'chartYTicks'} id={'right-axis'}>{
                     Array.from(Array(PLOT_NUM_Y_VALUES).keys()).map(i => {
                         return <div key={i} className={'y-tick-mark'}>

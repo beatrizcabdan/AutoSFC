@@ -133,13 +133,45 @@ html {
             grid-column: 1;
           }
 
-          canvas, h2, .chart-x-axis-name, .chartXTicks {
+          canvas, h2, .chart-x-axis-name, .chartXTicks, .encoder-switch {
             grid-column: 2;
           }
 
           .y-axis-label {
             grid-column: 4;
             grid-row: 2;
+          }
+
+          .encoder-switch {
+            p {
+              font-family: inherit !important;
+              margin: 0;
+            }
+
+            .MuiSwitch-root {
+              margin: 0;
+            }
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: inherit;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            height: 0;
+            gap: 0.5rem;
+
+            .encoding-label {
+              transition: all 0.2s;
+
+              &.checked {
+                opacity: 1;
+              }
+
+              &.unchecked {
+                opacity: 0.5;
+              }
+            }
           }
         }
 
