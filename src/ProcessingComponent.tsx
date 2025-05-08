@@ -1,5 +1,5 @@
 import React from "react";
-import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_SCALING_FACTOR} from "./App.tsx";
+import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR} from "./App.tsx";
 import {Button, Checkbox} from "@mui/material";
 
 export function ProcessingComponent(props: {
@@ -24,7 +24,7 @@ export function ProcessingComponent(props: {
     // TODO: Decide on how reset should work when presets are used
     function onResetClicked() {
         for (let i = 0; i < props.offsets.length; i++) {
-            props.onOffsetsChanged(i, 0)
+            props.onOffsetsChanged(i, DEFAULT_OFFSET)
             props.onScalesChanged(i, DEFAULT_SCALING_FACTOR)
         }
         props.onBitsPerSignalChanged(DEFAULT_BITS_PER_SIGNAL)

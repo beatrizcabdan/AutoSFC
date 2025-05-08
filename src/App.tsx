@@ -360,7 +360,6 @@ function App() {
         const truncatedData = transformedData.map(column => column.map(value =>
             Math.trunc(value))) // Add truncating processing
         const currentEncoder = newEncoder ?? encoder
-        console.log(newEncoder, newEncoder ?? encoder, currentEncoder)
         const sfcData = currentEncoder === 'morton' ? mortonInterlace(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
             : hilbertEncode(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
         if (setMinMaxValues) {
