@@ -45,13 +45,13 @@ export function ProcessingComponent(props: {
                         <span className={'signal-name'}>{signal}</span>
                     </div>
                     <label className={'input-label offset-label'}>
-                        <input type="number" value={props.offsets[i]} onBlur={() =>
-                            props.onOffsetsChanged(i, Number(props.offsets[i] ?? 0))}
+                        <input type="number" value={props.offsets[i] ?? DEFAULT_OFFSET} onBlur={() =>
+                            props.onOffsetsChanged(i, Number(props.offsets[i] ?? DEFAULT_OFFSET))}
                                onChange={(e) =>
                                    props.onOffsetsChanged(i, e.target.value ? Number(e.target.value) : undefined)}/>
                     </label>
                     <label className={'input-label scale-label'}>
-                        <input type="number" value={props.scales[i]} onBlur={() =>
+                        <input type="number" value={props.scales[i] ?? DEFAULT_SCALING_FACTOR} onBlur={() =>
                             props.onScalesChanged(i, Number(props.scales[i] ?? DEFAULT_SCALING_FACTOR))}
                                onChange={(e) =>
                                    props.onScalesChanged(i, e.target.value ? Number(e.target.value) : undefined)}/>

@@ -377,6 +377,10 @@ function App() {
 
     // @ts-ignore
     const onEncoderSwitch = () => {
+        if (encoder === 'morton' && Number(bitsPerSignal) * data.length > 64) {
+            alert("It is not possible to encode the signals with Hilbert with so many bits. Please reduce the number of bits per signal. Num signals * num bits <= 64!")
+            return
+        }
         const newEncoder = encoder === 'morton' ? 'hilbert' : 'morton'
         computeSetSFCData(transformedData, bitsPerSignal, newEncoder, true)
         setEncoder(newEncoder)
