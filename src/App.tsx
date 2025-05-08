@@ -68,7 +68,7 @@ export enum PlayStatus {
 
 export const DEFAULT_SCALING_FACTOR = 10
 export const DEFAULT_OFFSET = 100
-export const DEFAULT_BITS_PER_SIGNAL = 10
+export const DEFAULT_BITS_PER_SIGNAL = 14
 
 function App() {
     const SLIDER_START_VAL = 100
@@ -99,7 +99,7 @@ function App() {
     // Use default scaling factor when scale is undefined (this to allow removing all digits in inputs)
     const [scales, setScales] = useState<(number | undefined)[]>([])
     const [offsets, setOffsets] = useState<(number | undefined)[]>([])
-    const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(10)
+    const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(DEFAULT_BITS_PER_SIGNAL)
     // Show transformed signals in signal chart
     const [showSignalTransforms, setShowSignalTransforms] = useState(false)
 
@@ -154,7 +154,7 @@ function App() {
                     newData.push(column)
                     const transformedColumn =
                         column.map((val) => val * (scales[i] ?? DEFAULT_SCALING_FACTOR)
-                            + (offsets[i] ?? 0))
+                            + (offsets[i] ?? DEFAULT_OFFSET))
                     newTransformedData.push(transformedColumn)
 
                     const sortedData = (showSignalTransforms ? [...transformedColumn] : [...column])
@@ -168,10 +168,10 @@ function App() {
 
                 setData(newData)
                 setTransformedData(newTransformedData)
-                if (scales.length == 0) {
+                if (scales.length === 0) {
                     setScales(Array(colIndices.length).fill(DEFAULT_SCALING_FACTOR))
                 }
-                if (offsets.length == 0) {
+                if (offsets.length === 0) {
                     setOffsets(Array(colIndices.length).fill(DEFAULT_OFFSET))
                 }
                 setStartTimeXTicks(startTimeXTicks)
@@ -333,7 +333,7 @@ function App() {
         transformedData[index] = data[index].map(val => val * (scale ?? DEFAULT_SCALING_FACTOR) + (offsets[index] ?? 0))
         setTransformedData(transformedData)
         setMinMaxChartValues(showSignalTransforms ? transformedData : data)
-        computeSetSFCData(transformedData, bitsPerSignal)
+        computeSetSFCData(transformedData, bitsPerSignal, undefined, true)
     };
 
     const onOffsetsChanged = (index: number, offset: number | undefined) => {
@@ -342,7 +342,7 @@ function App() {
         transformedData[index] = data[index].map(val => val * (scales[index] ?? DEFAULT_SCALING_FACTOR) + (offset ?? 0))
         setTransformedData(transformedData)
         setMinMaxChartValues(showSignalTransforms ? transformedData : data)
-        computeSetSFCData(transformedData, bitsPerSignal)
+        computeSetSFCData(transformedData, bitsPerSignal, undefined, true)
     };
     
     const onBitsPerSignalChanged = (bits: number | string) => {
@@ -379,7 +379,7 @@ function App() {
     // @ts-ignore
     const onEncoderSwitch = () => {
         const newEncoder = encoder === 'morton' ? 'hilbert' : 'morton'
-        computeSetSFCData(transformedData, bitsPerSignal, newEncoder)
+        computeSetSFCData(transformedData, bitsPerSignal, newEncoder, true)
         setEncoder(newEncoder)
     };
 
