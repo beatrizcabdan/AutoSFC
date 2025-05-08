@@ -9,7 +9,7 @@ import {PlaySlider} from "./PlaySlider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {UploadButton} from "./UploadButton.tsx";
-import {debounce, morton_interlace} from "./utils.ts";
+import {debounce, morton_interlace, hilbert_encode} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {PresetComponent} from "./PresetComponent.tsx";
 import {ProcessingComponent} from "./ProcessingComponent.tsx";
