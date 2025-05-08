@@ -9,7 +9,7 @@ import {PlaySlider} from "./PlaySlider.tsx";
 import {PlayButton} from "./PlayButton.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {UploadButton} from "./UploadButton.tsx";
-import {debounce} from "./utils.ts";
+import {debounce, hilbert_encode} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {PresetComponent} from "./PresetComponent.tsx";
 import {ProcessingComponent} from "./ProcessingComponent.tsx";
@@ -79,7 +79,7 @@ function App() {
     const [startLine, setStartLine] = useState(preset.dataRangeStart)
     const [endLine, setEndLine] = useState(preset.dataRangeEnd)
 
-    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'speed'])
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y'])
 
     const [data, setData] = useState<number[][]>([])
     const [transformedData, setTransformedData] = useState<number[][]>([]) // Transformed in "Transform" panel

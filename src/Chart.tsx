@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 
 import {useEffect, useRef} from "react";
-import {makeGaussKernel, morton_interlace} from "./utils.ts";
+import {hilbert_encode, makeGaussKernel, morton_interlace} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_SCALING_FACTOR} from "./App.tsx";
 
@@ -173,19 +173,39 @@ export function Chart(props: {
         return (canvas.height - curvePadding * 2) * (props.maxValue - point) / (props.maxValue - props.minValue) + curvePadding;
     }
 
+    function bigUint64ToNumberArray(bigArray: BigUint64Array): number[] {
+        return Array.from(bigArray, (x) => {
+            const num = Number(x);
+            if (!Number.isSafeInteger(num)) {
+                throw new Error(`Value ${x} exceeds safe integer limit`);
+            }
+            return num;
+        });
+    }
+
+
     // TODO: Decouple signal/Morton charts
     useEffect(() => {
-        if (props.data.length > 0 && canvasRef.current) {
+        let bitsPerSignal = Number(typeof props.bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : props.bitsPerSignal)
+        if (!Number.isFinite(props.bitsPerSignal) || !Number.isInteger(props.bitsPerSignal)) {
+            bitsPerSignal = DEFAULT_BITS_PER_SIGNAL;
+        }
 
+        if (props.data.length > 0 && canvasRef.current) {
             // Add truncating processing
             const truncatedData = props.transformedData.map(column => column.map(value =>
                 Math.trunc(value)))
-            const bitsPerSignal = Number(typeof props.bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : props.bitsPerSignal)
-            const mortonData = morton_interlace(truncatedData, bitsPerSignal).reverse()
 
+            // IF MORTON TOGGLE
+            // const mortonData = morton_interlace(truncatedData, bitsPerSignal).reverse()
+            // const mortonSorted = [...mortonData].sort((a, b) => a - b)
+
+            // IF HILBERT TOGGLE
+            const mortonData = bigUint64ToNumberArray(hilbert_encode(truncatedData, bitsPerSignal)).reverse();
             const mortonSorted = [...mortonData].sort((a, b) => a - b)
-            const minMorton = mortonSorted[0]
-            const maxMorton = mortonSorted[mortonSorted.length - 1]
+
+            const minMorton = mortonSorted[0];
+            const maxMorton = mortonSorted[mortonSorted.length - 1];
 
             const canvas: HTMLCanvasElement = canvasRef.current!
             // TODO: Dynamic canvas res?
