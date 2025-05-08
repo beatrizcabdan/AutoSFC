@@ -66,7 +66,8 @@ export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
 }
 
-export const DEFAULT_SCALING_FACTOR = 100
+export const DEFAULT_SCALING_FACTOR = 10
+export const DEFAULT_OFFSET = 100
 export const DEFAULT_BITS_PER_SIGNAL = 10
 
 function App() {
@@ -89,7 +90,7 @@ function App() {
     const [initialMinSFCvalue, setInitialMinSFCvalue] = useState(preset.sfcRangeMin)
     const [initialMaxSFCvalue, setInitialMaxSFCvalue] = useState(preset.sfcRangeMax)
 
-    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y', 'speed']) // TODO: Revert to 'accel_x', 'accel_y', 'speed'
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y']) // TODO: Revert to 'accel_x', 'accel_y', 'speed'
 
     const [data, setData] = useState<number[][]>([])
     const [transformedData, setTransformedData] = useState<number[][]>([]) // Transformed in "Transform" panel
@@ -171,7 +172,7 @@ function App() {
                     setScales(Array(colIndices.length).fill(DEFAULT_SCALING_FACTOR))
                 }
                 if (offsets.length == 0) {
-                    setOffsets(Array(colIndices.length).fill(0))
+                    setOffsets(Array(colIndices.length).fill(DEFAULT_OFFSET))
                 }
                 setStartTimeXTicks(startTimeXTicks)
                 setFinishTimeXTicks(finishTimeXTicks)
@@ -346,7 +347,7 @@ function App() {
     
     const onBitsPerSignalChanged = (bits: number | string) => {
         setBitsPerSignal(bits)
-        computeSetSFCData(transformedData, bits)
+        computeSetSFCData(transformedData, bits, "", true)
     };
 
     function onShowSignalTransformsChanged(show: boolean) {

@@ -26,7 +26,6 @@ export function hilbertEncode(transposed: number[][], raw_num_bits: number): num
     }
     const num_dims = locs[0].length;
 
-    console.log('typeof num_bits:', typeof raw_num_bits, 'value:', raw_num_bits);
     const num_bits = Math.floor(raw_num_bits);
     // let num_bits = 10;
     if (!Number.isFinite(num_bits) || !Number.isInteger(num_bits) || num_bits <= 0) {
