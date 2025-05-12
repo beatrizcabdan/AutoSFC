@@ -120,11 +120,11 @@ function App() {
             r.text().then(t => {
                 const lines = t
                     .trim()
-                    .split(/;?\n/)
+                    .split(/[;,]?\n/)
                 let dataLabels: string[]
                 if (!allDataLabelsRef.current || allDataLabelsRef.current.length === 0) {
                     dataLabels = lines[0]
-                        .split(/;/)
+                        .split(/[;,]/)
                     formatDataLabels(dataLabels)
                     allDataLabelsRef.current = dataLabels
                 } else {
@@ -134,9 +134,9 @@ function App() {
                     .findIndex(col => col === label)
                 ).filter(index => index !== -1).sort() ?? [dataLabels.length - 2, dataLabels.length - 1]
 
-                const beginTime = Number(lines[1]?.split(/;/)[0]) * 1000000 + Number(lines[1]?.split(/;/)[1]);
-                let startTimeXTicks = Number(0 < startLine ? Number(lines[startLine + 1]?.split(/;/)[0]) * 1000000 + Number(lines[startLine + 1]?.split(/;/)[1]) : beginTime);
-                let finishTimeXTicks = Number(-1 < endLine && (endLine < lines.length - 1) ? Number(lines[endLine + 1]?.split(/;/)[0]) * 1000000 + Number(lines[endLine + 1]?.split(/;/)[1]) : Number(lines[lines.length - 1]?.split(/;/)[0]) * 1000000 + Number(lines[lines.length - 1]?.split(/;/)[1]));
+                const beginTime = Number(lines[1]?.split(/[;,]/)[0]) * 1000000 + Number(lines[1]?.split(/[;,]/)[1]);
+                let startTimeXTicks = Number(0 < startLine ? Number(lines[startLine + 1]?.split(/[;,]/)[0]) * 1000000 + Number(lines[startLine + 1]?.split(/[;,]/)[1]) : beginTime);
+                let finishTimeXTicks = Number(-1 < endLine && (endLine < lines.length - 1) ? Number(lines[endLine + 1]?.split(/[;,]/)[0]) * 1000000 + Number(lines[endLine + 1]?.split(/[;,]/)[1]) : Number(lines[lines.length - 1]?.split(/[;,]/)[0]) * 1000000 + Number(lines[lines.length - 1]?.split(/[;,]/)[1]));
                 startTimeXTicks = (startTimeXTicks - beginTime) / 1000000;
                 finishTimeXTicks = (finishTimeXTicks - beginTime) / 1000000;
 
@@ -148,7 +148,7 @@ function App() {
                     const column: number[] = lines
                         .slice(1) // Skip headers
                         .slice(startLine >= 0 ? startLine : 0, endLine >= 0 ? endLine : undefined)
-                        .map(l => l.split(/;/))
+                        .map(l => l.split(/[;,]/))
                         .map(arr => Number(arr[colIndex]))
                         .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
                     newData.push(column)
@@ -277,9 +277,9 @@ function App() {
                 if (text) {
                     const lines = text
                         .trim()
-                        .split(/;?\n/)
+                        .split(/[,;]?\n/)
                     const dataLabels = lines[0]
-                        .split(/;/)
+                        .split(/[,;]/)
                     formatDataLabels(dataLabels);
                     allDataLabelsRef.current = dataLabels
 
