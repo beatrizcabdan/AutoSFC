@@ -1,0 +1,66 @@
+[{
+ "name": "preset_01",
+ "signalStartRow": 0,
+ "signalEndRow": 236,
+ "cspStartRow": 11353,
+ "cspEndRow": 15715,
+ "bitsPerSignal": 14,
+ "signalTransforms": [
+  {
+   "signalName": "accel_x",
+   "offset": 100,
+   "scaling": 10
+  },
+  {
+   "signalName": "accel_y",
+   "offset": 100,
+   "scaling": 10
+  }
+ ],
+ "encoder": "morton",
+ "plotTransformedSignals": false
+},
+{
+ "name": "preset_02",
+ "signalStartRow": 70,
+ "signalEndRow": 190,
+ "cspStartRow": 6218,
+ "cspEndRow": 11520,
+ "bitsPerSignal": 15,
+ "signalTransforms": [
+  {
+   "signalName": "accel_x",
+   "offset": 101,
+   "scaling": 11
+  },
+  {
+   "signalName": "accel_y",
+   "offset": 101,
+   "scaling": 11
+  }
+ ],
+ "encoder": "hilbert",
+ "plotTransformedSignals": true
+},
+{
+ "name": "preset_03",
+ "signalStartRow": 30,
+ "signalEndRow": 210,
+ "cspStartRow": 6179,
+ "cspEndRow": 32148,
+ "bitsPerSignal": 13,
+ "signalTransforms": [
+  {
+   "signalName": "accel_x",
+   "offset": 127,
+   "scaling": 16
+  },
+  {
+   "signalName": "accel_y",
+   "offset": 101,
+   "scaling": 11
+  }
+ ],
+ "encoder": "hilbert",
+ "plotTransformedSignals": true
+}]

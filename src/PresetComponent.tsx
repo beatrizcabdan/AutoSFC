@@ -108,6 +108,7 @@ export function PresetComponent(props: {
         /*if (selectedIndex > -1) {
             return
         }*/
+
         const newPreset: Preset = {
             name: createPresetName(),
             signalStartRow: props.displayedStartRow,
@@ -167,11 +168,11 @@ export function PresetComponent(props: {
 
     function savePresets() {
         // https://stackoverflow.com/a/72490299/23995082
-        const textContent = presets?.map(p => JSON.stringify(p)).join('\n') ?? ''
+        const textContent = presets?.map(p => JSON.stringify(p, undefined, ' ')).join(',\n') ?? ''
         const hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:attachment/text,' + encodeURI(textContent);
+        hiddenElement.href = 'data:attachment/text,' + encodeURI(textContent ? `[${textContent}]` : '');
         hiddenElement.target = '_blank';
-        hiddenElement.download = props.currentDataFile.replace('.csv', '') + '_presets.csv'
+        hiddenElement.download = props.currentDataFile.replace('.csv', '') + PRESET_FILE_SUFFIX
         hiddenElement.click();
     }
 
