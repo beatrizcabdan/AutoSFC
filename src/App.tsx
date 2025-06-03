@@ -312,10 +312,11 @@ function App() {
         setMaxSFCvalue((newValue as number[])[1])
     };
 
-    const presetSelected = (preset: Preset) => {
-        /*setStartLine(preset.signalStartRow)
-        setEndLine(preset.signalEndRow)*/
-        console.log(preset.name)
+    const presetSelected = (preset: Preset | null ) => {
+        if (!preset) {
+            setCurrentPresetName('')
+            return
+        }
         setCurrentPresetName(preset.name)
         setBitsPerSignal(preset.bitsPerSignal)
         setStartLine(preset.signalStartRow)

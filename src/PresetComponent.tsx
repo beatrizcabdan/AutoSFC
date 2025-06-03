@@ -21,7 +21,7 @@ export interface Preset {
     plotTransformedSignals: boolean
 }
 export function PresetComponent(props: {
-    onPresetSelect: (preset: Preset) => void,
+    onPresetSelect: (preset: Preset | null) => void,
     initialDataPath: string,
     displayedStartRow: number,
     displayedEndRow: number,
@@ -61,6 +61,20 @@ export function PresetComponent(props: {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    // Don't show a preset as selected after user changed parameter
+    useEffect(() => {
+        const currentPreset = presets?.find(p => p.name == props.currentPresetName)
+        if (currentPreset) {
+            let currPresStr = JSON.stringify(currentPreset)
+            currPresStr = currPresStr.replace(`"name":"${props.currentPresetName}",`, '')
+            const currParamStr = JSON.stringify(createPresetFromCurrParams(false))
+            if (currPresStr !== currParamStr) {
+                props.onPresetSelect(null)
+            }
+        }
+    }, [props.displayedStartRow, props.displayedEndRow, props.plotTransformedSignals, props.scales, props.offsets,
+        props.bitsPerSignal, props.minSfcValue, props.maxSfcValue, props.encoder, props.displayedDataLabels]);
+
     function onPresetClick(index: number) {
         const preset = presets![index]
         props.onPresetSelect(preset)
@@ -74,11 +88,8 @@ export function PresetComponent(props: {
         return `preset_0${presetSuffix}`;
     }
 
-    function addPreset() {
-        // TODO: Should a preset still only be displayed as selected if all its parameters are exactly the same as current state's?
-
-        const newPreset: Preset = {
-            name: createPresetName(),
+    function createPresetFromCurrParams(includeName = true) {
+        const obj = {
             signalStartRow: props.displayedStartRow,
             signalEndRow: props.displayedEndRow,
             cspStartRow: props.minSfcValue,
@@ -93,13 +104,21 @@ export function PresetComponent(props: {
             }) ?? [],
             encoder: props.encoder,
             plotTransformedSignals: props.plotTransformedSignals
+        };
+        if (includeName) {
+            Object.assign(obj, {name: createPresetName()})
         }
-        console.log(newPreset)
+        return obj
+    }
+
+    function addPreset() {
+        // TODO: Should a preset still only be displayed as selected if all its parameters are exactly the same as current state's?
+
+        const newPreset: Preset = createPresetFromCurrParams() as Preset
         const newPresets = [...(presets ?? []), newPreset]
             .sort((p1, p2) => p1.name.localeCompare(p2.name))
         setPresets(newPresets)
         props.onPresetSelect(newPreset)
-        console.log(newPresets.findIndex(p => p === newPreset))
     }
 
     function onPresetDeleteClick(i: number, e: React.MouseEvent<HTMLButtonElement>) {
