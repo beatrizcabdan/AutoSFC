@@ -39,7 +39,6 @@ export function PresetComponent(props: {
     const PRESET_FILE_SUFFIX = '_presets.json'
 
     const [presets, setPresets] = useState<Preset[] | null>()
-    const [selectedIndex, setSelectedIndex] = useState(-1)
     const [deletedIndex, setDeletedIndex] = useState(-1)
     const inputRef = useRef<HTMLInputElement | null>(null)
 
@@ -50,9 +49,6 @@ export function PresetComponent(props: {
         setPresets(presArray)
         if (presArray.length > 0 && selectPresetIndex > -1) {
             props.onPresetSelect(presArray[selectPresetIndex])
-            setSelectedIndex(selectPresetIndex)
-        } else {
-            setSelectedIndex(-1)
         }
     }
 
@@ -62,25 +58,10 @@ export function PresetComponent(props: {
         fetch(presetPath).then(r => {
             r.text().then(t => setPresetsFromFileString(t, 0))
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    useEffect(() => {
-        if (!presets) {
-            return
-        }
-
-        for (const p of presets) {
-            const i = presets.indexOf(p);
-            if (props.currentPresetName === p.name) {
-                setSelectedIndex(i)
-                return;
-            }
-        }
-        setSelectedIndex(-1)
-    }, [presets, props.currentPresetName]);
-
     function onPresetClick(index: number) {
-        setSelectedIndex(index)
         const preset = presets![index]
         props.onPresetSelect(preset)
     }
@@ -95,9 +76,6 @@ export function PresetComponent(props: {
 
     function addPreset() {
         // TODO: Should a preset still only be displayed as selected if all its parameters are exactly the same as current state's?
-        /*if (selectedIndex > -1) {
-            return
-        }*/
 
         const newPreset: Preset = {
             name: createPresetName(),
@@ -120,7 +98,6 @@ export function PresetComponent(props: {
         const newPresets = [...(presets ?? []), newPreset]
             .sort((p1, p2) => p1.name.localeCompare(p2.name))
         setPresets(newPresets)
-        setSelectedIndex(newPresets.findIndex(p => p === newPreset))
         props.onPresetSelect(newPreset)
         console.log(newPresets.findIndex(p => p === newPreset))
     }
