@@ -61,7 +61,7 @@ export function PresetComponent(props: {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    // Don't show a preset as selected after user changed parameter
+    // Don't show a preset as selected after user changed any parameter
     useEffect(() => {
         const currentPreset = presets?.find(p => p.name == props.currentPresetName)
         if (currentPreset) {

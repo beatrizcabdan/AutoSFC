@@ -118,6 +118,7 @@ function App() {
     const [currentPresetName, setCurrentPresetName] = useState('')
 
     const loadFile = () => {
+        console.trace()
         fetch(filePath).then(r => {
             r.text().then(t => {
                 const lines = t
@@ -291,6 +292,7 @@ function App() {
                     const url = URL.createObjectURL(file)
                     setFileName(file.name)
                     setFilePath(url)
+                    setCurrentPresetName('')
                 } else {
                     alert("Error reading the file. Please try again.");
                 }
@@ -317,6 +319,14 @@ function App() {
             setCurrentPresetName('')
             return
         }
+        for (const s of preset.signalTransforms) {
+            if (allDataLabelsRef.current.length > 0 && !allDataLabelsRef.current.includes(s.signalName)) {
+                console.error(`No such signal name: ${s.signalName}!`)
+                alert(`No such signal name: ${s.signalName}!`)
+                return
+            }
+        }
+
         setCurrentPresetName(preset.name)
         setBitsPerSignal(preset.bitsPerSignal)
         setStartLine(preset.signalStartRow)
