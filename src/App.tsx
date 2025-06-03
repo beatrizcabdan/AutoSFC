@@ -327,6 +327,7 @@ function App() {
             }
         }
 
+        console.log(preset.name)
         setCurrentPresetName(preset.name)
         setBitsPerSignal(preset.bitsPerSignal)
         setStartLine(preset.signalStartRow)

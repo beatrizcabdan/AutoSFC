@@ -66,10 +66,13 @@ export function PresetComponent(props: {
         const currentPreset = presets?.find(p => p.name == props.currentPresetName)
         if (currentPreset) {
             let currPresStr = JSON.stringify(currentPreset)
-            currPresStr = currPresStr.replace(`"name":"${props.currentPresetName}",`, '')
+            currPresStr = currPresStr.replace(`"name":"${props.currentPresetName}"`, '')
+                .replace(/^\{,/, '{')
+                .replace(/,}/, '}')
             const currParamStr = JSON.stringify(createPresetFromCurrParams(false))
             if (currPresStr !== currParamStr) {
                 props.onPresetSelect(null)
+                console.log('Set current preset to null!')
             }
         }
     }, [props.displayedStartRow, props.displayedEndRow, props.plotTransformedSignals, props.scales, props.offsets,
@@ -132,12 +135,12 @@ export function PresetComponent(props: {
 
     function uploadFile(e: FormEvent<HTMLInputElement>) {
         const file = e.currentTarget?.files?.item(0)
-        if (file?.type === 'text/csv') {
+        if (file?.type === 'application/json') {
             const reader = new FileReader();
             reader.onload = () => {
                 const text = reader.result?.toString();
                 if (text) {
-                    setPresetsFromFileString(text)
+                    setPresetsFromFileString(text, 0)
                 } else {
                     alert("Error reading the file. Please try again.");
                 }
@@ -184,7 +187,7 @@ export function PresetComponent(props: {
             </ListItem>)}
         </List>
         <div id={'preset-button-panel'}>
-            <input ref={inputRef} type="file" className="file-input" onInput={uploadFile} accept={'text/csv'}/>
+            <input ref={inputRef} type="file" className="file-input" onInput={uploadFile} accept={'application/json'}/>
             <Button className={'button'} id={'add-preset-button'} variant={'outlined'}
                     onClick={addPreset}>Create preset</Button>
             <Button className={'button'} id={'save-preset-button'} onClick={savePresets} disabled={!presets || presets.length === 0}>Save presets</Button>
