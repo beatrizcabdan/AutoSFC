@@ -43,36 +43,26 @@ export function PresetComponent(props: {
     const [deletedIndex, setDeletedIndex] = useState(-1)
     const inputRef = useRef<HTMLInputElement | null>(null)
 
-    function setPresetsFromFileString(content: string) {
-        // const lines = content.split('\n')
+    function setPresetsFromFileString(content: string, selectPresetIndex = -1) {
         const presArray = JSON.parse(content)
-        /*lines.forEach(line => {
-            const [startRow, endRow] = line.split(/[;,]/)
-            presArray.push({
-                signalStartRow: Number(startRow),
-                signalEndRow: Number(endRow),
-                bitsPerSignal: 0,
-                cspEndRow: 0,
-                cspStartRow: 0,
-                encoder: "",
-                name: "",
-                plotTransformedSignals: false,
-                signalTransforms: []
-
-            })
-        })*/
         presArray.sort((p1: Preset, p2: Preset) =>
             p1.name.localeCompare(p2.name))
         setPresets(presArray)
-        setSelectedIndex(-1)
+        if (presArray.length > 0 && selectPresetIndex > -1) {
+            props.onPresetSelect(presArray[selectPresetIndex])
+            setSelectedIndex(selectPresetIndex)
+        } else {
+            setSelectedIndex(-1)
+        }
     }
 
-    /*useEffect(() => {
-        const presetPath = `${props.initialDataPath.replace('.json', '')}${PRESET_FILE_SUFFIX}`
+    // Load initial presets from file
+    useEffect(() => {
+        const presetPath = `${props.initialDataPath.replace('.csv', '')}${PRESET_FILE_SUFFIX}`
         fetch(presetPath).then(r => {
-            r.text().then(t => setPresetsFromFileString(t))
+            r.text().then(t => setPresetsFromFileString(t, 0))
         })
-    }, [])*/
+    }, [])
 
     useEffect(() => {
         if (!presets) {
