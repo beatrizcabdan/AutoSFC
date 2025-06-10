@@ -213,7 +213,7 @@ export function PresetComponent(props: {
                             {editablePresetNameIdx == i
                                 ? <TextField inputRef={(el: HTMLInputElement) => el?.select()}
                                              id={'standard-basic'} defaultValue={p.name} onClick={e => e.stopPropagation()}
-                                             onKeyUp={(e) => onPresetTextFieldKeyUp(i, e, p)}/>
+                                             onKeyUp={(e) => onPresetTextFieldKeyUp(i, e)}/>
                                 : <p onClick={e => onPresetNameClicked(e, i)
                                 }>{p.name}</p>}
                         </div>} />
