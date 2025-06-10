@@ -175,13 +175,15 @@ export function PresetComponent(props: {
         setDeletedIndex(-1)
     }
 
-    function onPresetTextFieldKeyUp(presetIndex: number, e: React.KeyboardEvent<HTMLDivElement>, p: Preset) {
-        if (e.key === 'Enter') {
+    function onPresetTextFieldKeyUp(presetIndex: number, e: React.KeyboardEvent<HTMLDivElement>) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        const targetVal = e.target.value
+        // Don't allow multiple presets with same name
+        if (e.key === 'Enter' && !presets?.some((p, i) => i != presetIndex && p.name === targetVal)) {
             setEditablePresetNameIdx(-1)
             const newPresets = [...presets!]
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            newPresets[presetIndex].name = e.target.value
+            newPresets[presetIndex].name = targetVal
             setPresets(newPresets)
         }
     }
