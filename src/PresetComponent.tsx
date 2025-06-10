@@ -116,14 +116,18 @@ export function PresetComponent(props: {
     }
 
     function addPreset() {
-        // TODO: Should a preset still only be displayed as selected if all its parameters are exactly the same as current state's?
-
         const newPreset: Preset = createPresetFromCurrParams() as Preset
         const newPresets = [...(presets ?? []), newPreset]
             .sort((p1, p2) => p1.name.localeCompare(p2.name))
         setPresets(newPresets)
         props.onPresetSelect(newPreset)
+        setEditablePresetNameIdx((newPresets?.length ?? 0) - 1)
+        console.log((newPresets?.length ?? 0) - 1)
     }
+
+    useEffect(() => {
+        console.log(editablePresetNameIdx)
+    }, [editablePresetNameIdx]);
 
     function onPresetDeleteClick(i: number, e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
@@ -182,8 +186,12 @@ export function PresetComponent(props: {
         }
     }
 
-    window.addEventListener('click', () => {
-        if (editablePresetNameIdx > -1) {
+    // Add click event listener on events outside preset name textfields to exit edit mode
+    window.addEventListener('click', e => {
+        console.log(e)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        if (editablePresetNameIdx > -1 && e.target?.id !== 'add-preset-button') {
             setEditablePresetNameIdx(-1)
         }
     })
