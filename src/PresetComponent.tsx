@@ -126,7 +126,6 @@ export function PresetComponent(props: {
     }
 
     useEffect(() => {
-        console.log(editablePresetNameIdx)
     }, [editablePresetNameIdx]);
 
     function onPresetDeleteClick(i: number, e: React.MouseEvent<HTMLButtonElement>) {
@@ -190,7 +189,6 @@ export function PresetComponent(props: {
 
     // Add click event listener on events outside preset name textfields to exit edit mode
     window.addEventListener('click', e => {
-        console.log(e)
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         if (editablePresetNameIdx > -1 && e.target?.id !== 'add-preset-button') {
