@@ -1,4 +1,4 @@
-import {Button, IconButton, List, ListItem, ListItemButton, ListItemText, Zoom} from "@mui/material";
+import {Button, IconButton, List, ListItem, ListItemButton, ListItemText, TextField, Zoom} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import React, {FormEvent, useEffect, useRef, useState} from "react";
 import './PresetComponent.scss'
@@ -39,8 +39,9 @@ export function PresetComponent(props: {
     const PRESET_FILE_SUFFIX = '_presets.json'
 
     const [presets, setPresets] = useState<Preset[] | null>()
+    const [editablePresetNameIdx, setEditablePresetNameIdx] = useState(-1)
     const [deletedIndex, setDeletedIndex] = useState(-1)
-    const inputRef = useRef<HTMLInputElement | null>(null)
+    const loadButtonRef = useRef<HTMLInputElement | null>(null)
 
     function setPresetsFromFileString(content: string, selectPresetIndex = -1) {
         const presArray = JSON.parse(content)
@@ -130,7 +131,7 @@ export function PresetComponent(props: {
     }
 
     function onLoadClick() {
-        inputRef.current?.click()
+        loadButtonRef.current?.click()
     }
 
     function uploadFile(e: FormEvent<HTMLInputElement>) {
@@ -170,6 +171,28 @@ export function PresetComponent(props: {
         setDeletedIndex(-1)
     }
 
+    function onPresetTextFieldKeyUp(presetIndex: number, e: React.KeyboardEvent<HTMLDivElement>, p: Preset) {
+        if (e.key === 'Enter') {
+            setEditablePresetNameIdx(-1)
+            const newPresets = [...presets!]
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            newPresets[presetIndex].name = e.target.value
+            setPresets(newPresets)
+        }
+    }
+
+    window.addEventListener('click', () => {
+        if (editablePresetNameIdx > -1) {
+            setEditablePresetNameIdx(-1)
+        }
+    })
+
+    const onPresetNameClicked = (e: React.MouseEvent<HTMLParagraphElement>, i: number) => {
+        e.stopPropagation()
+        setEditablePresetNameIdx(i)
+    }
+
     return <div className={'preset-list-container'}>
         <List id={'preset-list'}>
             {presets?.map((p, i) => <ListItem key={i}>
@@ -177,7 +200,12 @@ export function PresetComponent(props: {
                        in={i !== deletedIndex} onExited={() => removePreset(i)}>
                     <ListItemButton selected={p.name === props.currentPresetName} onClick={() => onPresetClick(i)}>
                         <ListItemText primary={<div className={'preset-item-text'}>
-                            <p>{p.name}</p>
+                            {editablePresetNameIdx == i
+                                ? <TextField inputRef={(el: HTMLInputElement) => el?.select()}
+                                             id={'standard-basic'} defaultValue={p.name} onClick={e => e.stopPropagation()}
+                                             onKeyUp={(e) => onPresetTextFieldKeyUp(i, e, p)}/>
+                                : <p onClick={e => onPresetNameClicked(e, i)
+                                }>{p.name}</p>}
                         </div>} />
                         <IconButton onClick={e => onPresetDeleteClick(i, e)}>
                             <DeleteIcon />
@@ -187,7 +215,7 @@ export function PresetComponent(props: {
             </ListItem>)}
         </List>
         <div id={'preset-button-panel'}>
-            <input ref={inputRef} type="file" className="file-input" onInput={uploadFile} accept={'application/json'}/>
+            <input ref={loadButtonRef} type="file" className="file-input" onInput={uploadFile} accept={'application/json'}/>
             <Button className={'button'} id={'add-preset-button'} variant={'outlined'}
                     onClick={addPreset}>Create preset</Button>
             <Button className={'button'} id={'save-preset-button'} onClick={savePresets} disabled={!presets || presets.length === 0}>Save presets</Button>

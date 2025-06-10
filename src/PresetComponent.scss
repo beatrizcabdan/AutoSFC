@@ -38,6 +38,26 @@
     padding: 0;
 }
 
+.MuiTextField-root {
+    height: 100% !important;
+    padding: 0.3rem 0 !important;
+
+    fieldset {
+        height: 100% !important;
+        padding: 0.4rem;
+        left: -3px;
+    }
+
+    * {
+        height: fit-content !important;
+        font-size: 0.8333rem !important;
+    }
+}
+
+.MuiInputBase-input {
+    padding: 0 !important;
+}
+
 #presets-container {
     width: fit-content;
     flex: none;
