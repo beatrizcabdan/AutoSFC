@@ -11,7 +11,7 @@ import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {UploadButton} from "./UploadButton.tsx";
 import {debounce, mortonInterlace, hilbertEncode} from "./utils.ts";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
-import {PresetComponent} from "./PresetComponent.tsx";
+import {Preset, PresetComponent} from "./PresetComponent.tsx";
 import {ProcessingComponent} from "./ProcessingComponent.tsx";
 import {EncoderSwitch} from "./EncoderSwitch.tsx";
 import {PaperContainer} from "./PaperContainer.tsx";
@@ -115,6 +115,8 @@ function App() {
     const playbackIntervalRef = useRef(-1)
 
     const [showDialog, setShowDialog] = useState(false)
+
+    const [currentPresetName, setCurrentPresetName] = useState('')
 
     const loadFile = () => {
         fetch(filePath).then(r => {
@@ -290,6 +292,7 @@ function App() {
                     const url = URL.createObjectURL(file)
                     setFileName(file.name)
                     setFilePath(url)
+                    setCurrentPresetName('')
                 } else {
                     alert("Error reading the file. Please try again.");
                 }
@@ -311,9 +314,31 @@ function App() {
         setMaxSFCvalue((newValue as number[])[1])
     };
 
-    const presetSelected = (startRow: number, endRow: number) => {
-        setStartLine(startRow)
-        setEndLine(endRow)
+    const presetSelected = (preset: Preset | null ) => {
+        if (!preset) {
+            setCurrentPresetName('')
+            return
+        }
+        for (const s of preset.signalTransforms) {
+            if (allDataLabelsRef.current.length > 0 && !allDataLabelsRef.current.includes(s.signalName)) {
+                console.error(`No such signal name: ${s.signalName}!`)
+                alert(`No such signal name: ${s.signalName}!`)
+                return
+            }
+        }
+
+        setCurrentPresetName(preset.name)
+        setBitsPerSignal(preset.bitsPerSignal)
+        setStartLine(preset.signalStartRow)
+        setEndLine(preset.signalEndRow)
+        setShowSignalTransforms(preset.plotTransformedSignals)
+        setMaxSFCvalue(preset.cspEndRow)
+        setMinSFCvalue(preset.cspStartRow)
+        setEncoder(preset.encoder)
+        // Assume order is the same in signalTransforms, scales & offsets
+        setOffsets(preset.signalTransforms.map(s => s.offset))
+        setScales(preset.signalTransforms.map(s => s.scaling))
+        setDisplayedDataLabels(preset.signalTransforms.map(s => s.signalName))
     }
 
     const setMinMaxChartValues = (data: number[][]) => {
@@ -454,7 +479,10 @@ function App() {
                             <div className={'control-container'} id={'presets-container'}>
                                 <h3>Presets</h3>
                                 <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected}
-                                                 displayedStartRow={startLine} displayedEndRow={endLine}
+                                                 plotTransformedSignals={showSignalTransforms} scales={scales} offsets={offsets}
+                                                 displayedStartRow={startLine} displayedEndRow={endLine} bitsPerSignal={bitsPerSignal}
+                                                 minSfcValue={minSFCvalue} maxSfcValue={maxSFCvalue} encoder={encoder}
+                                                 displayedDataLabels={displayedDataLabels} currentPresetName={currentPresetName}
                                                  currentDataFile={fileName.replace(/.\//, '')}/>
                             </div>
                         </div>

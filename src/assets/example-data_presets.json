@@ -1,0 +1,44 @@
+[{
+ "signalStartRow": 120,
+ "signalEndRow": 370,
+ "cspStartRow": 929557,
+ "cspEndRow": 268405525,
+ "bitsPerSignal": 14,
+ "signalTransforms": [
+  {
+   "signalName": "sampleTimeStamp.microseconds",
+   "offset": 100,
+   "scaling": 10
+  },
+  {
+   "signalName": "groundSpeed",
+   "offset": 100,
+   "scaling": 10
+  }
+ ],
+ "encoder": "hilbert",
+ "plotTransformedSignals": true,
+ "name": "preset_01"
+},
+{
+ "signalStartRow": 120,
+ "signalEndRow": 370,
+ "cspStartRow": 162,
+ "cspEndRow": 64194,
+ "bitsPerSignal": 8,
+ "signalTransforms": [
+  {
+   "signalName": "sampleTimeStamp.microseconds",
+   "offset": 100,
+   "scaling": 75
+  },
+  {
+   "signalName": "groundSpeed",
+   "offset": 100,
+   "scaling": 31
+  }
+ ],
+ "encoder": "morton",
+ "plotTransformedSignals": false,
+ "name": "preset_02"
+}]
