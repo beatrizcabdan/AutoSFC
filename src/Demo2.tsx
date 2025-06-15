@@ -1,4 +1,5 @@
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
+import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR, PlayStatus} from "./App.tsx";
 import {debounce, hilbertEncode, mortonInterlace} from "./utils.ts";
 import {Preset, PresetComponent} from "./PresetComponent.tsx";
 import {Chart} from "./Chart.tsx";
@@ -9,12 +10,11 @@ import {PlayButton} from "./PlayButton.tsx";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {ProcessingComponent} from "./ProcessingComponent.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
-import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR, PlayStatus} from "./App.tsx";
 import {demoPreset5} from "./Common.ts";
 
 const preset = demoPreset5
 
-export function Demo1() {
+export function Demo2() {
     const SLIDER_START_VAL = 100
     const EXAMPLE_FILE_PATH = './emergency_braking.csv'
     const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
@@ -348,19 +348,10 @@ export function Demo1() {
         setEncoder(newEncoder)
     };
     return <>
-        <h1>Encoding demo</h1>
-
-        <div className={"charts"}>
-            <Chart name={"Original signals plot"} data={showSignalTransforms ? transformedData : data}
-                   scales={scales} offsets={offsets}
-                   minValue={minChartValue} maxValue={maxChartValue} type={"line"} xAxisName={"Time"}
-                   yAxisName={"Signal"} yAxisLabelPos={"left"} legendLabels={displayedDataLabels}
-                   startTimeXticks={startTimeXTicks} finishTimeXticks={finishTimeXTicks}
-                   currentSignalXVal={signalMarkerPos} lineDataSmoothing={preset.lineDataSmoothing}
-                   onLegendClick={selectDataColumns} lineColors={LINE_COLORS}
-                   transformedData={transformedData}/>
+        <h1>CSP comparison demo</h1>
+        <div className={"charts"} id={'demo2-charts'}>
             <Chart name={"Encoded signals plot (CSP)"} data={data} transformedData={transformedData}
-                   scales={scales}
+                   scales={scales} id={'demo2'}
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
                    xAxisName={"Morton"} bitsPerSignal={bitsPerSignal}
                    yAxisName={"Time steps"} yAxisLabelPos={"right"} currentSignalXVal={signalMarkerPos}

@@ -73,7 +73,6 @@ export function PresetComponent(props: {
             const currParamStr = JSON.stringify(createPresetFromCurrParams(false))
             if (currPresStr !== currParamStr) {
                 props.onPresetSelect(null)
-                console.log('Set current preset to null!')
             }
         }
     }, [props.displayedStartRow, props.displayedEndRow, props.plotTransformedSignals, props.scales, props.offsets,

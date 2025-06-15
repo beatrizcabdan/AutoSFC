@@ -6,6 +6,7 @@ import './App.scss'
 import React from 'react';
 import {PaperContainer} from "./PaperContainer.tsx";
 import {Demo1} from "./Demo1.tsx";
+import {Demo2} from "./Demo2.tsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum PlayStatus {
@@ -34,6 +35,7 @@ function App() {
 
             <div id={'main'}>
                 <Demo1 />
+                <Demo2 />
             </div>
 
             <div className="tabcontent" id={'work'}>

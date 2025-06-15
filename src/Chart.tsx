@@ -44,7 +44,8 @@ export function Chart(props: {
     minSFCrange?: number,
     maxSFCrange?: number,
     sfcData?: number[],
-    encoderSwitch?: React.JSX.Element
+    encoderSwitch?: React.JSX.Element,
+    id?: string
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
@@ -257,7 +258,7 @@ export function Chart(props: {
     }, [canvasRef.current, props.data, props.transformedData, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
         props.offsets, props.bitsPerSignal, props.sfcData, props.minSFCrange, props.maxSFCrange]);
 
-    return <div className={'chart'}>
+    return <div className={'chart'} id={props.id ? props.id + '-chart' : ''}>
         <div className={'canvas-container'}>
             <div className={'canvas-wrapper'} id={props.type === 'line' ? 'left-canvas' : 'right-canvas'}>
                 <h2 className={'chartitle'}>{props.name}</h2>
@@ -269,7 +270,7 @@ export function Chart(props: {
                             <span className={'y-tick-line'}/>
                         </div>})}
                 </div>
-                <canvas ref={canvasRef} className={props.type}></canvas>
+                <canvas ref={canvasRef} className={props.type} id={props.id ? props.id + '-canvas' : ''}></canvas>
                 <div className={'chartXTicks'}>{
                     Array.from(Array(PLOT_NUM_X_VALUES).keys()).map(i => {
                         return <div key={i} className={'x-tick-mark'}>

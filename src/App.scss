@@ -71,6 +71,18 @@ html {
   flex-direction: row;
   gap: 2.0rem;
 
+  &#demo2-charts {
+    width: 100%;
+
+    .chart, .chart .canvas-container, .chart .canvas-container .canvas-wrapper {
+      width: 100%;
+    }
+
+    .canvas-wrapper {
+      grid-template-columns: min-content auto min-content min-content !important;
+    }
+  }
+
   .chart {
     justify-content: center;
     align-items: center;
@@ -79,6 +91,10 @@ html {
     box-sizing: border-box;
     gap: 0;
     align-self: flex-start;
+
+    /*&#demo2-chart {
+      width: 100%;
+    }*/
 
     .chartitle {
         margin: 0.5rem;
@@ -181,6 +197,10 @@ html {
           height: $canvas-height;
           width: $canvas-width;
           border: 1px solid black;
+
+          &#demo2-canvas {
+            width: 100%;
+          }
         }
 
         .x-tick-mark-label, .y-tick-mark-label {
