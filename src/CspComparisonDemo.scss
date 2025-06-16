@@ -1,0 +1,108 @@
+#demo2-controls {
+    width: 100%;
+    /*display: grid;
+    row-gap: 0.2rem;
+    column-gap: 1.5rem;
+    grid-auto-rows: auto;
+    grid-template-columns: min-content 1fr min-content;*/
+
+    display: flex;
+    flex-direction: column;
+
+    .comparison-row-div {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        align-items: center;
+        gap: 1.5rem;
+        flex: none;
+
+        #range-container, #range-container * {
+            // width: max-content;
+        }
+
+        #process-container {
+            display: grid;
+            width: fit-content;
+
+            .signals-grid {
+                grid-template-columns: auto repeat(2, min-content) 2rem auto min-content;
+
+                .signal-cell {
+                    grid-column: 1;
+                }
+
+                span.show-transforms-label {
+                    grid-column: 5;
+                    padding-top: 0.1rem;
+                    grid-row: 1;
+                    max-width: 22ch;
+                }
+
+                div.show-transforms-label {
+                    grid-row: 1;
+                    grid-column: 6;
+                    width: fit-content;
+                    margin: 0;
+
+                    * {
+                        padding: 0;
+                    }
+                }
+
+                span {
+                    align-self: center;
+                }
+
+                span.bits-label {
+                    grid-row: 2;
+                    grid-column: 5;
+                    padding-top: 0;
+                    margin-top: 0;
+                }
+
+                label.bits-label {
+                    grid-row: 2;
+                    grid-column: 6;
+                    margin-top: 0;
+                    text-align: left;
+
+                    * {
+                        margin-left: 0;
+                        padding-left: 0;
+                        margin-right: 0;
+                        padding-right: 0;
+                    }
+                }
+
+                #sfc-header {
+                    grid-column: 5 / 7;
+                }
+
+                /*span.max-sfc-label, span.min-sfc-label {
+                    justify-self: flex-end;
+                }*/
+
+                span.max-sfc-label, span.min-sfc-label {
+                    grid-column: 5 / 6;
+                }
+
+                label.max-sfc-label, label.min-sfc-label {
+                    grid-column: 6 / 7;
+
+                    * {
+                        // margin-left: 0;
+                        margin-left: 0;
+                        margin-right: 0;
+                        // padding-right: 0;
+                    }
+
+                }
+
+                #reset-button {
+                    grid-column: 1 / 7;
+                }
+            }
+        }
+    }
+}

@@ -1,20 +1,18 @@
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR, PlayStatus} from "./App.tsx";
 import {debounce, hilbertEncode, mortonInterlace} from "./utils.ts";
-import {Preset, PresetComponent} from "./PresetComponent.tsx";
 import {Chart} from "./Chart.tsx";
 import {EncoderSwitch} from "./EncoderSwitch.tsx";
 import {UploadButton} from "./UploadButton.tsx";
-import {PlaySlider} from "./PlaySlider.tsx";
-import {PlayButton} from "./PlayButton.tsx";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {ProcessingComponent} from "./ProcessingComponent.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {demoPreset5} from "./Common.ts";
+import './CspComparisonDemo.scss'
 
 const preset = demoPreset5
 
-export function Demo2() {
+export function CspComparisonDemo() {
     const SLIDER_START_VAL = 100
     const EXAMPLE_FILE_PATH = './emergency_braking.csv'
     const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
@@ -47,9 +45,9 @@ export function Demo2() {
     // Show transformed signals in signal chart
     const [showSignalTransforms, setShowSignalTransforms] = useState(false)
 
-    const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
-    const [finishTimeXTicks, setFinishTimeXTicks] = useState<number>()
+    const [, setStartTimeXTicks] = useState<number>()
     const allDataLabelsRef = useRef<string[]>([])
+
     const [minChartValue, setMinChartValue] = useState<number>(-1)
     const [maxChartValue, setMaxChartValue] = useState<number>(-1)
 
@@ -58,8 +56,6 @@ export function Demo2() {
     const playbackIntervalRef = useRef(-1)
 
     const [showDialog, setShowDialog] = useState(false)
-
-    const [currentPresetName, setCurrentPresetName] = useState('')
 
     const loadFile = () => {
         fetch(filePath).then(r => {
@@ -121,7 +117,6 @@ export function Demo2() {
                     setOffsets(Array(colIndices.length).fill(DEFAULT_OFFSET))
                 }
                 setStartTimeXTicks(startTimeXTicks)
-                setFinishTimeXTicks(finishTimeXTicks)
                 setMinChartValue(minData)
                 setMaxChartValue(maxData)
                 setDataNumLines(lines.length - 1)
@@ -135,17 +130,7 @@ export function Demo2() {
         loadFile()
     }, [startLine, endLine, displayedDataLabels, filePath]);
 
-    const onSliderDrag = (e: Event, value: number | number[]) => {
-        if (playStatus === PlayStatus.PLAYING) {
-            clearInterval(playbackIntervalRef.current)
-            setPlayStatus(PlayStatus.PAUSED)
-        } else {
-            setPlayStatus((value as number) >= 100 ? PlayStatus.REACHED_END : PlayStatus.PAUSED)
-        }
-        setSignalMarkerPos(value as number)
-    }
-
-    // Stop playback when reaching end
+// Stop playback when reaching end
     useEffect(() => {
         if (playStatus === PlayStatus.PLAYING && signalMarkerPos >= 100) {
             clearInterval(playbackIntervalRef.current)
@@ -158,30 +143,6 @@ export function Demo2() {
     useEffect(() => {
         return () => clearInterval(playbackIntervalRef.current);
     }, []);
-
-    function startPlayback() {
-        playbackIntervalRef.current = setInterval(() => {
-                setSignalMarkerPos((signalMarkerPos) => Number(signalMarkerPos) + 0.1)
-            },
-            20)
-    }
-
-    const onPlayClick = () => {
-        switch (playStatus) {
-            case PlayStatus.PAUSED:
-                setPlayStatus(PlayStatus.PLAYING)
-                startPlayback();
-                break
-            case PlayStatus.PLAYING:
-                setPlayStatus(PlayStatus.PAUSED)
-                clearInterval(playbackIntervalRef.current)
-                break
-            case PlayStatus.REACHED_END:
-                setPlayStatus(PlayStatus.PLAYING)
-                setSignalMarkerPos(0)
-                startPlayback()
-        }
-    }
 
     const selectDataColumns = () => {
         if (!showDialog) {
@@ -234,7 +195,6 @@ export function Demo2() {
                     const url = URL.createObjectURL(file)
                     setFileName(file.name)
                     setFilePath(url)
-                    setCurrentPresetName('')
                 } else {
                     alert("Error reading the file. Please try again.");
                 }
@@ -250,34 +210,6 @@ export function Demo2() {
         setStartLine((newValue as number[])[0])
         setEndLine((newValue as number[])[1])
     };
-
-    const presetSelected = (preset: Preset | null) => {
-        if (!preset) {
-            setCurrentPresetName('')
-            return
-        }
-        for (const s of preset.signalTransforms) {
-            if (allDataLabelsRef.current.length > 0 && !allDataLabelsRef.current.includes(s.signalName)) {
-                console.error(`No such signal name: ${s.signalName}!`)
-                alert(`No such signal name: ${s.signalName}!`)
-                return
-            }
-        }
-
-        setCurrentPresetName(preset.name)
-        setBitsPerSignal(preset.bitsPerSignal)
-        setStartLine(preset.signalStartRow)
-        setEndLine(preset.signalEndRow)
-        setShowSignalTransforms(preset.plotTransformedSignals)
-        setMaxSFCvalue(preset.cspEndRow)
-        setMinSFCvalue(preset.cspStartRow)
-        setEncoder(preset.encoder)
-        // Assume order is the same in signalTransforms, scales & offsets
-        setOffsets(preset.signalTransforms.map(s => s.offset))
-        setScales(preset.signalTransforms.map(s => s.scaling))
-        setDisplayedDataLabels(preset.signalTransforms.map(s => s.signalName))
-    }
-
     const setMinMaxChartValues = (data: number[][]) => {
         let min = Infinity
         let max = -Infinity
@@ -358,70 +290,42 @@ export function Demo2() {
                    sfcData={sfcData} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue}
                    encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch}/>}/>
         </div>
-        <div className={"controls"}>
-            <div className={"vert-control-wrapper"}>
-                <div className={"control-container"} id={"first-control-row"}>
-                    <div className={"file-container"}>
-                        <h3>Current file</h3>
-                        <UploadButton onClick={uploadFile} label={"Upload file..."}
-                                      currentFile={fileName.replace(/.\//, "")}/>
-                    </div>
-                    <div className={"position-container"}>
-                        <h3>Current datapoint</h3>
-                        <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag}
-                                    value={signalMarkerPos}/>
-                        <PlayButton onClick={onPlayClick} status={playStatus}/>
+        <div className={"controls"} id={'demo2-controls'}>
+            <div className={'control-container comparison-row-div'}>
+                <div className={"file-container"}>
+                    <UploadButton onClick={uploadFile} label={"Upload file..."}
+                                  currentFile={fileName.replace(/.\//, "")}/>
+                </div>
+                <div className={"control-container"} id={"range-container"}>
+                    <h3>Displayed range</h3>
+                    <DataRangeSlider dataRangeChartStart={startLine}
+                                     dataRangeChartEnd={endLine}
+                                     numLines={dataNumLines}
+                                     onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
+                    <div className={"text-controls"}>
+                        <label className={"input-label"}>
+                            Start row:
+                            <input type="number" value={startLine}
+                                   onChange={(e) => setStartLine(Number(e.target.value))}/>
+                        </label>
+                        <label className={"input-label"}>
+                            End row:
+                            <input type="number" value={endLine}
+                                   onChange={(e) => setEndLine(Number(e.target.value))}/>
+                        </label>
                     </div>
                 </div>
-                <div className={"control-row"}>
-                    <div className={"control-container"} id={"range-container"}>
-                        <h3>Displayed range</h3>
-                        <DataRangeSlider dataRangeChartStart={startLine}
-                                         dataRangeChartEnd={endLine}
-                                         numLines={dataNumLines}
-                                         onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
-                        <div className={"text-controls"}>
-                            <label className={"input-label"}>
-                                Start row:
-                                <input type="number" value={startLine}
-                                       onChange={(e) => setStartLine(Number(e.target.value))}/>
-                            </label>
-                            <label className={"input-label"}>
-                                End row:
-                                <input type="number" value={endLine}
-                                       onChange={(e) => setEndLine(Number(e.target.value))}/>
-                            </label>
-                        </div>
-                    </div>
-                    <div className={"control-container"} id={"presets-container"}>
-                        <h3>Presets</h3>
-                        <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected}
-                                         plotTransformedSignals={showSignalTransforms} scales={scales}
-                                         offsets={offsets}
-                                         displayedStartRow={startLine}
-                                         displayedEndRow={endLine} bitsPerSignal={bitsPerSignal}
-                                         minSfcValue={minSFCvalue} maxSfcValue={maxSFCvalue}
-                                         encoder={encoder}
-                                         displayedDataLabels={displayedDataLabels}
-                                         currentPresetName={currentPresetName}
-                                         currentDataFile={fileName.replace(/.\//, "")}/>
-                    </div>
-                </div>
-            </div>
-            <div className={"vert-control-wrapper"}>
-                <div className={"vert-control-wrapper"}>
-                    <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS}
-                                         scales={scales} offsets={offsets}
-                                         bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
-                                         showSignalTransforms={showSignalTransforms}
-                                         setShowSignalTransforms={onShowSignalTransformsChanged}
-                                         onOffsetsChanged={onOffsetsChanged} minSFCvalue={minSFCvalue}
-                                         setMinSFCvalue={setMinSFCvalue} setMaxSFCvalue={setMaxSFCvalue}
-                                         maxSFCvalue={maxSFCvalue}
-                                         initialMinSFCvalue={initialMinSFCvalue}
-                                         initialMaxSFCvalue={initialMaxSFCvalue}
-                                         onBitsPerSignalChanged={onBitsPerSignalChanged}/>
-                </div>
+                <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS}
+                                     scales={scales} offsets={offsets}
+                                     bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
+                                     showSignalTransforms={showSignalTransforms}
+                                     setShowSignalTransforms={onShowSignalTransformsChanged}
+                                     onOffsetsChanged={onOffsetsChanged} minSFCvalue={minSFCvalue}
+                                     setMinSFCvalue={setMinSFCvalue} setMaxSFCvalue={setMaxSFCvalue}
+                                     maxSFCvalue={maxSFCvalue}
+                                     initialMinSFCvalue={initialMinSFCvalue}
+                                     initialMaxSFCvalue={initialMaxSFCvalue}
+                                     onBitsPerSignalChanged={onBitsPerSignalChanged}/>
             </div>
         </div>
 

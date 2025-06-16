@@ -13,6 +13,10 @@ $horiz-container-padding: 1.8rem;
   box-sizing: border-box;
 }
 
+h1 {
+  margin-top: 6rem;
+}
+
 h2 {
   letter-spacing: -0.07rem;
   color: var(--text-color-light);
@@ -91,10 +95,6 @@ html {
     box-sizing: border-box;
     gap: 0;
     align-self: flex-start;
-
-    /*&#demo2-chart {
-      width: 100%;
-    }*/
 
     .chartitle {
         margin: 0.5rem;
@@ -403,6 +403,7 @@ input[type="number"] {
       span.bits-label, span.show-transforms-label {
         grid-column: 1;
         text-align: left;
+        padding-top: 0.2rem;
       }
 
       label.bits-label, div.show-transforms-label {
@@ -423,9 +424,9 @@ input[type="number"] {
         }
       }
 
-      span.bits-label {
+      /*span.bits-label {
         padding-top: 0.2rem;
-      }
+      }*/
 
       span.min-sfc-label, span.max-sfc-label {
         grid-column: 1;

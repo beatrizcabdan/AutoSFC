@@ -14,7 +14,7 @@ import {demoPreset5} from "./Common.ts";
 
 const preset = demoPreset5
 
-export function Demo1() {
+export function EncodingDemo() {
     const SLIDER_START_VAL = 100
     const EXAMPLE_FILE_PATH = './emergency_braking.csv'
     const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
