@@ -11,8 +11,8 @@ export function ProcessingComponent(props: {
     offsets: (number | undefined)[],
     bitsPerSignal: number | string,
     onBitsPerSignalChanged: (bits: number | string) => void,
-    showSignalTransforms: boolean,
-    setShowSignalTransforms: (show: boolean) => void,
+    showSignalTransforms?: boolean,
+    setShowSignalTransforms?: (show: boolean) => void,
     minSFCvalue: number,
     setMinSFCvalue: (value: (((prevState: number) => number) | number)) => void,
     setMaxSFCvalue: (value: (((prevState: number) => number) | number)) => void,
@@ -66,11 +66,14 @@ export function ProcessingComponent(props: {
                        onChange={(e) =>
                            props.onBitsPerSignalChanged(e.target.value ? Number(e.target.value) : '')}/>
             </label>
-            <span className={'input-label show-transforms-label'}>Plot transformed signals</span>
-            <div className={'input-label show-transforms-label'}>
-                <Checkbox size={'small'} checked={props.showSignalTransforms}
-                          onChange={() => props.setShowSignalTransforms(!props.showSignalTransforms)}/>
-            </div>
+            {props.showSignalTransforms !== undefined &&
+                <>
+                    <span className={'input-label show-transforms-label'}>Plot transformed signals</span>
+                    <div className={'input-label show-transforms-label'}>
+                        <Checkbox size={'small'} checked={props.showSignalTransforms} onChange={() => props.setShowSignalTransforms!(!props.showSignalTransforms)}/>
+                    </div>
+                </>
+            }
             <h3 id={'sfc-header'}>CSP (right plot) index range</h3>
             <span className={'input-label min-sfc-label'}>Min value</span>
             <label className={'input-label min-sfc-label'}>

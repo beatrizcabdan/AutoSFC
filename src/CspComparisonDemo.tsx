@@ -292,34 +292,34 @@ export function CspComparisonDemo() {
         </div>
         <div className={"controls"} id={'demo2-controls'}>
             <div className={'control-container comparison-row-div'}>
-                <div className={"file-container"}>
-                    <UploadButton onClick={uploadFile} label={"Upload file..."}
-                                  currentFile={fileName.replace(/.\//, "")}/>
-                </div>
-                <div className={"control-container"} id={"range-container"}>
-                    <h3>Displayed range</h3>
-                    <DataRangeSlider dataRangeChartStart={startLine}
-                                     dataRangeChartEnd={endLine}
-                                     numLines={dataNumLines}
-                                     onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
-                    <div className={"text-controls"}>
-                        <label className={"input-label"}>
-                            Start row:
-                            <input type="number" value={startLine}
-                                   onChange={(e) => setStartLine(Number(e.target.value))}/>
-                        </label>
-                        <label className={"input-label"}>
-                            End row:
-                            <input type="number" value={endLine}
-                                   onChange={(e) => setEndLine(Number(e.target.value))}/>
-                        </label>
+                <div className={'left-control-grid'}>
+                    <div className={"file-container"}>
+                        <UploadButton onClick={uploadFile} label={"Upload file..."}
+                                      currentFile={fileName.replace(/.\//, "")}/>
+                    </div>
+                    <div className={"control-container"} id={"range-container"}>
+                        <h3>Displayed range</h3>
+                        <DataRangeSlider dataRangeChartStart={startLine}
+                                         dataRangeChartEnd={endLine}
+                                         numLines={dataNumLines}
+                                         onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
+                        <div className={"text-controls"}>
+                            <label className={"input-label"}>
+                                Start row:
+                                <input type="number" value={startLine}
+                                       onChange={(e) => setStartLine(Number(e.target.value))}/>
+                            </label>
+                            <label className={"input-label"}>
+                                End row:
+                                <input type="number" value={endLine}
+                                       onChange={(e) => setEndLine(Number(e.target.value))}/>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS}
                                      scales={scales} offsets={offsets}
                                      bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
-                                     showSignalTransforms={showSignalTransforms}
-                                     setShowSignalTransforms={onShowSignalTransformsChanged}
                                      onOffsetsChanged={onOffsetsChanged} minSFCvalue={minSFCvalue}
                                      setMinSFCvalue={setMinSFCvalue} setMaxSFCvalue={setMaxSFCvalue}
                                      maxSFCvalue={maxSFCvalue}
