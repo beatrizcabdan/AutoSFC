@@ -9,7 +9,8 @@ import {ProcessingComponent} from "./ProcessingComponent.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {demoPreset5} from "./Common.ts";
 import './CspComparisonDemo.scss'
-import {Checkbox, FormControlLabel} from "@mui/material";
+import {Checkbox, FormControlLabel, IconButton} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const preset = demoPreset5
 
@@ -294,7 +295,12 @@ export function CspComparisonDemo() {
         <div className={"controls"} id={'demo2-controls'}>
             <div className={'control-container comparison-row-div'}>
                 <div className={'left-control-grid'}>
-                    <FormControlLabel control={<Checkbox defaultChecked/>} label="Show" className={'show-checkbox'}/>
+                    <div className={'first-buttons-column'}>
+                        <FormControlLabel control={<Checkbox defaultChecked/>} label="Show" className={'show-checkbox'}/>
+                        <FormControlLabel control={<IconButton onClick={e => {} }>
+                            <DeleteIcon />
+                        </IconButton>} label={'Delete'} className={'delete-row-button'}/>
+                    </div>
                     <div className={"file-container"}>
                         <UploadButton onClick={uploadFile} label={"Upload file..."}
                                       currentFile={fileName.replace(/.\//, "")}/>

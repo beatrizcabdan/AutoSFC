@@ -88,7 +88,7 @@ export function ProcessingComponent(props: {
                     </div>
                 </>
             }
-            <h3 id={'sfc-header'}>CSP (right plot) index range</h3>
+            <h3 id={'sfc-header'}>CSP index range</h3>
             <span className={'input-label min-sfc-label'}>Min value</span>
             <label className={'input-label min-sfc-label'}>
                 <input type="number" value={props.minSFCvalue}

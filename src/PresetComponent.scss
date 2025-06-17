@@ -17,6 +17,12 @@
         background-color: var(--light-gray) !important;
         cursor: pointer;
     }
+
+    .MuiSvgIcon-root {
+        width: 1.0rem !important;
+        height: 1.0rem !important;
+        padding: 0;
+    }
 }
 
 .MuiListItem-root {
@@ -30,12 +36,6 @@
 
 .MuiListItemText-root {
     margin: 0 !important;
-}
-
-.MuiSvgIcon-root {
-    width: 1.0rem !important;
-    height: 1.0rem !important;
-    padding: 0;
 }
 
 .MuiTextField-root {
