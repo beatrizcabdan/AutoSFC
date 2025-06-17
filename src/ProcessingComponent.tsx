@@ -18,8 +18,11 @@ export function ProcessingComponent(props: {
     setMaxSFCvalue: (value: (((prevState: number) => number) | number)) => void,
     maxSFCvalue: number,
     initialMinSFCvalue: number,
-    initialMaxSFCvalue: number
+    initialMaxSFCvalue: number,
+    resetBtnPos?: string
 }) {
+
+    console.log(props.resetBtnPos)
 
     // TODO: Decide on how reset should work when presets are used
     function onResetClicked() {
@@ -32,6 +35,15 @@ export function ProcessingComponent(props: {
         props.setMaxSFCvalue(props.initialMaxSFCvalue)
     }
 
+    function getResetButton() {
+        return <Button id={'reset-button'} variant='outlined' onClick={onResetClicked}
+                       disabled={props.offsets.every(v => v === 0) // Disable if no transforms have been made
+                           && props.scales.every(v => v === DEFAULT_SCALING_FACTOR)
+                           && props.bitsPerSignal === DEFAULT_BITS_PER_SIGNAL
+                           && props.initialMinSFCvalue == props.minSFCvalue
+                           && props.initialMaxSFCvalue == props.maxSFCvalue}>Reset all transforms</Button>;
+    }
+
     return <div className={'control-container'} id={'process-container'}>
         <h3>Transform</h3>
         <div className={'signals-grid'}>
@@ -41,7 +53,8 @@ export function ProcessingComponent(props: {
             {props.displayedDataLabels?.map((signal, i) =>
                 <React.Fragment key={i}>
                     <div className={'signal-cell'} key={i}>
-                        <span style={{background: props.lineColors[i % props.lineColors.length]}} className={'color-line'}></span>
+                        <span style={{background: props.lineColors[i % props.lineColors.length]}}
+                              className={'color-line'}></span>
                         <span className={'signal-name'}>{signal}</span>
                     </div>
                     <label className={'input-label offset-label'}>
@@ -70,7 +83,8 @@ export function ProcessingComponent(props: {
                 <>
                     <span className={'input-label show-transforms-label'}>Plot transformed signals</span>
                     <div className={'input-label show-transforms-label'}>
-                        <Checkbox size={'small'} checked={props.showSignalTransforms} onChange={() => props.setShowSignalTransforms!(!props.showSignalTransforms)}/>
+                        <Checkbox size={'small'} checked={props.showSignalTransforms}
+                                  onChange={() => props.setShowSignalTransforms!(!props.showSignalTransforms)}/>
                     </div>
                 </>
             }
@@ -85,12 +99,8 @@ export function ProcessingComponent(props: {
                 <input type="number" value={props.maxSFCvalue}
                        onChange={(e) => props.setMaxSFCvalue(Number(e.target.value))}/>
             </label>
-            <Button id={'reset-button'} variant='outlined' onClick={onResetClicked}
-                    disabled={props.offsets.every(v => v === 0) // Disable if no transforms have been made
-                        && props.scales.every(v => v === DEFAULT_SCALING_FACTOR)
-                        && props.bitsPerSignal === DEFAULT_BITS_PER_SIGNAL
-                        && props.initialMinSFCvalue == props.minSFCvalue
-                        && props.initialMaxSFCvalue == props.maxSFCvalue}>Reset all transforms</Button>
+            {(props.resetBtnPos === undefined || props.resetBtnPos === 'bottom') && getResetButton()}
         </div>
+        {props.resetBtnPos === 'right' && getResetButton()}
     </div>;
 }

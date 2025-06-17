@@ -325,7 +325,7 @@ export function CspComparisonDemo() {
                                      maxSFCvalue={maxSFCvalue}
                                      initialMinSFCvalue={initialMinSFCvalue}
                                      initialMaxSFCvalue={initialMaxSFCvalue}
-                                     onBitsPerSignalChanged={onBitsPerSignalChanged}/>
+                                     onBitsPerSignalChanged={onBitsPerSignalChanged} resetBtnPos={'right'}/>
             </div>
         </div>
 

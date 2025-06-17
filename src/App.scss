@@ -449,25 +449,6 @@ input[type="number"] {
         grid-column: 1 / 4;
       }
 
-      // TODO: Refactor into generic outlined, blue-border button
-      #reset-button {
-        margin-top: 1rem;
-        grid-column: 1 / 4;
-        width: fit-content;
-        justify-self: center;
-        border-width: 2px;
-        border-radius: 6px;
-        color: var(--text-color-light);
-        font-weight: 700;
-        font-size: 0.6rem;
-        letter-spacing: 0.02rem;
-        transition: all 0.2s;
-
-        &.Mui-disabled {
-          color: var(--button-active);
-        }
-      }
-
       input {
         width: 9ch;
         margin: 0 0.5rem;
@@ -476,6 +457,25 @@ input[type="number"] {
       .empty-row {
         content: ' ';
         grid-column: 1 / 4;
+      }
+    }
+
+    // TODO: Refactor into generic outlined, blue-border button
+    #reset-button {
+      margin-top: 1rem;
+      grid-column: 1 / 4;
+      width: fit-content;
+      justify-self: center;
+      border-width: 2px;
+      border-radius: 6px;
+      color: var(--text-color-light);
+      font-weight: 700;
+      font-size: 0.6rem;
+      letter-spacing: 0.02rem;
+      transition: all 0.2s;
+
+      &.Mui-disabled {
+        color: var(--button-active);
       }
     }
   }
