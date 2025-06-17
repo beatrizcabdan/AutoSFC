@@ -23,6 +23,27 @@
             flex: 1 1 fit-content;
             height: 100%;
 
+            .show-checkbox {
+                grid-column: 1;
+                grid-row: 1 / 3;
+                flex-direction: column;
+                align-self: center;
+                padding: 1rem;
+
+                .css-rizt0-MuiTypography-root {
+                    text-transform: uppercase;
+                    line-height: 0.6rem !important;
+                    letter-spacing: 0.02rem !important;
+                    font-size: 0.6rem !important;
+                    font-weight: 700 !important;
+                }
+
+                .MuiSvgIcon-root {
+                    width: 2rem !important;
+                    height: 2rem !important;
+                }
+            }
+
             .file-container {
                 grid-row: 1;
                 grid-column: 2;
