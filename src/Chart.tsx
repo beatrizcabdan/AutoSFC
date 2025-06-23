@@ -32,7 +32,7 @@ export function Chart(props: {
     maxValue: number,
     minValue: number,
     legendLabels?: string[] | null,
-    currentSignalXVal: number,
+    currentSignalXVal?: number,
     startTimeXticks?: number,
     finishTimeXticks?: number,
     lineDataSmoothing?: number,
@@ -126,7 +126,9 @@ export function Chart(props: {
 
             // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
             const columns: number[][] = []
-            const markerIndex = Math.floor((props.data[0].length - 1) * props.currentSignalXVal / 100)
+            const markerIndex = props.currentSignalXVal === undefined ? // No play position
+                100
+                : Math.floor((props.data[0].length - 1) * props.currentSignalXVal / 100)
 
             // const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
             const mortonXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
@@ -215,7 +217,7 @@ export function Chart(props: {
                     ctx.closePath()
                 })
             } else {
-                // Morton scatterplot
+                // SFC scatterplot
                 // Draw bar
                 props.sfcData!.forEach((m) => {
                     const curveCanvasWidth = canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING
@@ -227,7 +229,10 @@ export function Chart(props: {
                     const currentBarDistance = Math.abs(barX - signalX) / curveCanvasWidth
 
                     const defaultColor = {r: 204, g: 204, b: 204}
-                    const markedColor = {r: 0, g: 150, b: 255}
+                    // Only partially color SFC plot if there's a play position
+                    const markedColor = props.currentSignalXVal === undefined
+                        ? {r: 204, g: 204, b: 204}
+                        : {r: 0, g: 150, b: 255}
                     const coloredWidth = 0.03
                     const markedWeight = Math.max(coloredWidth - currentBarDistance, 0) / coloredWidth
                     ctx.fillStyle = `rgb(

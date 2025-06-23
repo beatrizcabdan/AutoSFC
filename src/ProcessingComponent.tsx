@@ -22,8 +22,6 @@ export function ProcessingComponent(props: {
     resetBtnPos?: string
 }) {
 
-    console.log(props.resetBtnPos)
-
     // TODO: Decide on how reset should work when presets are used
     function onResetClicked() {
         for (let i = 0; i < props.offsets.length; i++) {

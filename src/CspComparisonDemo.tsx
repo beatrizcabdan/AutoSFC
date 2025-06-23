@@ -14,13 +14,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 const preset = demoPreset5
 
-export function CspComparisonDemo() {
-    const SLIDER_START_VAL = 100
-    const EXAMPLE_FILE_PATH = './emergency_braking.csv'
+export function CspComparisonDemo(e: React.ChangeEvent<HTMLInputElement>) {
+    const EXAMPLE_FILE_PATHS = ['./emergency_braking.csv', './example-data.csv']
     const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
 
-    const [filePath, setFilePath] = useState(EXAMPLE_FILE_PATH)
-    const [fileName, setFileName] = useState(EXAMPLE_FILE_PATH)
+    const [filePaths, setFilePaths] = useState(EXAMPLE_FILE_PATHS)
+    const [fileNames, setFileNames] = useState(EXAMPLE_FILE_PATHS)
     const DATA_POINT_INTERVAL = preset.dataPointInterval
 
     const [dataNumLines, setDataNumLines] = useState(-1)
@@ -34,7 +33,10 @@ export function CspComparisonDemo() {
     const [initialMinSFCvalue, setInitialMinSFCvalue] = useState(preset.sfcRangeMin)
     const [initialMaxSFCvalue, setInitialMaxSFCvalue] = useState(preset.sfcRangeMax)
 
-    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y']) // TODO: Revert to 'accel_x', 'accel_y', 'speed'
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[][] | null>([
+        ['accel_x', 'accel_y'],
+        ['sampleTimeStamp.microseconds', 'groundSpeed']
+    ]) // TODO: Revert to 'accel_x', 'accel_y', 'speed'
 
     const [data, setData] = useState<number[][]>([])
     const [transformedData, setTransformedData] = useState<number[][]>([]) // Transformed in "Transform" panel
@@ -44,107 +46,83 @@ export function CspComparisonDemo() {
     const [scales, setScales] = useState<(number | undefined)[]>([])
     const [offsets, setOffsets] = useState<(number | undefined)[]>([])
     const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(DEFAULT_BITS_PER_SIGNAL)
-    // Show transformed signals in signal chart
-    const [showSignalTransforms, setShowSignalTransforms] = useState(false)
 
-    const [, setStartTimeXTicks] = useState<number>()
-    const allDataLabelsRef = useRef<string[]>([])
+    const allDataLabelsRef = useRef<string[][]>([])
 
     const [minChartValue, setMinChartValue] = useState<number>(-1)
     const [maxChartValue, setMaxChartValue] = useState<number>(-1)
 
-    const [signalMarkerPos, setSignalMarkerPos] = useState<number>(SLIDER_START_VAL)
-    const [playStatus, setPlayStatus] = useState(PlayStatus.PAUSED)
-    const playbackIntervalRef = useRef(-1)
-
     const [showDialog, setShowDialog] = useState(false)
+    const [fileToSelectColumnsFor, setFileToSelectColumnsFor] = useState(-1)
 
-    const loadFile = () => {
-        fetch(filePath).then(r => {
-            r.text().then(t => {
-                const lines = t
-                    .trim()
-                    .split(/[;,]?\n/)
-                let dataLabels: string[]
-                if (!allDataLabelsRef.current || allDataLabelsRef.current.length === 0) {
-                    dataLabels = lines[0]
-                        .split(/[;,]/)
-                    formatDataLabels(dataLabels)
-                    allDataLabelsRef.current = dataLabels
-                } else {
-                    dataLabels = allDataLabelsRef.current
-                }
-                const colIndices = displayedDataLabels?.map(label => dataLabels
-                    .findIndex(col => col === label)
-                ).filter(index => index !== -1).sort() ?? [dataLabels.length - 2, dataLabels.length - 1]
+    const loadFiles = () => {
+        filePaths.forEach((filePath, i) => {
+            fetch(filePath).then(r => {
+                r.text().then(t => {
+                    const lines = t
+                        .trim()
+                        .split(/[;,]?\n/)
+                    let dataLabels: string[]
+                    if (!allDataLabelsRef.current || !allDataLabelsRef.current[i] || allDataLabelsRef.current[i].length === 0) {
+                        dataLabels = lines[0]
+                            .split(/[;,]/)
+                        formatDataLabels(dataLabels)
+                        allDataLabelsRef.current[i] = dataLabels
+                    } else {
+                        dataLabels = allDataLabelsRef.current[i]
+                    }
+                    const colIndices: number[] = displayedDataLabels![i].map(label => dataLabels
+                        .findIndex(col => col === label)).filter(index => index !== -1).sort() ?? [dataLabels.length - 2, dataLabels.length - 1];
 
-                const beginTime = Number(lines[1]?.split(/[;,]/)[0]) * 1000000 + Number(lines[1]?.split(/[;,]/)[1]);
-                let startTimeXTicks = Number(0 < startLine ? Number(lines[startLine + 1]?.split(/[;,]/)[0]) * 1000000 + Number(lines[startLine + 1]?.split(/[;,]/)[1]) : beginTime);
-                let finishTimeXTicks = Number(-1 < endLine && (endLine < lines.length - 1) ? Number(lines[endLine + 1]?.split(/[;,]/)[0]) * 1000000 + Number(lines[endLine + 1]?.split(/[;,]/)[1]) : Number(lines[lines.length - 1]?.split(/[;,]/)[0]) * 1000000 + Number(lines[lines.length - 1]?.split(/[;,]/)[1]));
-                startTimeXTicks = (startTimeXTicks - beginTime) / 1000000;
-                finishTimeXTicks = (finishTimeXTicks - beginTime) / 1000000;
+                    const newData: number[][] = []
+                    const newTransformedData: number[][] = []
+                    let minData = Infinity
+                    let maxData = 0
+                    colIndices.forEach((colIndex, i) => {
+                        const column: number[] = lines
+                            .slice(1) // Skip headers
+                            .slice(startLine >= 0 ? startLine : 0, endLine >= 0 ? endLine : undefined)
+                            .map(l => l.split(/[;,]/))
+                            .map(arr => Number(arr[colIndex]))
+                            .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
+                        newData.push(column)
+                        const transformedColumn =
+                            column.map((val) => val * (scales[i] ?? DEFAULT_SCALING_FACTOR)
+                                + (offsets[i] ?? DEFAULT_OFFSET))
+                        newTransformedData.push(transformedColumn)
 
-                const newData: number[][] = []
-                const newTransformedData: number[][] = []
-                let minData = Infinity
-                let maxData = 0
-                colIndices.forEach((colIndex, i) => {
-                    const column: number[] = lines
-                        .slice(1) // Skip headers
-                        .slice(startLine >= 0 ? startLine : 0, endLine >= 0 ? endLine : undefined)
-                        .map(l => l.split(/[;,]/))
-                        .map(arr => Number(arr[colIndex]))
-                        .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
-                    newData.push(column)
-                    const transformedColumn =
-                        column.map((val) => val * (scales[i] ?? DEFAULT_SCALING_FACTOR)
-                            + (offsets[i] ?? DEFAULT_OFFSET))
-                    newTransformedData.push(transformedColumn)
+                        const sortedData = ([...column])
+                            .sort((a, b) => a - b)
 
-                    const sortedData = (showSignalTransforms ? [...transformedColumn] : [...column])
-                        .sort((a, b) => a - b)
+                        minData = Math.min(minData, sortedData[0])
+                        maxData = Math.max(maxData, sortedData[sortedData.length - 1])
+                    })
 
-                    minData = Math.min(minData, sortedData[0])
-                    maxData = Math.max(maxData, sortedData[sortedData.length - 1])
+                    computeSetSFCData(newTransformedData, bitsPerSignal, encoder, true, true);
+
+                    setData(newData)
+                    setTransformedData(newTransformedData)
+                    if (scales.length === 0) {
+                        setScales(Array(colIndices.length).fill(DEFAULT_SCALING_FACTOR))
+                    }
+                    if (offsets.length === 0) {
+                        setOffsets(Array(colIndices.length).fill(DEFAULT_OFFSET))
+                    }
+
+                    setMinChartValue(minData)
+                    setMaxChartValue(maxData)
+                    setDataNumLines(lines.length - 1)
                 })
-
-                computeSetSFCData(newTransformedData, bitsPerSignal, encoder, true, true);
-
-                setData(newData)
-                setTransformedData(newTransformedData)
-                if (scales.length === 0) {
-                    setScales(Array(colIndices.length).fill(DEFAULT_SCALING_FACTOR))
-                }
-                if (offsets.length === 0) {
-                    setOffsets(Array(colIndices.length).fill(DEFAULT_OFFSET))
-                }
-                setStartTimeXTicks(startTimeXTicks)
-                setMinChartValue(minData)
-                setMaxChartValue(maxData)
-                setDataNumLines(lines.length - 1)
             })
         })
+
     }
 
-    onresize = debounce(loadFile)
+    onresize = debounce(loadFiles)
 
     useEffect(() => {
-        loadFile()
-    }, [startLine, endLine, displayedDataLabels, filePath]);
-
-// Stop playback when reaching end
-    useEffect(() => {
-        if (playStatus === PlayStatus.PLAYING && signalMarkerPos >= 100) {
-            clearInterval(playbackIntervalRef.current)
-            setSignalMarkerPos(100)
-            setPlayStatus(PlayStatus.REACHED_END)
-        }
-    }, [signalMarkerPos])
-
-    // Clear interval when unmounting the component
-    useEffect(() => {
-        return () => clearInterval(playbackIntervalRef.current);
-    }, []);
+        loadFiles()
+    }, [startLine, endLine, displayedDataLabels, filePaths]);
 
     const selectDataColumns = () => {
         if (!showDialog) {
@@ -152,7 +130,7 @@ export function CspComparisonDemo() {
         }
     };
 
-    const setDataLabels = (labels: string[]) => {
+    const setDataLabels = (labels: string[][]) => {
         setDisplayedDataLabels(labels)
         setShowDialog(false)
     }
@@ -176,7 +154,7 @@ export function CspComparisonDemo() {
         })
     }
 
-    function uploadFile(e: ChangeEvent<HTMLInputElement>) {
+    function uploadFile(e: ChangeEvent<HTMLInputElement>, fileIndex: number) {
         const file = e.target.files?.item(0)
         if (file?.type === 'text/csv') {
             const reader = new FileReader();
@@ -189,14 +167,18 @@ export function CspComparisonDemo() {
                     const dataLabels = lines[0]
                         .split(/[,;]/)
                     formatDataLabels(dataLabels);
-                    allDataLabelsRef.current = dataLabels
+                    allDataLabelsRef.current[fileIndex] = dataLabels
 
-                    setDisplayedDataLabels(dataLabels.slice(dataLabels.length - 2))
+                    setDisplayedDataLabels([
+                        ...allDataLabelsRef.current.slice(0, fileIndex),
+                        dataLabels.slice(dataLabels.length - 2),
+                        ...allDataLabelsRef.current.slice(fileIndex + 1)
+                    ])
                     setStartLine(0)
                     setEndLine(lines.length - 2) // -1 due to header row
                     const url = URL.createObjectURL(file)
-                    setFileName(file.name)
-                    setFilePath(url)
+                    setFileNames([...fileNames.slice(0, fileIndex), file.name, ...fileNames.slice(fileIndex + 1)])
+                    setFilePaths([...filePaths.slice(0, fileIndex), url, ...filePaths.slice(fileIndex + 1)])
                 } else {
                     alert("Error reading the file. Please try again.");
                 }
@@ -229,7 +211,7 @@ export function CspComparisonDemo() {
         setScales([...scales])
         transformedData[index] = data[index].map(val => val * (scale ?? DEFAULT_SCALING_FACTOR) + (offsets[index] ?? 0))
         setTransformedData(transformedData)
-        setMinMaxChartValues(showSignalTransforms ? transformedData : data)
+        setMinMaxChartValues(data)
         computeSetSFCData(transformedData, bitsPerSignal, undefined, true)
     };
 
@@ -238,7 +220,7 @@ export function CspComparisonDemo() {
         setOffsets([...offsets])
         transformedData[index] = data[index].map(val => val * (scales[index] ?? DEFAULT_SCALING_FACTOR) + (offset ?? 0))
         setTransformedData(transformedData)
-        setMinMaxChartValues(showSignalTransforms ? transformedData : data)
+        setMinMaxChartValues(data)
         computeSetSFCData(transformedData, bitsPerSignal, undefined, true)
     };
 
@@ -246,11 +228,6 @@ export function CspComparisonDemo() {
         setBitsPerSignal(bits)
         computeSetSFCData(transformedData, bits, undefined, true)
     };
-
-    function onShowSignalTransformsChanged(show: boolean) {
-        setMinMaxChartValues(show ? transformedData : data)
-        setShowSignalTransforms(show)
-    }
 
     const computeSetSFCData = (transformedData: number[][], bitsPerSignal: number | string,
                                newEncoder?: string, setMinMaxValues?: boolean, initialMinMaxValues?: boolean) => {
@@ -281,6 +258,12 @@ export function CspComparisonDemo() {
         computeSetSFCData(transformedData, bitsPerSignal, newEncoder, true)
         setEncoder(newEncoder)
     };
+
+    const onDataLabelsSet = (newLabels: string[]) => {
+        setDisplayedDataLabels([...displayedDataLabels?.slice(0, fileToSelectColumnsFor) ?? [], newLabels,
+            ...displayedDataLabels?.slice(fileToSelectColumnsFor + 1) ?? []])
+    };
+
     return <>
         <h1>CSP comparison demo</h1>
         <div className={"charts"} id={'demo2-charts'}>
@@ -288,56 +271,60 @@ export function CspComparisonDemo() {
                    scales={scales} id={'demo2'}
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
                    xAxisName={"Morton"} bitsPerSignal={bitsPerSignal}
-                   yAxisName={"Time steps"} yAxisLabelPos={"right"} currentSignalXVal={signalMarkerPos}
+                   yAxisName={"Time steps"} yAxisLabelPos={"right"}
                    sfcData={sfcData} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue}
                    encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch}/>}/>
         </div>
-        <div className={"controls"} id={'demo2-controls'}>
-            <div className={'control-container comparison-row-div'}>
-                <div className={'left-control-grid'}>
-                    <div className={'first-buttons-column'}>
-                        <FormControlLabel control={<Checkbox defaultChecked/>} label="Show" className={'show-checkbox'}/>
-                        <FormControlLabel control={<IconButton onClick={e => {} }>
-                            <DeleteIcon />
-                        </IconButton>} label={'Delete'} className={'delete-row-button'}/>
-                    </div>
-                    <div className={"file-container"}>
-                        <UploadButton onClick={uploadFile} label={"Upload file..."}
-                                      currentFile={fileName.replace(/.\//, "")}/>
-                    </div>
-                    <div className={"control-container"} id={"range-container"}>
-                        <h3>Displayed range</h3>
-                        <DataRangeSlider dataRangeChartStart={startLine}
-                                         dataRangeChartEnd={endLine}
-                                         numLines={dataNumLines}
-                                         onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
-                        <div className={"text-controls"}>
-                            <label className={"input-label"}>
-                                Start row:
-                                <input type="number" value={startLine}
-                                       onChange={(e) => setStartLine(Number(e.target.value))}/>
-                            </label>
-                            <label className={"input-label"}>
-                                End row:
-                                <input type="number" value={endLine}
-                                       onChange={(e) => setEndLine(Number(e.target.value))}/>
-                            </label>
+        {fileNames.map((fileName, i) => {
+            return <div className={"controls"} id={'demo2-controls'} key={i}>
+                <div className={'control-container comparison-row-div'}>
+                    <div className={'left-control-grid'}>
+                        <div className={'first-buttons-column'}>
+                            <FormControlLabel control={<Checkbox defaultChecked/>} label="Show"
+                                              className={'show-checkbox'}/>
+                            <FormControlLabel control={<IconButton onClick={e => {
+                            }}>
+                                <DeleteIcon/>
+                            </IconButton>} label={'Delete'} className={'delete-row-button'}/>
+                        </div>
+                        <div className={"file-container"}>
+                            <UploadButton onClick={e => uploadFile(e, i)} label={"Upload file..."}
+                                          currentFile={fileName.replace(/.\//, "")}/>
+                        </div>
+                        <div className={"control-container"} id={"range-container"}>
+                            <h3>Displayed range</h3>
+                            <DataRangeSlider dataRangeChartStart={startLine}
+                                             dataRangeChartEnd={endLine}
+                                             numLines={dataNumLines}
+                                             onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
+                            <div className={"text-controls"}>
+                                <label className={"input-label"}>
+                                    Start row:
+                                    <input type="number" value={startLine}
+                                           onChange={(e) => setStartLine(Number(e.target.value))}/>
+                                </label>
+                                <label className={"input-label"}>
+                                    End row:
+                                    <input type="number" value={endLine}
+                                           onChange={(e) => setEndLine(Number(e.target.value))}/>
+                                </label>
+                            </div>
                         </div>
                     </div>
+                    <ProcessingComponent displayedDataLabels={displayedDataLabels ? displayedDataLabels[i] : null} lineColors={LINE_COLORS}
+                                         scales={scales} offsets={offsets}
+                                         bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
+                                         onOffsetsChanged={onOffsetsChanged} minSFCvalue={minSFCvalue}
+                                         setMinSFCvalue={setMinSFCvalue} setMaxSFCvalue={setMaxSFCvalue}
+                                         maxSFCvalue={maxSFCvalue}
+                                         initialMinSFCvalue={initialMinSFCvalue}
+                                         initialMaxSFCvalue={initialMaxSFCvalue}
+                                         onBitsPerSignalChanged={onBitsPerSignalChanged} resetBtnPos={'right'}/>
                 </div>
-                <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS}
-                                     scales={scales} offsets={offsets}
-                                     bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
-                                     onOffsetsChanged={onOffsetsChanged} minSFCvalue={minSFCvalue}
-                                     setMinSFCvalue={setMinSFCvalue} setMaxSFCvalue={setMaxSFCvalue}
-                                     maxSFCvalue={maxSFCvalue}
-                                     initialMinSFCvalue={initialMinSFCvalue}
-                                     initialMaxSFCvalue={initialMaxSFCvalue}
-                                     onBitsPerSignalChanged={onBitsPerSignalChanged} resetBtnPos={'right'}/>
             </div>
-        </div>
+        })}
 
-        <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels}
-                             dataLabelsRef={allDataLabelsRef} setDataLabels={setDataLabels}/>
+        <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels && fileToSelectColumnsFor > -1 ? displayedDataLabels[fileToSelectColumnsFor] : []}
+                             allDataLabels={allDataLabelsRef.current && fileToSelectColumnsFor > -1 ? allDataLabelsRef.current[fileToSelectColumnsFor] : []} setDataLabels={onDataLabelsSet}/>
     </>;
 }

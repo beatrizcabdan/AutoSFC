@@ -435,6 +435,6 @@ export function EncodingDemo() {
         </div>
 
         <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels}
-                             dataLabelsRef={allDataLabelsRef} setDataLabels={setDataLabels}/>
+                             allDataLabels={allDataLabelsRef.current ?? []} setDataLabels={setDataLabels}/>
     </>;
 }
