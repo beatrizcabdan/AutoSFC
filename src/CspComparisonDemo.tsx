@@ -264,7 +264,7 @@ export function CspComparisonDemo(e: React.ChangeEvent<HTMLInputElement>) {
             ...displayedDataLabels?.slice(fileToSelectColumnsFor + 1) ?? []])
     };
 
-    return <>
+    return <div id={'comp-demo-div'}>
         <h1>CSP comparison demo</h1>
         <div className={"charts"} id={'demo2-charts'}>
             <Chart name={"Encoded signals plot (CSP)"} data={data} transformedData={transformedData}
@@ -323,8 +323,9 @@ export function CspComparisonDemo(e: React.ChangeEvent<HTMLInputElement>) {
                 </div>
             </div>
         })}
-
+        <UploadButton onClick={e => uploadFile(e, fileNames.length)} label={"Upload file..."}
+                      currentFile={''}/>
         <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels && fileToSelectColumnsFor > -1 ? displayedDataLabels[fileToSelectColumnsFor] : []}
                              allDataLabels={allDataLabelsRef.current && fileToSelectColumnsFor > -1 ? allDataLabelsRef.current[fileToSelectColumnsFor] : []} setDataLabels={onDataLabelsSet}/>
-    </>;
+    </div>;
 }

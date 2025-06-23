@@ -11,6 +11,7 @@ import {ProcessingComponent} from "./ProcessingComponent.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR, PlayStatus} from "./App.tsx";
 import {demoPreset5} from "./Common.ts";
+import './EncodingDemo.scss'
 
 const preset = demoPreset5
 
@@ -347,9 +348,8 @@ export function EncodingDemo() {
         computeSetSFCData(transformedData, bitsPerSignal, newEncoder, true)
         setEncoder(newEncoder)
     };
-    return <>
+    return <div id={'encoding-demo-div'}>
         <h1>Encoding demo</h1>
-
         <div className={"charts"}>
             <Chart name={"Original signals plot"} data={showSignalTransforms ? transformedData : data}
                    scales={scales} offsets={offsets}
@@ -436,5 +436,5 @@ export function EncodingDemo() {
 
         <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels}
                              allDataLabels={allDataLabelsRef.current ?? []} setDataLabels={setDataLabels}/>
-    </>;
+    </div>;
 }

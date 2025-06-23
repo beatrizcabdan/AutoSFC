@@ -1,171 +1,182 @@
-#demo2-controls {
+#comp-demo-div {
     width: 100%;
     display: flex;
     flex-direction: column;
+    gap: 2rem;
 
-    .control-container {
-        padding: 1.2rem;
+    h1 {
+        margin-bottom: -1rem;
     }
 
-    .comparison-row-div {
-        display: flex;
-        flex-direction: row;
+    #demo2-controls {
         width: 100%;
-        align-items: center;
-        gap: 1.5rem;
-        flex: none;
-        justify-content: normal;
+        display: flex;
+        flex-direction: column;
 
-        .css-rizt0-MuiTypography-root {
-            text-transform: uppercase;
-            line-height: 0.6rem !important;
-            letter-spacing: 0.02rem !important;
-            font-size: 0.6rem !important;
-            font-weight: 700 !important;
+        .control-container {
+            padding: 1.2rem;
         }
 
-        .left-control-grid {
-            width: max-content;
-            display: grid;
-            grid-template-columns: max-content;
-            flex: 1 1 fit-content;
-            height: 100%;
+        .comparison-row-div {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            align-items: center;
+            gap: 1.5rem;
+            flex: none;
+            justify-content: normal;
 
-            .first-buttons-column {
-                grid-column: 1;
-                grid-row: 1 / 3;
-                display: flex;
-                flex-direction: column;
+            .css-rizt0-MuiTypography-root {
+                text-transform: uppercase;
+                line-height: 0.6rem !important;
+                letter-spacing: 0.02rem !important;
+                font-size: 0.6rem !important;
+                font-weight: 700 !important;
+            }
 
-                .MuiSvgIcon-root {
-                    width: 2.0rem !important;
-                    height: 2.0rem !important;
-                    padding: 0;
-                }
+            .left-control-grid {
+                width: max-content;
+                display: grid;
+                grid-template-columns: max-content;
+                flex: 1 1 fit-content;
+                height: 100%;
 
-                .show-checkbox {
-                    flex-direction: column;
-                    align-self: center;
-                    padding: 1rem;
-                }
-
-                .delete-row-button {
+                .first-buttons-column {
+                    grid-column: 1;
+                    grid-row: 1 / 3;
                     display: flex;
                     flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
 
-                    .MuiIconButton-root {
+                    .MuiSvgIcon-root {
+                        width: 2.0rem !important;
+                        height: 2.0rem !important;
+                        padding: 0;
+                    }
+
+                    .show-checkbox {
+                        flex-direction: column;
+                        align-self: center;
+                        padding: 1rem;
+                    }
+
+                    .delete-row-button {
                         display: flex;
-                        margin-bottom: 0;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
 
-                        .MuiSvgIcon-root {
-                            width: 2rem !important;
-                            height: 2rem !important;
+                        .MuiIconButton-root {
+                            display: flex;
+                            margin-bottom: 0;
+
+                            .MuiSvgIcon-root {
+                                width: 2rem !important;
+                                height: 2rem !important;
+                            }
                         }
                     }
                 }
-            }
 
-            .file-container {
-                grid-row: 1;
-                grid-column: 2;
-                align-self: center;
-            }
-
-            #range-container {
-                grid-row: 2;
-                grid-column: 2;
-            }
-        }
-
-        #process-container {
-            display: grid;
-            margin-right: 0;
-            margin-left: 0;
-            column-gap: 0.5rem;
-            width: 39rem;
-
-            h3 {
-                grid-column: 1 / 3;
-            }
-
-            .signals-grid {
-                grid-template-columns: auto repeat(2, min-content) 0.5rem auto min-content;
-
-                .offset-label, .scale-label {
-                    input {
-                        margin: 0.1rem;
-                    }
-                }
-
-                .signal-cell {
-                    grid-column: 1;
-
-                    .signal-name {
-                        padding-right: 0.2rem;
-                        max-width: 10ch;
-                    }
-                }
-
-                span {
-                    align-self: center;
-                }
-
-                span.bits-label, span.max-sfc-label, span.min-sfc-label {
-                    margin-right: 0.5rem;
-                }
-
-                span.bits-label {
-                    grid-row:  1;
-                    grid-column: 5;
-                    padding-top: 0;
-                    margin-top: 0;
-                }
-
-                label.bits-label {
+                .file-container {
                     grid-row: 1;
-                    grid-column: 6;
-                    margin-top: 0;
-                    text-align: left;
-
-                    * {
-                        margin-left: 0;
-                        padding-left: 0;
-                        margin-right: 0;
-                        padding-right: 0;
-                    }
-                }
-
-                #sfc-header {
-                    grid-column: 5 / 7;
+                    grid-column: 2;
                     align-self: center;
-                    grid-row: 3 / 4;
-                    margin-top: 0;
                 }
 
-                span.max-sfc-label, span.min-sfc-label {
-                    grid-column: 5 / 6;
-                    justify-self: flex-end;
-                }
-
-                label.max-sfc-label, label.min-sfc-label {
-                    grid-column: 6 / 7;
-
-                    * {
-                        margin-left: 0;
-                        margin-right: 0;
-                    }
-
+                #range-container {
+                    grid-row: 2;
+                    grid-column: 2;
                 }
             }
 
-            #reset-button {
-                width: min-content;
-                margin-top: auto;
-                margin-bottom: auto;
-                grid-column: 3;
-                grid-row: 1 / 4;
+            #process-container {
+                display: grid;
+                margin-right: 0;
+                margin-left: 0;
+                column-gap: 0.5rem;
+                width: 39rem;
+
+                h3 {
+                    grid-column: 1 / 3;
+                }
+
+                .signals-grid {
+                    grid-template-columns: auto repeat(2, min-content) 0.5rem auto min-content;
+
+                    .offset-label, .scale-label {
+                        input {
+                            margin: 0.1rem;
+                        }
+                    }
+
+                    .signal-cell {
+                        grid-column: 1;
+
+                        .signal-name {
+                            padding-right: 0.2rem;
+                            max-width: 10ch;
+                        }
+                    }
+
+                    span {
+                        align-self: center;
+                    }
+
+                    span.bits-label, span.max-sfc-label, span.min-sfc-label {
+                        margin-right: 0.5rem;
+                    }
+
+                    span.bits-label {
+                        grid-row:  1;
+                        grid-column: 5;
+                        padding-top: 0;
+                        margin-top: 0;
+                    }
+
+                    label.bits-label {
+                        grid-row: 1;
+                        grid-column: 6;
+                        margin-top: 0;
+                        text-align: left;
+
+                        * {
+                            margin-left: 0;
+                            padding-left: 0;
+                            margin-right: 0;
+                            padding-right: 0;
+                        }
+                    }
+
+                    #sfc-header {
+                        grid-column: 5 / 7;
+                        align-self: center;
+                        grid-row: 3 / 4;
+                        margin-top: 0;
+                    }
+
+                    span.max-sfc-label, span.min-sfc-label {
+                        grid-column: 5 / 6;
+                        justify-self: flex-end;
+                    }
+
+                    label.max-sfc-label, label.min-sfc-label {
+                        grid-column: 6 / 7;
+
+                        * {
+                            margin-left: 0;
+                            margin-right: 0;
+                        }
+
+                    }
+                }
+
+                #reset-button {
+                    width: min-content;
+                    margin-top: auto;
+                    margin-bottom: auto;
+                    grid-column: 3;
+                    grid-row: 1 / 4;
+                }
             }
         }
     }
