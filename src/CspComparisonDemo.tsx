@@ -14,7 +14,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 const preset = demoPreset5
 
-export function CspComparisonDemo(e: React.ChangeEvent<HTMLInputElement>) {
+export function CspComparisonDemo() {
     const EXAMPLE_FILE_PATHS = ['./emergency_braking.csv', './example-data.csv']
     const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
 
