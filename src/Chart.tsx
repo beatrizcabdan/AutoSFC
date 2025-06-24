@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 
 import React, {useEffect, useRef, useState} from "react";
-import {makeGaussKernel, mortonInterlace} from "./utils.ts";
+import {makeGaussKernel} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
-import {DEFAULT_BITS_PER_SIGNAL} from "./App.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
     const smoothedArr: number[] = []
@@ -118,11 +117,11 @@ export function Chart(props: {
     }
 
     const drawSfcPoint = (i: number, canvas: HTMLCanvasElement, curvePadding: number,
-                          m: number, minMorton: number, maxMorton: number, markerIndex: number) => {
+                          m: number, minMorton: number, maxMorton: number, markerIndex: number, color?: string) => {
         const x = getScatterX(i, canvas, curvePadding)
         const y = (canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING) * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
         // Draw point
-        ctx.fillStyle = (props.sfcData!.length - i) <= markerIndex ? 'black' : 'transparent'
+        ctx.fillStyle = (props.sfcData!.length - i) <= markerIndex ? (color ?? 'black') : 'transparent'
         ctx.beginPath();
         ctx.lineWidth = 0.5
         // noinspection JSSuspiciousNameCombination
@@ -245,7 +244,6 @@ export function Chart(props: {
                 })
             } else {
                 // SFC scatterplot
-
                 props.sfcData!.forEach((m, i) => {
                     if (Array.isArray(m)) {
                         m.forEach(el => drawSfcBar(canvas, curvePadding, el, minMorton, maxMorton, markerIndex, axisPadding, i))
@@ -256,7 +254,9 @@ export function Chart(props: {
 
                 props.sfcData!.forEach((m, i) => {
                     if (Array.isArray(m)) {
-                        m.forEach((el, j) => drawSfcPoint(j, canvas, curvePadding, el, minMorton, maxMorton, markerIndex))
+                        m.forEach((el, j) =>
+                            drawSfcPoint(j, canvas, curvePadding, el, minMorton, maxMorton, markerIndex,
+                                props.lineColors ? props.lineColors[i] : 'black'))
                     } else {
                         drawSfcPoint(i, canvas, curvePadding, m, minMorton, maxMorton, markerIndex);
                     }

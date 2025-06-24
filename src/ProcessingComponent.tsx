@@ -4,7 +4,7 @@ import {Button, Checkbox} from "@mui/material";
 
 export function ProcessingComponent(props: {
     displayedDataLabels: string[] | null,
-    lineColors: string[],
+    lineColors?: string[],
     scales: (number | undefined)[],
     onScalesChanged: (index: number, scale: (number | undefined)) => void,
     onOffsetsChanged: (index: number, offset: (number | undefined)) => void,
@@ -51,8 +51,8 @@ export function ProcessingComponent(props: {
             {props.displayedDataLabels?.map((signal, i) =>
                 <React.Fragment key={i}>
                     <div className={'signal-cell'} key={i}>
-                        <span style={{background: props.lineColors[i % props.lineColors.length]}}
-                              className={'color-line'}></span>
+                        {props.lineColors && <span style={{background: props.lineColors[i % props.lineColors.length]}}
+                               className={'color-line'}></span>}
                         <span className={'signal-name'}>{signal}</span>
                     </div>
                     <label className={'input-label offset-label'}>

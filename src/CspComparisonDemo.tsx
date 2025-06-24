@@ -16,7 +16,7 @@ const preset = demoPreset5
 
 export function CspComparisonDemo() {
     const EXAMPLE_FILE_PATHS = ['./emergency_braking.csv', './example-data.csv']
-    const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
+    const LINE_COLORS = ['blue', 'green', 'red', 'purple', 'brown', 'orange']
 
     const [filePaths, setFilePaths] = useState(EXAMPLE_FILE_PATHS)
     const [fileNames, setFileNames] = useState(EXAMPLE_FILE_PATHS)
@@ -306,7 +306,7 @@ export function CspComparisonDemo() {
                    scales={scales} id={'demo2'} numLines={Math.max(...dataNumLines)}
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
                    xAxisName={"Morton"} bitsPerSignal={bitsPerSignal}
-                   yAxisName={"Time steps"} yAxisLabelPos={"right"}
+                   yAxisName={"Time steps"} yAxisLabelPos={"right"} lineColors={LINE_COLORS}
                    sfcData={sfcData} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue}
                    encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch}/>}/>
         </div>
@@ -315,8 +315,9 @@ export function CspComparisonDemo() {
                 <div className={'control-container comparison-row-div'}>
                     <div className={'left-control-grid'}>
                         <div className={'first-buttons-column'}>
-                            <FormControlLabel control={<Checkbox defaultChecked/>} label="Show"
-                                              className={'show-checkbox'}/>
+                            <FormControlLabel control={<Checkbox defaultChecked
+                                                         sx={{color: LINE_COLORS[i], '&.Mui-checked': {color: LINE_COLORS[i],}}}/>}
+                                              label="Show" className={'show-checkbox'}/>
                             <FormControlLabel control={<IconButton onClick={e => {
                             }}>
                                 <DeleteIcon/>
@@ -346,13 +347,12 @@ export function CspComparisonDemo() {
                             </div>
                         </div>
                     </div>
-                    <ProcessingComponent displayedDataLabels={displayedDataLabels ? displayedDataLabels[i] : null} lineColors={LINE_COLORS}
-                                         scales={scales[i]} offsets={offsets[i]}
-                                         bitsPerSignal={bitsPerSignal} onScalesChanged={(index: number, scale: number | undefined) => onScalesChanged(index, scale, i)}
+                    <ProcessingComponent displayedDataLabels={displayedDataLabels ? displayedDataLabels[i] : null}
+                                         scales={scales[i]} offsets={offsets[i]} bitsPerSignal={bitsPerSignal}
+                                         onScalesChanged={(index: number, scale: number | undefined) => onScalesChanged(index, scale, i)}
                                          onOffsetsChanged={(index: number, offset: number | undefined) => onOffsetsChanged(index, offset, i)}
                                          minSFCvalue={minSFCvalue} setMinSFCvalue={setMinSFCvalue} setMaxSFCvalue={setMaxSFCvalue}
-                                         maxSFCvalue={maxSFCvalue}
-                                         initialMinSFCvalue={initialMinSFCvalue}
+                                         maxSFCvalue={maxSFCvalue} initialMinSFCvalue={initialMinSFCvalue}
                                          initialMaxSFCvalue={initialMaxSFCvalue}
                                          onBitsPerSignalChanged={onBitsPerSignalChanged} resetBtnPos={'right'}/>
                 </div>
