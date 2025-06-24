@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
-import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR, PlayStatus} from "./App.tsx";
+import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR} from "./App.tsx";
 import {debounce, hilbertEncode, mortonInterlace} from "./utils.ts";
 import {Chart} from "./Chart.tsx";
 import {EncoderSwitch} from "./EncoderSwitch.tsx";
@@ -22,7 +22,7 @@ export function CspComparisonDemo() {
     const [fileNames, setFileNames] = useState(EXAMPLE_FILE_PATHS)
     const DATA_POINT_INTERVAL = preset.dataPointInterval
 
-    const [dataNumLines, setDataNumLines] = useState(-1)
+    const [dataNumLines, setDataNumLines] = useState<number[]>([])
     const [startLine, setStartLine] = useState(preset.dataRangeStart)
     const [endLine, setEndLine] = useState(preset.dataRangeEnd)
 
@@ -36,15 +36,15 @@ export function CspComparisonDemo() {
     const [displayedDataLabels, setDisplayedDataLabels] = useState<string[][] | null>([
         ['accel_x', 'accel_y'],
         ['sampleTimeStamp.microseconds', 'groundSpeed']
-    ]) // TODO: Revert to 'accel_x', 'accel_y', 'speed'
+    ])
 
-    const [data, setData] = useState<number[][]>([])
-    const [transformedData, setTransformedData] = useState<number[][]>([]) // Transformed in "Transform" panel
-    const [sfcData, setSfcData] = useState<number[]>([])
+    const [data, setData] = useState<number[][][]>([])
+    const [transformedData, setTransformedData] = useState<number[][][]>([]) // Transformed in "Transform" panel
+    const [sfcData, setSfcData] = useState<number[][]>([])
 
     // Use default scaling factor when scale is undefined (this to allow removing all digits in inputs)
-    const [scales, setScales] = useState<(number | undefined)[]>([])
-    const [offsets, setOffsets] = useState<(number | undefined)[]>([])
+    const [scales, setScales] = useState<(number | undefined)[][]>([])
+    const [offsets, setOffsets] = useState<(number | undefined)[][]>([])
     const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(DEFAULT_BITS_PER_SIGNAL)
 
     const allDataLabelsRef = useRef<string[][]>([])
@@ -56,6 +56,14 @@ export function CspComparisonDemo() {
     const [fileToSelectColumnsFor, setFileToSelectColumnsFor] = useState(-1)
 
     const loadFiles = () => {
+        const newData: number[][][] = []
+        const newTransformedData: number[][][] = []
+        const numLines: number[] = []
+        const numLabels: number[] = []
+
+        let minData = Number.MAX_VALUE
+        let maxData = Number.MIN_VALUE
+
         filePaths.forEach((filePath, i) => {
             fetch(filePath).then(r => {
                 r.text().then(t => {
@@ -74,22 +82,21 @@ export function CspComparisonDemo() {
                     const colIndices: number[] = displayedDataLabels![i].map(label => dataLabels
                         .findIndex(col => col === label)).filter(index => index !== -1).sort() ?? [dataLabels.length - 2, dataLabels.length - 1];
 
-                    const newData: number[][] = []
-                    const newTransformedData: number[][] = []
-                    let minData = Infinity
-                    let maxData = 0
-                    colIndices.forEach((colIndex, i) => {
+                    const newFileData: number[][] = []
+                    const newFileTransformedData: number[][] = []
+
+                    colIndices.forEach((colIndex, j) => {
                         const column: number[] = lines
                             .slice(1) // Skip headers
                             .slice(startLine >= 0 ? startLine : 0, endLine >= 0 ? endLine : undefined)
                             .map(l => l.split(/[;,]/))
                             .map(arr => Number(arr[colIndex]))
-                            .filter((_, i) => i % DATA_POINT_INTERVAL == 0)
-                        newData.push(column)
+                            .filter((_, k) => k % DATA_POINT_INTERVAL == 0)
+                        newFileData.push(column)
                         const transformedColumn =
-                            column.map((val) => val * (scales[i] ?? DEFAULT_SCALING_FACTOR)
-                                + (offsets[i] ?? DEFAULT_OFFSET))
-                        newTransformedData.push(transformedColumn)
+                            column.map((val) => val * ((scales[i] && scales && scales[i][j]) ?? DEFAULT_SCALING_FACTOR)
+                                + ((offsets[i] && offsets[i][j]) ?? DEFAULT_OFFSET))
+                        newFileTransformedData.push(transformedColumn)
 
                         const sortedData = ([...column])
                             .sort((a, b) => a - b)
@@ -98,20 +105,28 @@ export function CspComparisonDemo() {
                         maxData = Math.max(maxData, sortedData[sortedData.length - 1])
                     })
 
-                    computeSetSFCData(newTransformedData, bitsPerSignal, encoder, true, true);
+                    numLabels.push(colIndices.length)
+                    newData.push(newFileData)
+                    newTransformedData.push(newFileTransformedData)
+                    numLines.push(lines.length - 1)
 
-                    setData(newData)
-                    setTransformedData(newTransformedData)
-                    if (scales.length === 0) {
-                        setScales(Array(colIndices.length).fill(DEFAULT_SCALING_FACTOR))
+                    // Only render after last iteration
+                    if (numLabels.length === filePaths.length) {
+                        computeSetSFCData(newTransformedData, bitsPerSignal, encoder, true, true);
+                        setData(newData)
+                        setTransformedData(newTransformedData)
+                        if (scales.length === 0) {
+                            setScales(Array.from(Array(numLabels.length).keys())
+                                .map((_, i) => Array(numLabels[i]).fill(DEFAULT_SCALING_FACTOR)))
+                        }
+                        if (offsets.length === 0) {
+                            setOffsets(Array.from(Array(numLabels.length).keys())
+                                .map((_, i) => Array(numLabels[i]).fill(DEFAULT_OFFSET)))
+                        }
+                        setDataNumLines(numLines)
+                        setMinChartValue(minData)
+                        setMaxChartValue(maxData)
                     }
-                    if (offsets.length === 0) {
-                        setOffsets(Array(colIndices.length).fill(DEFAULT_OFFSET))
-                    }
-
-                    setMinChartValue(minData)
-                    setMaxChartValue(maxData)
-                    setDataNumLines(lines.length - 1)
                 })
             })
         })
@@ -194,32 +209,37 @@ export function CspComparisonDemo() {
         setStartLine((newValue as number[])[0])
         setEndLine((newValue as number[])[1])
     };
-    const setMinMaxChartValues = (data: number[][]) => {
-        let min = Infinity
-        let max = -Infinity
-        data.forEach(col => col
-            .forEach(val => {
-                min = Math.min(min, val)
-                max = Math.max(max, val)
-            }))
+
+    const setMinMaxChartValues = (data: number[][][]) => {
+        let min = Number.MAX_VALUE
+        let max = Number.MIN_VALUE
+
+        data.forEach(fileData => {
+            fileData.forEach(col => col
+                .forEach(val => {
+                    min = Math.min(min, val)
+                    max = Math.max(max, val)
+                }))
+        })
+
         setMinChartValue(min)
         setMaxChartValue(max)
     }
 
-    const onScalesChanged = (index: number, scale: number | undefined) => {
-        scales[index] = scale
-        setScales([...scales])
-        transformedData[index] = data[index].map(val => val * (scale ?? DEFAULT_SCALING_FACTOR) + (offsets[index] ?? 0))
-        setTransformedData(transformedData)
+    const onScalesChanged = (labelIndex: number, scale: number | undefined, fileIndex: number) => {
+        scales[fileIndex][labelIndex] = scale
+        setScales([...scales.slice(0, fileIndex), [...scales[fileIndex]], ...scales.slice(fileIndex + 1)])
+        transformedData[fileIndex][labelIndex] = data[fileIndex][labelIndex].map(val => val * (scale ?? DEFAULT_SCALING_FACTOR) + (offsets[fileIndex][labelIndex] ?? 0))
+        setTransformedData([...transformedData.slice(0, fileIndex), [...transformedData[fileIndex]], ...transformedData.slice(fileIndex + 1)])
         setMinMaxChartValues(data)
         computeSetSFCData(transformedData, bitsPerSignal, undefined, true)
     };
 
-    const onOffsetsChanged = (index: number, offset: number | undefined) => {
-        offsets[index] = offset
-        setOffsets([...offsets])
-        transformedData[index] = data[index].map(val => val * (scales[index] ?? DEFAULT_SCALING_FACTOR) + (offset ?? 0))
-        setTransformedData(transformedData)
+    const onOffsetsChanged = (labelIndex: number, offset: number | undefined, fileIndex: number) => {
+        offsets[fileIndex][labelIndex] = offset
+        setOffsets([...offsets.slice(0, fileIndex), [...offsets[fileIndex]], ...offsets.slice(fileIndex + 1)])
+        transformedData[fileIndex][labelIndex] = data[fileIndex][labelIndex].map(val => val * (scales[fileIndex][labelIndex] ?? DEFAULT_SCALING_FACTOR) + (offset ?? 0))
+        setTransformedData([...transformedData.slice(0, fileIndex), [...transformedData[fileIndex]], ...transformedData.slice(fileIndex + 1)])
         setMinMaxChartValues(data)
         computeSetSFCData(transformedData, bitsPerSignal, undefined, true)
     };
@@ -229,24 +249,39 @@ export function CspComparisonDemo() {
         computeSetSFCData(transformedData, bits, undefined, true)
     };
 
-    const computeSetSFCData = (transformedData: number[][], bitsPerSignal: number | string,
+    const computeSetSFCData = (transformedDataArrs: number[][][], bitsPerSignal: number | string,
                                newEncoder?: string, setMinMaxValues?: boolean, initialMinMaxValues?: boolean) => {
-        const truncatedData = transformedData.map(column => column.map(value =>
-            Math.trunc(value))) // Add truncating processing
-        const currentEncoder = newEncoder ?? encoder
-        const sfcData = currentEncoder === 'morton' ? mortonInterlace(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
-            : hilbertEncode(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
+        let maxVal = Number.MIN_VALUE
+        let minVal = Number.MAX_VALUE
+
+        const allSfcData: number[][] = []
+
+        transformedDataArrs.forEach(transformedData => {
+            const truncatedData = transformedData.map(column => column.map(value =>
+                Math.trunc(value))) // Add truncating processing
+            const currentEncoder = newEncoder ?? encoder
+            const sfcData = currentEncoder === 'morton' ? mortonInterlace(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
+                : hilbertEncode(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
+            if (setMinMaxValues) {
+                const sfcSorted = [...sfcData!].sort((a, b) => a - b)
+                maxVal = Math.max(maxVal, sfcSorted[sfcSorted.length - 1])
+                minVal = Math.min(minVal, sfcSorted[0])
+            }
+
+            allSfcData.push(sfcData)
+        })
+
         if (setMinMaxValues) {
-            const sfcSorted = [...sfcData!].sort((a, b) => a - b)
-            setMinSFCvalue(sfcSorted[0])
-            setMaxSFCvalue(sfcSorted[sfcSorted.length - 1])
+            setMinSFCvalue(minVal)
+            setMaxSFCvalue(maxVal)
 
             if (initialMinMaxValues) {
-                setInitialMinSFCvalue(sfcSorted[0])
-                setInitialMaxSFCvalue(sfcSorted[sfcSorted.length - 1])
+                setInitialMinSFCvalue(minVal)
+                setInitialMaxSFCvalue(maxVal)
             }
         }
-        setSfcData(sfcData)
+
+        setSfcData(allSfcData)
     }
 
     const onEncoderSwitch = () => {
@@ -268,7 +303,7 @@ export function CspComparisonDemo() {
         <h1>CSP comparison demo</h1>
         <div className={"charts"} id={'demo2-charts'}>
             <Chart name={"Encoded signals plot (CSP)"} data={data} transformedData={transformedData}
-                   scales={scales} id={'demo2'}
+                   scales={scales} id={'demo2'} numLines={Math.max(...dataNumLines)}
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
                    xAxisName={"Morton"} bitsPerSignal={bitsPerSignal}
                    yAxisName={"Time steps"} yAxisLabelPos={"right"}
@@ -295,7 +330,7 @@ export function CspComparisonDemo() {
                             <h3>Displayed range</h3>
                             <DataRangeSlider dataRangeChartStart={startLine}
                                              dataRangeChartEnd={endLine}
-                                             numLines={dataNumLines}
+                                             numLines={dataNumLines[i]}
                                              onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
                             <div className={"text-controls"}>
                                 <label className={"input-label"}>
@@ -312,10 +347,10 @@ export function CspComparisonDemo() {
                         </div>
                     </div>
                     <ProcessingComponent displayedDataLabels={displayedDataLabels ? displayedDataLabels[i] : null} lineColors={LINE_COLORS}
-                                         scales={scales} offsets={offsets}
-                                         bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
-                                         onOffsetsChanged={onOffsetsChanged} minSFCvalue={minSFCvalue}
-                                         setMinSFCvalue={setMinSFCvalue} setMaxSFCvalue={setMaxSFCvalue}
+                                         scales={scales[i]} offsets={offsets[i]}
+                                         bitsPerSignal={bitsPerSignal} onScalesChanged={(index: number, scale: number | undefined) => onScalesChanged(index, scale, i)}
+                                         onOffsetsChanged={(index: number, offset: number | undefined) => onOffsetsChanged(index, offset, i)}
+                                         minSFCvalue={minSFCvalue} setMinSFCvalue={setMinSFCvalue} setMaxSFCvalue={setMaxSFCvalue}
                                          maxSFCvalue={maxSFCvalue}
                                          initialMinSFCvalue={initialMinSFCvalue}
                                          initialMaxSFCvalue={initialMaxSFCvalue}
@@ -326,6 +361,7 @@ export function CspComparisonDemo() {
         <UploadButton onClick={e => uploadFile(e, fileNames.length)} label={"Upload file..."}
                       currentFile={''}/>
         <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels && fileToSelectColumnsFor > -1 ? displayedDataLabels[fileToSelectColumnsFor] : []}
-                             allDataLabels={allDataLabelsRef.current && fileToSelectColumnsFor > -1 ? allDataLabelsRef.current[fileToSelectColumnsFor] : []} setDataLabels={onDataLabelsSet}/>
+                             allDataLabels={allDataLabelsRef.current && fileToSelectColumnsFor > -1 ? allDataLabelsRef.current[fileToSelectColumnsFor] : []}
+                             setDataLabels={onDataLabelsSet}/>
     </div>;
 }

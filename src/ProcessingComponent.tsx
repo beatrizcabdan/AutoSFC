@@ -35,8 +35,8 @@ export function ProcessingComponent(props: {
 
     function getResetButton() {
         return <Button id={'reset-button'} variant='outlined' onClick={onResetClicked}
-                       disabled={props.offsets.every(v => v === 0) // Disable if no transforms have been made
-                           && props.scales.every(v => v === DEFAULT_SCALING_FACTOR)
+                       disabled={props.offsets?.every(v => v === 0) // Disable if no transforms have been made
+                           && props.scales?.every(v => v === DEFAULT_SCALING_FACTOR)
                            && props.bitsPerSignal === DEFAULT_BITS_PER_SIGNAL
                            && props.initialMinSFCvalue == props.minSFCvalue
                            && props.initialMaxSFCvalue == props.maxSFCvalue}>Reset all transforms</Button>;
@@ -56,13 +56,13 @@ export function ProcessingComponent(props: {
                         <span className={'signal-name'}>{signal}</span>
                     </div>
                     <label className={'input-label offset-label'}>
-                        <input type="number" value={props.offsets[i] ?? DEFAULT_OFFSET} onBlur={() =>
+                        <input type="number" value={(props.offsets && props.offsets[i]) ?? DEFAULT_OFFSET} onBlur={() =>
                             props.onOffsetsChanged(i, Number(props.offsets[i] ?? DEFAULT_OFFSET))}
                                onChange={(e) =>
                                    props.onOffsetsChanged(i, e.target.value ? Number(e.target.value) : undefined)}/>
                     </label>
                     <label className={'input-label scale-label'}>
-                        <input type="number" value={props.scales[i] ?? DEFAULT_SCALING_FACTOR} onBlur={() =>
+                        <input type="number" value={(props.scales && props.scales[i]) ?? DEFAULT_SCALING_FACTOR} onBlur={() =>
                             props.onScalesChanged(i, Number(props.scales[i] ?? DEFAULT_SCALING_FACTOR))}
                                onChange={(e) =>
                                    props.onScalesChanged(i, e.target.value ? Number(e.target.value) : undefined)}/>
