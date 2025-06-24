@@ -11,12 +11,14 @@ import {demoPreset5} from "./Common.ts";
 import './CspComparisonDemo.scss'
 import {Checkbox, FormControlLabel, IconButton} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import App from './App.module.scss'
+const { primaryColor } = App
 
 const preset = demoPreset5
 
 export function CspComparisonDemo() {
     const EXAMPLE_FILE_PATHS = ['./emergency_braking.csv', './example-data.csv']
-    const LINE_COLORS = ['blue', 'green', 'red', 'purple', 'brown', 'orange']
+    const LINE_COLORS = [primaryColor, 'green', 'red', 'purple', 'brown', 'orange']
 
     const [filePaths, setFilePaths] = useState(EXAMPLE_FILE_PATHS)
     const [fileNames, setFileNames] = useState(EXAMPLE_FILE_PATHS)

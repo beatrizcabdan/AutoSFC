@@ -12,13 +12,15 @@ import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR, PlayStatus} from "./App.tsx";
 import {demoPreset5} from "./Common.ts";
 import './EncodingDemo.scss'
+import App from './App.module.scss'
+const { primaryColor } = App
 
 const preset = demoPreset5
 
 export function EncodingDemo() {
     const SLIDER_START_VAL = 100
     const EXAMPLE_FILE_PATH = './emergency_braking.csv'
-    const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
+    const LINE_COLORS = [primaryColor, 'orange', 'green', 'red', 'purple', 'brown']
 
     const [filePath, setFilePath] = useState(EXAMPLE_FILE_PATH)
     const [fileName, setFileName] = useState(EXAMPLE_FILE_PATH)

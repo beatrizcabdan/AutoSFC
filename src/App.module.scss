@@ -8,6 +8,14 @@ $def-control-width: 27rem;
 $vert-container-padding: 1.2rem;
 $horiz-container-padding: 1.8rem;
 
+$primary-color: #006fd5;
+$primary-color-light: #b9e0ff;
+
+:export {
+    #{'primaryColor'}: #{$primary-color};
+    #{'primaryColorLight'}: #{$primary-color-light};
+}
+
 * {
   // border: 1px solid green;
   box-sizing: border-box;
@@ -40,8 +48,8 @@ html {
   --button-active: #d3d3d3;
   --input-border: #c3c3c3;
 
-  --primary-color: #4e4eff;
-  --primary-color-light: #b9e0ff;
+  --primary-color: $primary-color;
+  --primary-color-light: $primary-color-light;
 }
 
 #root {

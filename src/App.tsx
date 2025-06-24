@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unused-vars,no-unused-vars */
 // noinspection JSUnusedLocalSymbols
 
-import './App.scss'
+import './App.module.scss'
 
 import React from 'react';
 import {PaperContainer} from "./PaperContainer.tsx";
