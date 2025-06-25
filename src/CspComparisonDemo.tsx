@@ -16,7 +16,7 @@ const { primaryColor } = App
 
 const preset = demoPreset5
 
-// TODO: Add presets here as well?
+// TODO: Fix CSP index range, bits per signal, presets, deleting/hiding files, more compact layout...
 // Good demo values:
 // accel_x: 4000 / 729
 // accel_y: 5000 / 729
