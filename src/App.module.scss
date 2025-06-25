@@ -23,7 +23,7 @@ $primary-color-light: #b9e0ff;
 }
 
 h1 {
-  margin-top: 6rem;
+  margin-top: 3.5rem;
   font-weight: 900;
   font-size: 3rem;
   font-family: Inter, sans-serif;
@@ -65,7 +65,7 @@ html {
   align-items: center;
   width: 100%;
   color: var(--text-color);
-  font-family: sans-serif;
+  font-family: Inter, sans-serif;
 }
 
 #main {
@@ -73,7 +73,7 @@ html {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 2.0rem;
+  gap: 1.5rem;
   margin-top: 2rem;
   padding: 0 8rem;
   width: fit-content;
@@ -671,6 +671,7 @@ input[type="number"] {
   position: sticky;
   top: 0;
   z-index: 1;
+  box-shadow: rgba(0 0 0 / 0.2) 0 5px 5px 1px;
 }
 
 .topnav a {
