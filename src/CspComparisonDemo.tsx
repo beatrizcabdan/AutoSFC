@@ -17,16 +17,16 @@ const { primaryColor } = App
 const preset = demoPreset5
 
 export function CspComparisonDemo() {
-    const EXAMPLE_FILE_PATHS = ['./emergency_braking.csv', /*'./example-data.csv'*/]
+    const EXAMPLE_FILE_PATHS = ['./emergency_braking.csv', './example-data.csv']
     const LINE_COLORS = [primaryColor, 'green', 'red', 'purple', 'brown', 'orange']
 
     const [filePaths, setFilePaths] = useState(EXAMPLE_FILE_PATHS)
     const [fileNames, setFileNames] = useState(EXAMPLE_FILE_PATHS)
     const DATA_POINT_INTERVAL = preset.dataPointInterval
 
-    const [dataNumLines, setDataNumLines] = useState<number[]>([])
-    const [startLines, setStartLines] = useState<number[]>([0])
-    const [endLines, setEndLines] = useState<number[]>([236])
+    const [dataNumLines, setDataNumLines] = useState<number[]>([236, 473])
+    const [startLines, setStartLines] = useState<number[]>([0, 0])
+    const [endLines, setEndLines] = useState<number[]>([236, 473])
 
     const [encoder, setEncoder] = useState('morton')
 
@@ -37,7 +37,7 @@ export function CspComparisonDemo() {
 
     const [displayedDataLabels, setDisplayedDataLabels] = useState<string[][] | null>([
         ['accel_x', 'accel_y'],
-        /*['sampleTimeStamp.microseconds', 'groundSpeed']*/
+        ['sampleTimeStamp.microseconds', 'groundSpeed']
     ])
 
     const [data, setData] = useState<number[][][]>([])
@@ -57,7 +57,7 @@ export function CspComparisonDemo() {
     const [showDialog, setShowDialog] = useState(false)
     const [fileToSelectColumnsFor, setFileToSelectColumnsFor] = useState(-1)
 
-    const loadFiles = () => {
+    const loadFiles = async () => {
         const newData: number[][][] = []
         const newTransformedData: number[][][] = []
         const numLines: number[] = []
@@ -66,9 +66,10 @@ export function CspComparisonDemo() {
         let minData = Number.MAX_VALUE
         let maxData = Number.MIN_VALUE
 
-        filePaths.forEach((filePath, i) => {
-            fetch(filePath).then(r => {
-                r.text().then(t => {
+        for (const filePath of filePaths) {
+            const i = filePaths.indexOf(filePath);
+            await fetch(filePath).then(async r => {
+                await r.text().then(t => {
                     const lines = t
                         .trim()
                         .split(/[;,]?\n/)
@@ -126,16 +127,13 @@ export function CspComparisonDemo() {
                             setOffsets(Array.from(Array(numLabels.length).keys())
                                 .map((_, i) => Array(numLabels[i]).fill(DEFAULT_OFFSET)))
                         }
-                        /*setStartLines(Array(filePaths.length).fill(0))
-                        setEndLines(Array.from(Array(filePaths.length).keys())
-                            .map((_, i) => numLines[i] - 1))*/
                         setDataNumLines(numLines)
                         setMinChartValue(minData)
                         setMaxChartValue(maxData)
                     }
                 })
             })
-        })
+        }
 
     }
 
@@ -214,10 +212,12 @@ export function CspComparisonDemo() {
     }
 
     const onZoomSliderChange = (_: Event, newValue: number[] | number, fileIndex: number) => {
-        startLines[fileIndex] = (newValue as number[])[0]
-        endLines[fileIndex] = (newValue as number[])[1]
-        setStartLines([...startLines])
-        setEndLines([...endLines])
+        const newStartLines = startLines
+        newStartLines[fileIndex] = (newValue as number[])[0]
+        setStartLines([...newStartLines])
+        const newEndLines = endLines
+        newEndLines[fileIndex] = (newValue as number[])[1]
+        setEndLines(newEndLines)
     };
 
     const setMinMaxChartValues = (data: number[][][]) => {
