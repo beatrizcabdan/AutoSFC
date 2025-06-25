@@ -45,7 +45,7 @@ export function Chart(props: {
     sfcData?: number[] | number[][],
     encoderSwitch?: React.JSX.Element,
     id?: string,
-    numLines?: number
+    totalNumLines?: number // Total number of lines in chart
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
@@ -69,8 +69,6 @@ export function Chart(props: {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const curvePaddingRef = useRef(0)
 
-    // console.log(props)
-
     //TODO: null ctx is not ok null check todo
     //@ts-ignore
     let ctx: CanvasRenderingContext2D
@@ -80,9 +78,11 @@ export function Chart(props: {
         return (i / (props.data[0].length - 1)) * (canvas.width - padding * 2 - leftExtraPadding) + padding + leftExtraPadding;
     }
 
-    function getScatterX(i: number, canvas: HTMLCanvasElement, padding: number) {
-        const numLines = props.numLines ?? props.data[0].length - 1
-        return (i / numLines) * (canvas.height - padding * 2) + padding
+    function getScatterX(i: number, canvas: HTMLCanvasElement, padding: number, fileIndex?: number) {
+        const totalNumLines = props.totalNumLines ?? props.data[0].length - 1
+        // If multi file chart, need to compute offset if number of lines < totalNumLines
+        const offset = fileIndex !== undefined ? (totalNumLines - (props.data[fileIndex][0] as number[]).length) : 0
+        return ((i + offset) / totalNumLines) * (canvas.height - padding * 2) + padding
     }
 
     function getLineY(canvas: HTMLCanvasElement, curvePadding: number, point: number) {
@@ -117,8 +117,9 @@ export function Chart(props: {
     }
 
     const drawSfcPoint = (i: number, canvas: HTMLCanvasElement, curvePadding: number,
-                          m: number, minMorton: number, maxMorton: number, markerIndex: number, color?: string) => {
-        const x = getScatterX(i, canvas, curvePadding)
+                          m: number, minMorton: number, maxMorton: number, markerIndex: number, color?: string,
+                          fileIndex?: number) => {
+        const x = getScatterX(i, canvas, curvePadding, fileIndex)
         const y = (canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING) * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
         // Draw point
         ctx.fillStyle = (props.sfcData!.length - i) <= markerIndex ? (color ?? 'black') : 'transparent'
@@ -156,7 +157,7 @@ export function Chart(props: {
 
             const mortonXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
                 .map(i => (i * (maxMorton - minMorton) / (PLOT_NUM_X_VALUES - 1) + minMorton).toExponential(1))
-            const numTimeSteps = props.numLines ?? props.data[0].length - 1
+            const numTimeSteps = props.totalNumLines ?? props.data[0].length - 1
             const mortonRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
                 .map(i => Math.floor(i * numTimeSteps / (PLOT_NUM_Y_VALUES - 1)).toString())
             // console.log(mortonRightYValues)
@@ -256,7 +257,7 @@ export function Chart(props: {
                     if (Array.isArray(m)) {
                         m.forEach((el, j) =>
                             drawSfcPoint(j, canvas, curvePadding, el, minMorton, maxMorton, markerIndex,
-                                props.lineColors ? props.lineColors[i] : 'black'))
+                                props.lineColors ? props.lineColors[i] : 'black', i))
                     } else {
                         drawSfcPoint(i, canvas, curvePadding, m, minMorton, maxMorton, markerIndex);
                     }

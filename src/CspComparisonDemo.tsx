@@ -16,6 +16,13 @@ const { primaryColor } = App
 
 const preset = demoPreset5
 
+// TODO: Add presets here as well?
+// Good demo values:
+// accel_x: 4000 / 729
+// accel_y: 5000 / 729
+// sampleTimeStamp.microseconds: 5000 / 10
+// groundSpeed: 5005 / 10
+
 export function CspComparisonDemo() {
     const EXAMPLE_FILE_PATHS = ['./emergency_braking.csv', './example-data.csv']
     const LINE_COLORS = [primaryColor, 'green', 'red', 'purple', 'brown', 'orange']
@@ -317,7 +324,7 @@ export function CspComparisonDemo() {
         <h1>CSP comparison demo</h1>
         <div className={"charts"} id={'demo2-charts'}>
             <Chart name={"Encoded signals plot (CSP)"} data={data} transformedData={transformedData}
-                   scales={scales} id={'demo2'} numLines={getMaxDisplayedNumLines()}
+                   scales={scales} id={'demo2'} totalNumLines={getMaxDisplayedNumLines()}
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
                    xAxisName={"Morton"} bitsPerSignal={bitsPerSignal}
                    yAxisName={"Time steps"} yAxisLabelPos={"right"} lineColors={LINE_COLORS}
