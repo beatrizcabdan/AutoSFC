@@ -17,7 +17,7 @@ const { primaryColor } = App
 const preset = demoPreset5
 
 export function CspComparisonDemo() {
-    const EXAMPLE_FILE_PATHS = ['./emergency_braking.csv', './example-data.csv']
+    const EXAMPLE_FILE_PATHS = ['./emergency_braking.csv', /*'./example-data.csv'*/]
     const LINE_COLORS = [primaryColor, 'green', 'red', 'purple', 'brown', 'orange']
 
     const [filePaths, setFilePaths] = useState(EXAMPLE_FILE_PATHS)
@@ -25,8 +25,8 @@ export function CspComparisonDemo() {
     const DATA_POINT_INTERVAL = preset.dataPointInterval
 
     const [dataNumLines, setDataNumLines] = useState<number[]>([])
-    const [startLine, setStartLine] = useState(preset.dataRangeStart)
-    const [endLine, setEndLine] = useState(preset.dataRangeEnd)
+    const [startLines, setStartLines] = useState<number[]>([0])
+    const [endLines, setEndLines] = useState<number[]>([236])
 
     const [encoder, setEncoder] = useState('morton')
 
@@ -37,7 +37,7 @@ export function CspComparisonDemo() {
 
     const [displayedDataLabels, setDisplayedDataLabels] = useState<string[][] | null>([
         ['accel_x', 'accel_y'],
-        ['sampleTimeStamp.microseconds', 'groundSpeed']
+        /*['sampleTimeStamp.microseconds', 'groundSpeed']*/
     ])
 
     const [data, setData] = useState<number[][][]>([])
@@ -90,7 +90,8 @@ export function CspComparisonDemo() {
                     colIndices.forEach((colIndex, j) => {
                         const column: number[] = lines
                             .slice(1) // Skip headers
-                            .slice(startLine >= 0 ? startLine : 0, endLine >= 0 ? endLine : undefined)
+                            .slice(startLines[i] !== undefined && startLines[i] >= 0 ? startLines[i] : 0,
+                                endLines[i] !== undefined && endLines[i] >= 0 ? endLines[i] : undefined)
                             .map(l => l.split(/[;,]/))
                             .map(arr => Number(arr[colIndex]))
                             .filter((_, k) => k % DATA_POINT_INTERVAL == 0)
@@ -125,6 +126,9 @@ export function CspComparisonDemo() {
                             setOffsets(Array.from(Array(numLabels.length).keys())
                                 .map((_, i) => Array(numLabels[i]).fill(DEFAULT_OFFSET)))
                         }
+                        /*setStartLines(Array(filePaths.length).fill(0))
+                        setEndLines(Array.from(Array(filePaths.length).keys())
+                            .map((_, i) => numLines[i] - 1))*/
                         setDataNumLines(numLines)
                         setMinChartValue(minData)
                         setMaxChartValue(maxData)
@@ -139,7 +143,7 @@ export function CspComparisonDemo() {
 
     useEffect(() => {
         loadFiles()
-    }, [startLine, endLine, displayedDataLabels, filePaths]);
+    }, [startLines, endLines, displayedDataLabels, filePaths]);
 
     const selectDataColumns = () => {
         if (!showDialog) {
@@ -191,8 +195,10 @@ export function CspComparisonDemo() {
                         dataLabels.slice(dataLabels.length - 2),
                         ...allDataLabelsRef.current.slice(fileIndex + 1)
                     ])
-                    setStartLine(0)
-                    setEndLine(lines.length - 2) // -1 due to header row
+                    startLines[fileIndex] = 0
+                    setStartLines([...startLines])
+                    endLines[fileIndex] = lines.length - 2 // -1 due to header row
+                    setEndLines([...endLines])
                     const url = URL.createObjectURL(file)
                     setFileNames([...fileNames.slice(0, fileIndex), file.name, ...fileNames.slice(fileIndex + 1)])
                     setFilePaths([...filePaths.slice(0, fileIndex), url, ...filePaths.slice(fileIndex + 1)])
@@ -207,9 +213,11 @@ export function CspComparisonDemo() {
         }
     }
 
-    const onZoomSliderChange = (_: Event, newValue: number[] | number) => {
-        setStartLine((newValue as number[])[0])
-        setEndLine((newValue as number[])[1])
+    const onZoomSliderChange = (_: Event, newValue: number[] | number, fileIndex: number) => {
+        startLines[fileIndex] = (newValue as number[])[0]
+        endLines[fileIndex] = (newValue as number[])[1]
+        setStartLines([...startLines])
+        setEndLines([...endLines])
     };
 
     const setMinMaxChartValues = (data: number[][][]) => {
@@ -301,11 +309,15 @@ export function CspComparisonDemo() {
             ...displayedDataLabels?.slice(fileToSelectColumnsFor + 1) ?? []])
     };
 
+    const getMaxDisplayedNumLines = () => {
+        return Math.max(...startLines.map((_, i) => endLines[i] - startLines[i]))
+    };
+
     return <div id={'comp-demo-div'}>
         <h1>CSP comparison demo</h1>
         <div className={"charts"} id={'demo2-charts'}>
             <Chart name={"Encoded signals plot (CSP)"} data={data} transformedData={transformedData}
-                   scales={scales} id={'demo2'} numLines={Math.max(...dataNumLines)}
+                   scales={scales} id={'demo2'} numLines={getMaxDisplayedNumLines()}
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
                    xAxisName={"Morton"} bitsPerSignal={bitsPerSignal}
                    yAxisName={"Time steps"} yAxisLabelPos={"right"} lineColors={LINE_COLORS}
@@ -331,20 +343,26 @@ export function CspComparisonDemo() {
                         </div>
                         <div className={"control-container"} id={"range-container"}>
                             <h3>Displayed range</h3>
-                            <DataRangeSlider dataRangeChartStart={startLine}
-                                             dataRangeChartEnd={endLine}
+                            <DataRangeSlider dataRangeChartStart={startLines[i]}
+                                             dataRangeChartEnd={endLines[i]}
                                              numLines={dataNumLines[i]}
-                                             onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
+                                             onChange={(e, newValue) => onZoomSliderChange(e, newValue, i)}/>
                             <div className={"text-controls"}>
                                 <label className={"input-label"}>
                                     Start row:
-                                    <input type="number" value={startLine}
-                                           onChange={(e) => setStartLine(Number(e.target.value))}/>
+                                    <input type="number" value={startLines[i]}
+                                           onChange={(e) => {
+                                               startLines[i] = Number(e.target.value)
+                                               setStartLines([...startLines])
+                                           }}/>
                                 </label>
                                 <label className={"input-label"}>
                                     End row:
-                                    <input type="number" value={endLine}
-                                           onChange={(e) => setEndLine(Number(e.target.value))}/>
+                                    <input type="number" value={endLines[i]}
+                                           onChange={(e) => {
+                                               endLines[i] = Number(e.target.value)
+                                               setEndLines([...endLines])
+                                           }}/>
                                 </label>
                             </div>
                         </div>

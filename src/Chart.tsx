@@ -69,7 +69,7 @@ export function Chart(props: {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const curvePaddingRef = useRef(0)
 
-    console.log(props)
+    // console.log(props)
 
     //TODO: null ctx is not ok null check todo
     //@ts-ignore
@@ -159,7 +159,7 @@ export function Chart(props: {
             const numTimeSteps = props.numLines ?? props.data[0].length - 1
             const mortonRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
                 .map(i => Math.floor(i * numTimeSteps / (PLOT_NUM_Y_VALUES - 1)).toString())
-            console.log(mortonRightYValues)
+            // console.log(mortonRightYValues)
             setMortonRightYValues(mortonRightYValues)
 
             let lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()].map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_X_VALUES - 1)).toString())
