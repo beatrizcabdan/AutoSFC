@@ -37,10 +37,10 @@ export function CspComparisonDemo() {
 
     const [encoder, setEncoder] = useState('morton')
 
-    const [minSFCvalue, setMinSFCvalue] = useState(preset.sfcRangeMin)
-    const [maxSFCvalue, setMaxSFCvalue] = useState(preset.sfcRangeMax)
-    const [initialMinSFCvalue, setInitialMinSFCvalue] = useState(preset.sfcRangeMin)
-    const [initialMaxSFCvalue, setInitialMaxSFCvalue] = useState(preset.sfcRangeMax)
+    const [minSfcValues, setMinSfcValues] = useState<number[]>([])
+    const [maxSfcValues, setMaxSfcValues] = useState<number[]>([])
+    const [initialMinSfcValues, setInitialMinSfcValues] = useState<number[]>([])
+    const [initialMaxSfcValues, setInitialMaxSfcValues] = useState<number[]>([])
 
     const [displayedDataLabels, setDisplayedDataLabels] = useState<string[][] | null>([
         ['accel_x', 'accel_y'],
@@ -123,7 +123,7 @@ export function CspComparisonDemo() {
 
                     // Only render after last iteration
                     if (numLabels.length === filePaths.length) {
-                        computeSetSFCData(newTransformedData, bitsPerSignal, encoder, true, true);
+                        computeSetSfcData(newTransformedData, bitsPerSignal, encoder, true, true);
                         setData(newData)
                         setTransformedData(newTransformedData)
                         if (scales.length === 0) {
@@ -249,7 +249,7 @@ export function CspComparisonDemo() {
         transformedData[fileIndex][labelIndex] = data[fileIndex][labelIndex].map(val => val * (scale ?? DEFAULT_SCALING_FACTOR) + (offsets[fileIndex][labelIndex] ?? 0))
         setTransformedData([...transformedData.slice(0, fileIndex), [...transformedData[fileIndex]], ...transformedData.slice(fileIndex + 1)])
         setMinMaxChartValues(data)
-        computeSetSFCData(transformedData, bitsPerSignal, undefined, true)
+        computeSetSfcData(transformedData, bitsPerSignal, undefined, true)
     };
 
     const onOffsetsChanged = (labelIndex: number, offset: number | undefined, fileIndex: number) => {
@@ -258,22 +258,21 @@ export function CspComparisonDemo() {
         transformedData[fileIndex][labelIndex] = data[fileIndex][labelIndex].map(val => val * (scales[fileIndex][labelIndex] ?? DEFAULT_SCALING_FACTOR) + (offset ?? 0))
         setTransformedData([...transformedData.slice(0, fileIndex), [...transformedData[fileIndex]], ...transformedData.slice(fileIndex + 1)])
         setMinMaxChartValues(data)
-        computeSetSFCData(transformedData, bitsPerSignal, undefined, true)
+        computeSetSfcData(transformedData, bitsPerSignal, undefined, true)
     };
 
     const onBitsPerSignalChanged = (bits: number | string) => {
         setBitsPerSignal(bits)
-        computeSetSFCData(transformedData, bits, undefined, true)
+        computeSetSfcData(transformedData, bits, undefined, true)
     };
 
-    const computeSetSFCData = (transformedDataArrs: number[][][], bitsPerSignal: number | string,
+    const computeSetSfcData = (transformedDataArrays: number[][][], bitsPerSignal: number | string,
                                newEncoder?: string, setMinMaxValues?: boolean, initialMinMaxValues?: boolean) => {
-        let maxVal = Number.MIN_VALUE
-        let minVal = Number.MAX_VALUE
-
         const allSfcData: number[][] = []
+        const allMinSfcValues: number[] = []
+        const allMaxSfcValues: number[] = []
 
-        transformedDataArrs.forEach(transformedData => {
+        transformedDataArrays.forEach(transformedData => {
             const truncatedData = transformedData.map(column => column.map(value =>
                 Math.trunc(value))) // Add truncating processing
             const currentEncoder = newEncoder ?? encoder
@@ -281,20 +280,22 @@ export function CspComparisonDemo() {
                 : hilbertEncode(truncatedData, Number(typeof bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : bitsPerSignal)).reverse()
             if (setMinMaxValues) {
                 const sfcSorted = [...sfcData!].sort((a, b) => a - b)
-                maxVal = Math.max(maxVal, sfcSorted[sfcSorted.length - 1])
-                minVal = Math.min(minVal, sfcSorted[0])
+                allMaxSfcValues.push(sfcSorted[sfcSorted.length - 1])
+                allMinSfcValues.push(sfcSorted[0])
             }
 
             allSfcData.push(sfcData)
         })
 
+        console.log(allMinSfcValues)
+
         if (setMinMaxValues) {
-            setMinSFCvalue(minVal)
-            setMaxSFCvalue(maxVal)
+            setMinSfcValues(allMinSfcValues)
+            setMaxSfcValues(allMaxSfcValues)
 
             if (initialMinMaxValues) {
-                setInitialMinSFCvalue(minVal)
-                setInitialMaxSFCvalue(maxVal)
+                setInitialMinSfcValues(allMinSfcValues)
+                setInitialMaxSfcValues(allMaxSfcValues)
             }
         }
 
@@ -307,7 +308,7 @@ export function CspComparisonDemo() {
             return
         }
         const newEncoder = encoder === 'morton' ? 'hilbert' : 'morton'
-        computeSetSFCData(transformedData, bitsPerSignal, newEncoder, true)
+        computeSetSfcData(transformedData, bitsPerSignal, newEncoder, true)
         setEncoder(newEncoder)
     };
 
@@ -320,6 +321,16 @@ export function CspComparisonDemo() {
         return Math.max(...startLines.map((_, i) => endLines[i] - startLines[i]))
     };
 
+    function onMinSfcValChanged(value: number, fileIndex: number) {
+        minSfcValues[fileIndex] = value
+        setMinSfcValues([...minSfcValues])
+    }
+
+    function onMaxSfcValuesChanged(value: number, fileIndex: number) {
+        maxSfcValues[fileIndex] = value
+        setMaxSfcValues([...maxSfcValues])
+    }
+
     return <div id={'comp-demo-div'}>
         <h1>CSP comparison demo</h1>
         <div className={"charts"} id={'demo2-charts'}>
@@ -328,7 +339,7 @@ export function CspComparisonDemo() {
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
                    xAxisName={"Morton"} bitsPerSignal={bitsPerSignal}
                    yAxisName={"Time steps"} yAxisLabelPos={"right"} lineColors={LINE_COLORS}
-                   sfcData={sfcData} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue}
+                   sfcData={sfcData} minSfcRange={minSfcValues} maxSfcRange={maxSfcValues}
                    encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch}/>}/>
         </div>
         {fileNames.map((fileName, i) => {
@@ -378,9 +389,10 @@ export function CspComparisonDemo() {
                                          scales={scales[i]} offsets={offsets[i]} bitsPerSignal={bitsPerSignal}
                                          onScalesChanged={(index: number, scale: number | undefined) => onScalesChanged(index, scale, i)}
                                          onOffsetsChanged={(index: number, offset: number | undefined) => onOffsetsChanged(index, offset, i)}
-                                         minSFCvalue={minSFCvalue} setMinSFCvalue={setMinSFCvalue} setMaxSFCvalue={setMaxSFCvalue}
-                                         maxSFCvalue={maxSFCvalue} initialMinSFCvalue={initialMinSFCvalue}
-                                         initialMaxSFCvalue={initialMaxSFCvalue}
+                                         minSfcValue={minSfcValues[i]} setMinSfcValue={(val: number) => onMinSfcValChanged(val, i)}
+                                         setMaxSfcValue={(val: number)=> onMaxSfcValuesChanged(val, i)}
+                                         maxSfcValue={maxSfcValues[i]} initialMinSfcValue={initialMinSfcValues[i]}
+                                         initialMaxSfcValue={initialMaxSfcValues[i]}
                                          onBitsPerSignalChanged={onBitsPerSignalChanged} resetBtnPos={'right'}/>
                 </div>
             </div>

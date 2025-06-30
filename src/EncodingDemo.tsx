@@ -366,7 +366,7 @@ export function EncodingDemo() {
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
                    xAxisName={"Morton"} bitsPerSignal={bitsPerSignal}
                    yAxisName={"Time steps"} yAxisLabelPos={"right"} currentSignalXVal={signalMarkerPos}
-                   sfcData={sfcData} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue}
+                   sfcData={sfcData} minSfcRange={[minSFCvalue]} maxSfcRange={[maxSFCvalue]}
                    encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch}/>}/>
         </div>
         <div className={"controls"}>
@@ -426,11 +426,11 @@ export function EncodingDemo() {
                                          bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
                                          showSignalTransforms={showSignalTransforms}
                                          setShowSignalTransforms={onShowSignalTransformsChanged}
-                                         onOffsetsChanged={onOffsetsChanged} minSFCvalue={minSFCvalue}
-                                         setMinSFCvalue={setMinSFCvalue} setMaxSFCvalue={setMaxSFCvalue}
-                                         maxSFCvalue={maxSFCvalue}
-                                         initialMinSFCvalue={initialMinSFCvalue}
-                                         initialMaxSFCvalue={initialMaxSFCvalue}
+                                         onOffsetsChanged={onOffsetsChanged} minSfcValue={minSFCvalue}
+                                         setMinSfcValue={setMinSFCvalue} setMaxSfcValue={setMaxSFCvalue}
+                                         maxSfcValue={maxSFCvalue}
+                                         initialMinSfcValue={initialMinSFCvalue}
+                                         initialMaxSfcValue={initialMaxSFCvalue}
                                          onBitsPerSignalChanged={onBitsPerSignalChanged}/>
                 </div>
             </div>

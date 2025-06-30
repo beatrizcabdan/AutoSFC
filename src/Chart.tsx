@@ -40,8 +40,8 @@ export function Chart(props: {
     offsets: (number | undefined)[] | (number | undefined)[][],
     bitsPerSignal?: number | string,
     transformedData: number[][] | number[][][],
-    minSFCrange?: number,
-    maxSFCrange?: number,
+    minSfcRange?: number[],
+    maxSfcRange?: number[],
     sfcData?: number[] | number[][],
     encoderSwitch?: React.JSX.Element,
     id?: string,
@@ -64,7 +64,7 @@ export function Chart(props: {
 
     const [xTickMarks, setXTickMarks] = useState<string[]>([])
     const [yTickMarks, setYTickMarks] = useState<string[]>([])
-    const [mortonRightYValues, setMortonRightYValues] = useState<string[]>([])
+    const [mortonRightYValues, setSfcRightYValues] = useState<string[]>([])
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const curvePaddingRef = useRef(0)
@@ -134,8 +134,8 @@ export function Chart(props: {
 // TODO: Decouple signal/Morton charts
     useEffect(() => {
         if (props.data.length > 0 && canvasRef.current) {
-            const minMorton = props.minSFCrange ?? -1
-            const maxMorton = props.maxSFCrange ?? -1
+            const minSfcValue = props.minSfcRange ? Math.min(...props.minSfcRange) : -1
+            const maxSfcValue = props.maxSfcRange ? Math.max(...props.maxSfcRange) : -1
 
             const canvas: HTMLCanvasElement = canvasRef.current!
             // TODO: Dynamic canvas res?
@@ -155,13 +155,12 @@ export function Chart(props: {
                 100
                 : Math.floor((props.data[0].length - 1) * props.currentSignalXVal / 100)
 
-            const mortonXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
-                .map(i => (i * (maxMorton - minMorton) / (PLOT_NUM_X_VALUES - 1) + minMorton).toExponential(1))
+            const sfcXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
+                .map(i => (i * (maxSfcValue - minSfcValue) / (PLOT_NUM_X_VALUES - 1) + minSfcValue).toExponential(1))
             const numTimeSteps = props.totalNumLines ?? props.data[0].length - 1
-            const mortonRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
+            const sfcRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
                 .map(i => Math.floor(i * numTimeSteps / (PLOT_NUM_Y_VALUES - 1)).toString())
-            // console.log(mortonRightYValues)
-            setMortonRightYValues(mortonRightYValues)
+            setSfcRightYValues(sfcRightYValues)
 
             let lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()].map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_X_VALUES - 1)).toString())
 
@@ -172,7 +171,7 @@ export function Chart(props: {
                 lineXValues = Array.from({ length: PLOT_NUM_X_VALUES }, (_, i) => Math.round(props.startTimeXticks + i * step).toString());
             }
 
-            const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
+            const xTickMarks = props.type === 'scatter' ? sfcXValues : lineXValues
             setXTickMarks(xTickMarks)
 
             const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
@@ -247,19 +246,20 @@ export function Chart(props: {
                 // SFC scatterplot
                 props.sfcData!.forEach((m, i) => {
                     if (Array.isArray(m)) {
-                        m.forEach(el => drawSfcBar(canvas, curvePadding, el, minMorton, maxMorton, markerIndex, axisPadding, i))
+                        m.forEach(el => drawSfcBar(canvas, curvePadding, el,
+                            minSfcValue, maxSfcValue, markerIndex, axisPadding, i))
                     } else {
-                        drawSfcBar(canvas, curvePadding, m, minMorton, maxMorton, markerIndex, axisPadding)
+                        drawSfcBar(canvas, curvePadding, m, minSfcValue, maxSfcValue, markerIndex, axisPadding)
                     }
                 })
 
                 props.sfcData!.forEach((m, i) => {
                     if (Array.isArray(m)) {
                         m.forEach((el, j) =>
-                            drawSfcPoint(j, canvas, curvePadding, el, minMorton, maxMorton, markerIndex,
+                            drawSfcPoint(j, canvas, curvePadding, el, minSfcValue, maxSfcValue, markerIndex,
                                 props.lineColors ? props.lineColors[i] : 'black', i))
                     } else {
-                        drawSfcPoint(i, canvas, curvePadding, m, minMorton, maxMorton, markerIndex);
+                        drawSfcPoint(i, canvas, curvePadding, m, minSfcValue, maxSfcValue, markerIndex);
                     }
                 })
             }
@@ -268,7 +268,7 @@ export function Chart(props: {
             ctx = canvas.getContext('2d')
         }
     }, [canvasRef.current, props.data, props.transformedData, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
-        props.offsets, props.bitsPerSignal, props.sfcData, props.minSFCrange, props.maxSFCrange]);
+        props.offsets, props.bitsPerSignal, props.sfcData, props.minSfcRange, props.maxSfcRange]);
 
     return <div className={'chart'} id={props.id ? props.id + '-chart' : ''}>
         <div className={'canvas-container'}>

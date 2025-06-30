@@ -13,12 +13,12 @@ export function ProcessingComponent(props: {
     onBitsPerSignalChanged: (bits: number | string) => void,
     showSignalTransforms?: boolean,
     setShowSignalTransforms?: (show: boolean) => void,
-    minSFCvalue: number,
-    setMinSFCvalue: (value: (((prevState: number) => number) | number)) => void,
-    setMaxSFCvalue: (value: (((prevState: number) => number) | number)) => void,
-    maxSFCvalue: number,
-    initialMinSFCvalue: number,
-    initialMaxSFCvalue: number,
+    minSfcValue: number,
+    setMinSfcValue: (value: number) => void,
+    setMaxSfcValue: (value: number) => void,
+    maxSfcValue: number,
+    initialMinSfcValue: number,
+    initialMaxSfcValue: number,
     resetBtnPos?: string
 }) {
 
@@ -29,8 +29,8 @@ export function ProcessingComponent(props: {
             props.onScalesChanged(i, DEFAULT_SCALING_FACTOR)
         }
         props.onBitsPerSignalChanged(DEFAULT_BITS_PER_SIGNAL)
-        props.setMinSFCvalue(props.initialMinSFCvalue)
-        props.setMaxSFCvalue(props.initialMaxSFCvalue)
+        props.setMinSfcValue(props.initialMinSfcValue)
+        props.setMaxSfcValue(props.initialMaxSfcValue)
     }
 
     function getResetButton() {
@@ -38,8 +38,8 @@ export function ProcessingComponent(props: {
                        disabled={props.offsets?.every(v => v === 0) // Disable if no transforms have been made
                            && props.scales?.every(v => v === DEFAULT_SCALING_FACTOR)
                            && props.bitsPerSignal === DEFAULT_BITS_PER_SIGNAL
-                           && props.initialMinSFCvalue == props.minSFCvalue
-                           && props.initialMaxSFCvalue == props.maxSFCvalue}>Reset all transforms</Button>;
+                           && props.initialMinSfcValue == props.minSfcValue
+                           && props.initialMaxSfcValue == props.maxSfcValue}>Reset all transforms</Button>;
     }
 
     return <div className={'control-container'} id={'process-container'}>
@@ -86,16 +86,16 @@ export function ProcessingComponent(props: {
                     </div>
                 </>
             }
-            <h3 id={'sfc-header'}>CSP index range</h3>
+            <h3 id={'sfc-header'}>CSP range</h3>
             <span className={'input-label min-sfc-label'}>Min value</span>
             <label className={'input-label min-sfc-label'}>
-                <input type="number" value={props.minSFCvalue}
-                       onChange={(e) => props.setMinSFCvalue(Number(e.target.value))}/>
+                <input type="number" value={props.minSfcValue}
+                       onChange={(e) => props.setMinSfcValue(Number(e.target.value))}/>
             </label>
             <span className={'input-label max-sfc-label'}>Max value</span>
             <label className={'input-label max-sfc-label'}>
-                <input type="number" value={props.maxSFCvalue}
-                       onChange={(e) => props.setMaxSFCvalue(Number(e.target.value))}/>
+                <input type="number" value={props.maxSfcValue}
+                       onChange={(e) => props.setMaxSfcValue(Number(e.target.value))}/>
             </label>
             {(props.resetBtnPos === undefined || props.resetBtnPos === 'bottom') && getResetButton()}
         </div>
