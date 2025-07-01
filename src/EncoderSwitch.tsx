@@ -47,10 +47,11 @@ const AntSwitch = styled(Switch)(({theme}) => ({
     },
 }));
 
-export const EncoderSwitch = (props: {encoder: string, onSwitch: () => void}) => {
+export const EncoderSwitch = (props: { encoder: string, onSwitch: () => void, size?: string }) => {
     return <Stack direction="row" spacing={1} sx={{alignItems: 'center'}} className={'encoder-switch'}>
         <Typography className={`encoding-label ${props.encoder === 'hilbert' ? 'unchecked' : 'checked'}`}>Morton</Typography>
-        <AntSwitch inputProps={{'aria-label': 'ant design'}} onChange={props.onSwitch} checked={props.encoder === 'hilbert'}/>
+        <AntSwitch inputProps={{'aria-label': 'ant design'}} onChange={props.onSwitch} checked={props.encoder === 'hilbert'}
+                   sx={{scale: props.size === 'small' ? 0.85 : 1}}/>
         <Typography className={`encoding-label ${props.encoder === 'hilbert' ? 'checked' : 'unchecked'}`}>Hilbert</Typography>
     </Stack>
 };

@@ -16,7 +16,7 @@ const { primaryColor } = App
 
 const preset = demoPreset5
 
-// TODO: Fix CSP index range, bits per signal, presets, deleting/hiding files, more compact layout...
+// TODO: Fix bits per signal, choose labels, deleting/hiding files, more compact layout, presets... (later)
 // Good demo values:
 // accel_x: 4000 / 729
 // accel_y: 5000 / 729
@@ -337,10 +337,24 @@ export function CspComparisonDemo() {
             <Chart name={"Encoded signals plot (CSP)"} data={data} transformedData={transformedData}
                    scales={scales} id={'demo2'} totalNumLines={getMaxDisplayedNumLines()}
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
-                   xAxisName={"Morton"} bitsPerSignal={bitsPerSignal}
+                   xAxisName={"Sfc value"} bitsPerSignal={bitsPerSignal}
                    yAxisName={"Time steps"} yAxisLabelPos={"right"} lineColors={LINE_COLORS}
-                   sfcData={sfcData} minSfcRange={minSfcValues} maxSfcRange={maxSfcValues}
-                   encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch}/>}/>
+                   sfcData={sfcData} minSfcRange={minSfcValues} maxSfcRange={maxSfcValues}/>
+        </div>
+        <div className={'global-transform-div control-container'}>
+            <EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch} size={'small'}/>
+            <>
+                <span className={'input-label bits-label'}>Bits per signal</span>
+                <label className={'input-label bits-label'}>
+                    <input type={'number'} value={bitsPerSignal} min={1}
+                           onBlur={() =>
+                               onBitsPerSignalChanged!(Number(bitsPerSignal === ''
+                                   ? DEFAULT_BITS_PER_SIGNAL
+                                   : bitsPerSignal))}
+                           onChange={(e) =>
+                               onBitsPerSignalChanged!(e.target.value ? Number(e.target.value) : '')}/>
+                </label>
+            </>
         </div>
         {fileNames.map((fileName, i) => {
             return <div className={"controls"} id={'demo2-controls'} key={i}>
@@ -386,14 +400,14 @@ export function CspComparisonDemo() {
                         </div>
                     </div>
                     <ProcessingComponent displayedDataLabels={displayedDataLabels ? displayedDataLabels[i] : null}
-                                         scales={scales[i]} offsets={offsets[i]} bitsPerSignal={bitsPerSignal}
+                                         scales={scales[i]} offsets={offsets[i]}
                                          onScalesChanged={(index: number, scale: number | undefined) => onScalesChanged(index, scale, i)}
                                          onOffsetsChanged={(index: number, offset: number | undefined) => onOffsetsChanged(index, offset, i)}
                                          minSfcValue={minSfcValues[i]} setMinSfcValue={(val: number) => onMinSfcValChanged(val, i)}
                                          setMaxSfcValue={(val: number)=> onMaxSfcValuesChanged(val, i)}
                                          maxSfcValue={maxSfcValues[i]} initialMinSfcValue={initialMinSfcValues[i]}
                                          initialMaxSfcValue={initialMaxSfcValues[i]}
-                                         onBitsPerSignalChanged={onBitsPerSignalChanged} resetBtnPos={'right'}/>
+                                         resetBtnPos={'right'}/>
                 </div>
             </div>
         })}

@@ -9,8 +9,8 @@ export function ProcessingComponent(props: {
     onScalesChanged: (index: number, scale: (number | undefined)) => void,
     onOffsetsChanged: (index: number, offset: (number | undefined)) => void,
     offsets: (number | undefined)[],
-    bitsPerSignal: number | string,
-    onBitsPerSignalChanged: (bits: number | string) => void,
+    bitsPerSignal?: number | string,
+    onBitsPerSignalChanged?: (bits: number | string) => void,
     showSignalTransforms?: boolean,
     setShowSignalTransforms?: (show: boolean) => void,
     minSfcValue: number,
@@ -28,7 +28,9 @@ export function ProcessingComponent(props: {
             props.onOffsetsChanged(i, DEFAULT_OFFSET)
             props.onScalesChanged(i, DEFAULT_SCALING_FACTOR)
         }
-        props.onBitsPerSignalChanged(DEFAULT_BITS_PER_SIGNAL)
+        if (props.onBitsPerSignalChanged) {
+            props.onBitsPerSignalChanged(DEFAULT_BITS_PER_SIGNAL)
+        }
         props.setMinSfcValue(props.initialMinSfcValue)
         props.setMaxSfcValue(props.initialMaxSfcValue)
     }
@@ -69,14 +71,18 @@ export function ProcessingComponent(props: {
                     </label>
                 </React.Fragment>
             )}
-            <span className={'input-label bits-label'}>Bits per signal</span>
-            <label className={'input-label bits-label'}>
-                <input type={'number'} value={props.bitsPerSignal} min={1}
-                       onBlur={() =>
-                           props.onBitsPerSignalChanged(Number(props.bitsPerSignal === '' ? DEFAULT_BITS_PER_SIGNAL : props.bitsPerSignal))}
-                       onChange={(e) =>
-                           props.onBitsPerSignalChanged(e.target.value ? Number(e.target.value) : '')}/>
-            </label>
+            {props.bitsPerSignal && <>
+                <span className={'input-label bits-label'}>Bits per signal</span>
+                <label className={'input-label bits-label'}>
+                    <input type={'number'} value={props.bitsPerSignal} min={1}
+                           onBlur={() =>
+                               props.onBitsPerSignalChanged!(Number(props.bitsPerSignal === ''
+                                   ? DEFAULT_BITS_PER_SIGNAL
+                                   : props.bitsPerSignal))}
+                           onChange={(e) =>
+                               props.onBitsPerSignalChanged!(e.target.value ? Number(e.target.value) : '')}/>
+                </label>
+            </>}
             {props.showSignalTransforms !== undefined &&
                 <>
                     <span className={'input-label show-transforms-label'}>Plot transformed signals</span>

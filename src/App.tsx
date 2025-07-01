@@ -34,7 +34,7 @@ function App() {
             </div>
 
             <div id={'main'}>
-                {/*<EncodingDemo />*/}
+                <EncodingDemo />
                 <CspComparisonDemo />
             </div>
 

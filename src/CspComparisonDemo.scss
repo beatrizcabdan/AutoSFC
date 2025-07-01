@@ -2,10 +2,11 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
+    align-items: center;
 
     h1 {
-        margin-bottom: -1rem;
+        margin-bottom: 0;
     }
 
     #demo2-controls {
@@ -181,6 +182,44 @@
                     grid-column: 3;
                     grid-row: 1 / 4;
                 }
+            }
+        }
+    }
+
+    .global-transform-div {
+        width: fit-content;
+        flex: none;
+        margin-top: -0.5rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0;
+        padding: 0.6rem 0.9rem;
+
+        & > :last-child {
+            margin: 0;
+        }
+
+        .encoder-switch {
+            margin: 0;
+
+            p {
+                font-size: 0.6rem;
+                letter-spacing: 0.02rem;
+                font-weight: 700;
+            }
+
+            .MuiSwitch-root {
+
+            }
+        }
+
+        label.input-label {
+            width: 8ch;
+
+            * {
+                width: 100%;
             }
         }
     }

@@ -290,7 +290,9 @@ export function Chart(props: {
                             <span className={'x-tick-mark-label'}>{xTickMarks[i]}</span>
                         </div>})}
                 </div>
-                {props.type === 'line' ? <p className={'chart-x-axis-name'}>{props.xAxisName}</p> : props.encoderSwitch}
+                {props.id === 'demo2' || props.type === 'line'
+                    ? <p className={'chart-x-axis-name'}>{props.xAxisName}</p>
+                    : props.encoderSwitch}
                 {props.type === 'scatter' && <div className={'chartYTicks'} id={'right-axis'}>{
                     Array.from(Array(PLOT_NUM_Y_VALUES).keys()).map(i => {
                         return <div key={i} className={'y-tick-mark'}>
