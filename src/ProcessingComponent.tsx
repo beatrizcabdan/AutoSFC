@@ -21,7 +21,7 @@ export function ProcessingComponent(props: {
     initialMaxSfcValue: number,
     resetBtnPos?: string,
     encoderSwitch?: React.JSX.Element,
-    variant?: string
+    variant?: 'full' | 'reduced'
 }) {
 
     // TODO: Decide on how reset should work when presets are used
@@ -52,6 +52,7 @@ export function ProcessingComponent(props: {
             <span className={'input-label signal-label'}>Signal</span>
             <span className={'input-label offset-label'}>Offset</span>
             <span className={'input-label scale-label'}>Scale</span>
+            {props.variant === 'reduced' && <h3 id={'sfc-header'}>CSP range</h3>}
             {props.displayedDataLabels?.map((signal, i) =>
                 <React.Fragment key={i}>
                     <div className={'signal-cell'} key={i}>
@@ -99,9 +100,7 @@ export function ProcessingComponent(props: {
                     </div>
                 </>
             }
-            {props.variant === 'full'
-                ? <Divider><h3 id={'sfc-header'}>CSP range</h3></Divider>
-                : <h3 id={'sfc-header'}>CSP range</h3>}
+            {props.variant === 'full' && <Divider><h3 id={'sfc-header'}>CSP range</h3></Divider>}
             <span className={`input-label min-sfc-label ${props.variant === 'full' && 'variant-full'}`}>Min value</span>
             <label className={`input-label min-sfc-label ${props.variant === 'full' && 'variant-full'}`}>
                 <input type="number" value={props.minSfcValue}

@@ -399,7 +399,7 @@ export function CspComparisonDemo() {
                             </div>
                         </div>
                     </div>
-                    <ProcessingComponent displayedDataLabels={displayedDataLabels ? displayedDataLabels[i] : null}
+                    <ProcessingComponent variant={'reduced'} displayedDataLabels={displayedDataLabels ? displayedDataLabels[i] : null}
                                          scales={scales[i]} offsets={offsets[i]}
                                          onScalesChanged={(index: number, scale: number | undefined) => onScalesChanged(index, scale, i)}
                                          onOffsetsChanged={(index: number, offset: number | undefined) => onOffsetsChanged(index, offset, i)}
