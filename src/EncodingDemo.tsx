@@ -392,12 +392,12 @@ export function EncodingDemo() {
                                          onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
                         <div className={"text-controls"}>
                             <label className={"input-label"}>
-                                Start row:
+                                Start row
                                 <input type="number" value={startLine}
                                        onChange={(e) => setStartLine(Number(e.target.value))}/>
                             </label>
                             <label className={"input-label"}>
-                                End row:
+                                End row
                                 <input type="number" value={endLine}
                                        onChange={(e) => setEndLine(Number(e.target.value))}/>
                             </label>

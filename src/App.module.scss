@@ -572,7 +572,7 @@ input[type="number"] {
           display: flex;
           flex-direction: row;
           align-items: center;
-          gap: 0.3rem;
+          gap: 0.5rem;
         }
       }
     }
@@ -671,7 +671,6 @@ input[type="number"] {
 
   @media (max-width: 1280px) {
     .text-controls {
-      flex-direction: column !important;
       align-items: flex-end;
     }
   }

@@ -111,8 +111,7 @@ export function ProcessingComponent(props: {
                 <input type="number" value={props.maxSfcValue}
                        onChange={(e) => props.setMaxSfcValue(Number(e.target.value))}/>
             </label>
-            {(props.resetBtnPos === undefined || props.resetBtnPos === 'bottom') && getResetButton()}
+            {getResetButton()}
         </div>
-        {props.resetBtnPos === 'right' && getResetButton()}
     </div>;
 }

@@ -381,7 +381,7 @@ export function CspComparisonDemo() {
                                              onChange={(e, newValue) => onZoomSliderChange(e, newValue, i)}/>
                             <div className={"text-controls"}>
                                 <label className={"input-label"}>
-                                    Start row:
+                                    Start row
                                     <input type="number" value={startLines[i]}
                                            onChange={(e) => {
                                                startLines[i] = Number(e.target.value)
@@ -389,7 +389,7 @@ export function CspComparisonDemo() {
                                            }}/>
                                 </label>
                                 <label className={"input-label"}>
-                                    End row:
+                                    End row
                                     <input type="number" value={endLines[i]}
                                            onChange={(e) => {
                                                endLines[i] = Number(e.target.value)
