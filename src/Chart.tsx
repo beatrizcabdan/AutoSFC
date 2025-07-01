@@ -290,9 +290,7 @@ export function Chart(props: {
                             <span className={'x-tick-mark-label'}>{xTickMarks[i]}</span>
                         </div>})}
                 </div>
-                {props.id === 'demo2' || props.type === 'line'
-                    ? <p className={'chart-x-axis-name'}>{props.xAxisName}</p>
-                    : props.encoderSwitch}
+                <p className={'chart-x-axis-name'}>{props.xAxisName}</p>
                 {props.type === 'scatter' && <div className={'chartYTicks'} id={'right-axis'}>{
                     Array.from(Array(PLOT_NUM_Y_VALUES).keys()).map(i => {
                         return <div key={i} className={'y-tick-mark'}>
@@ -301,7 +299,8 @@ export function Chart(props: {
                         </div>})}
                 </div>}
                 {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
-                {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!} lineColors={props.lineColors}/>}
+                {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!}
+                                               lineColors={props.lineColors}/>}
             </div>
         </div>
     </div>;

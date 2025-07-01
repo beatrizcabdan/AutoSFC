@@ -16,7 +16,7 @@ const { primaryColor } = App
 
 const preset = demoPreset5
 
-// TODO: Fix bits per signal, choose labels, deleting/hiding files, more compact layout, presets... (later)
+// TODO: Choose labels, deleting/hiding files, more compact layout, presets... (later)
 // Good demo values:
 // accel_x: 4000 / 729
 // accel_y: 5000 / 729
@@ -414,7 +414,9 @@ export function CspComparisonDemo() {
         <UploadButton onClick={e => uploadFile(e, fileNames.length)} label={"Upload file..."}
                       currentFile={''}/>
         <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels && fileToSelectColumnsFor > -1 ? displayedDataLabels[fileToSelectColumnsFor] : []}
-                             allDataLabels={allDataLabelsRef.current && fileToSelectColumnsFor > -1 ? allDataLabelsRef.current[fileToSelectColumnsFor] : []}
+                             allDataLabels={allDataLabelsRef.current && fileToSelectColumnsFor > -1
+                                 ? allDataLabelsRef.current[fileToSelectColumnsFor]
+                                 : []}
                              setDataLabels={onDataLabelsSet}/>
     </div>;
 }

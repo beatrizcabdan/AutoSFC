@@ -282,6 +282,12 @@ html {
     font-family: inherit !important;
     margin: 0 !important;
     text-transform: uppercase;
+
+    &.small {
+        font-size: 0.6rem;
+        letter-spacing: 0.02rem;
+        font-weight: 700;
+    }
   }
 
   .MuiSwitch-root {
@@ -292,9 +298,6 @@ html {
   justify-content: center;
   align-items: center;
   font-size: inherit;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  height: 0;
   gap: 0.5rem;
   grid-column: 2;
 
@@ -387,6 +390,17 @@ input[type="number"] {
       gap: 0.2rem;
       grid-auto-rows: auto;
 
+      .MuiDivider-root {
+        grid-column: 1 / 4;
+        height: 1.0rem;
+
+        #sfc-header {
+          margin: 0;
+          line-height: initial;
+          padding: 0.1rem 0 0;
+        }
+      }
+
       .signal-cell {
         display: flex;
         align-items: center;
@@ -423,26 +437,42 @@ input[type="number"] {
         grid-column: 3;
       }
 
+      .encoder-label {
+        margin-top: 0.7rem !important;
+        align-items: flex-start;
+        padding-top: 0.2rem;
+      }
+
+      .encoder-switch {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+      }
+
       .bits-label {
-        margin-top: 1rem;
         text-align: center;
       }
 
-      span.bits-label, span.show-transforms-label {
+      span.bits-label, span.show-transforms-label, span.encoder-label {
         grid-column: 1;
         text-align: left;
         padding-top: 0.2rem;
       }
 
-      label.bits-label, div.show-transforms-label {
+      label.bits-label, div.show-transforms-label, .encoder-switch {
         grid-column: 2;
+        text-align: left;
+      }
+
+      .bits-label, .show-transforms-label, .encoder-label{
+        min-height: 1.3rem;
       }
 
       div.show-transforms-label {
         display: flex;
-        justify-content: center;
+        justify-content: left;
         width: 100%;
         pointer-events: none;
+        margin-left: -0.2rem;
 
         .MuiButtonBase-root {
           aspect-ratio: 1;
@@ -452,9 +482,13 @@ input[type="number"] {
         }
       }
 
-      /*span.bits-label {
+      .variant-full.min-sfc-label {
+        margin-top: 0.7rem;
+      }
+
+      span.bits-label {
         padding-top: 0.2rem;
-      }*/
+      }
 
       span.min-sfc-label, span.max-sfc-label {
         grid-column: 1;
@@ -473,7 +507,7 @@ input[type="number"] {
       }
 
       #sfc-header {
-        margin-top: 1.0rem;
+        margin-top: 1.7rem;
         grid-column: 1 / 4;
       }
 

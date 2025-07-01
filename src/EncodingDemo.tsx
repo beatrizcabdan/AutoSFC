@@ -364,10 +364,9 @@ export function EncodingDemo() {
             <Chart name={"Encoded signals plot (CSP)"} data={data} transformedData={transformedData}
                    scales={scales}
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
-                   xAxisName={"Morton"} bitsPerSignal={bitsPerSignal}
+                   xAxisName={"SFC Value"} bitsPerSignal={bitsPerSignal}
                    yAxisName={"Time steps"} yAxisLabelPos={"right"} currentSignalXVal={signalMarkerPos}
-                   sfcData={sfcData} minSfcRange={[minSFCvalue]} maxSfcRange={[maxSFCvalue]}
-                   encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch}/>}/>
+                   sfcData={sfcData} minSfcRange={[minSFCvalue]} maxSfcRange={[maxSFCvalue]}/>
         </div>
         <div className={"controls"}>
             <div className={"vert-control-wrapper"}>
@@ -421,7 +420,7 @@ export function EncodingDemo() {
             </div>
             <div className={"vert-control-wrapper"}>
                 <div className={"vert-control-wrapper"}>
-                    <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS}
+                    <ProcessingComponent variant={'full'} displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS}
                                          scales={scales} offsets={offsets}
                                          bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
                                          showSignalTransforms={showSignalTransforms}
@@ -431,7 +430,10 @@ export function EncodingDemo() {
                                          maxSfcValue={maxSFCvalue}
                                          initialMinSfcValue={initialMinSFCvalue}
                                          initialMaxSfcValue={initialMaxSFCvalue}
-                                         onBitsPerSignalChanged={onBitsPerSignalChanged}/>
+                                         onBitsPerSignalChanged={onBitsPerSignalChanged}
+                                         encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch} size={'small'}
+                                                                className={'encoder-label'}/>}
+                    />
                 </div>
             </div>
         </div>

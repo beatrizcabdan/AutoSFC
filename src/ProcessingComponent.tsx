@@ -1,6 +1,6 @@
 import React from "react";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR} from "./App.tsx";
-import {Button, Checkbox} from "@mui/material";
+import {Button, Checkbox, Divider} from "@mui/material";
 
 export function ProcessingComponent(props: {
     displayedDataLabels: string[] | null,
@@ -19,7 +19,9 @@ export function ProcessingComponent(props: {
     maxSfcValue: number,
     initialMinSfcValue: number,
     initialMaxSfcValue: number,
-    resetBtnPos?: string
+    resetBtnPos?: string,
+    encoderSwitch?: React.JSX.Element,
+    variant?: string
 }) {
 
     // TODO: Decide on how reset should work when presets are used
@@ -71,6 +73,11 @@ export function ProcessingComponent(props: {
                     </label>
                 </React.Fragment>
             )}
+            {props.variant === 'full' && <Divider variant={'fullWidth'}/>}
+            {props.encoderSwitch && <>
+                <span className={'input-label encoder-label'}>Encoding</span>
+                {props.encoderSwitch}
+            </>}
             {props.bitsPerSignal && <>
                 <span className={'input-label bits-label'}>Bits per signal</span>
                 <label className={'input-label bits-label'}>
@@ -92,9 +99,11 @@ export function ProcessingComponent(props: {
                     </div>
                 </>
             }
-            <h3 id={'sfc-header'}>CSP range</h3>
-            <span className={'input-label min-sfc-label'}>Min value</span>
-            <label className={'input-label min-sfc-label'}>
+            {props.variant === 'full'
+                ? <Divider><h3 id={'sfc-header'}>CSP range</h3></Divider>
+                : <h3 id={'sfc-header'}>CSP range</h3>}
+            <span className={`input-label min-sfc-label ${props.variant === 'full' && 'variant-full'}`}>Min value</span>
+            <label className={`input-label min-sfc-label ${props.variant === 'full' && 'variant-full'}`}>
                 <input type="number" value={props.minSfcValue}
                        onChange={(e) => props.setMinSfcValue(Number(e.target.value))}/>
             </label>
