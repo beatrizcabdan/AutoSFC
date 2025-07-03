@@ -130,7 +130,8 @@
                 }
 
                 .signals-grid {
-                    grid-template-columns: 9ch repeat(2, min-content) 0.2rem min-content min-content auto;
+                    grid-template-columns: 9ch repeat(2, min-content) 1rem min-content min-content auto;
+                    position: relative;
 
                     .offset-label, .scale-label {
                         input {
@@ -198,6 +199,13 @@
                         align-self: center;
                         margin-top: 0;
                         padding: 0;
+                    }
+
+                    .MuiDivider-root {
+                        grid-column: 4;
+                        height: 100%;
+                        position: absolute;
+                        margin-left: 0.5rem;
                     }
 
                     .min-sfc-label {

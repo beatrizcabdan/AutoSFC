@@ -105,6 +105,7 @@ export function ProcessingComponent(props: {
                 </>
             }
             {props.variant === 'full' && <Divider><h3 id={'sfc-header'}>CSP range</h3></Divider>}
+            {props.variant === 'reduced' && <Divider orientation={'vertical'}/>}
             <span className={`input-label min-sfc-label ${props.variant === 'full' && 'variant-full'}`}>Min value</span>
             <label className={`input-label min-sfc-label ${props.variant === 'full' && 'variant-full'}`}>
                 <input type="number" value={props.minSfcValue}
