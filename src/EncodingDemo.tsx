@@ -438,7 +438,7 @@ export function EncodingDemo() {
             </div>
         </div>
 
-        <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels}
+        <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels} demoName={'encoding'}
                              allDataLabels={allDataLabelsRef.current ?? []} setDataLabels={setDataLabels}/>
     </div>;
 }

@@ -150,16 +150,17 @@ export function CspComparisonDemo() {
         loadFiles()
     }, [startLines, endLines, displayedDataLabels, filePaths]);
 
-    const selectDataColumns = () => {
+    const selectDataColumns = (fileIndex: number) => {
         if (!showDialog) {
+            setFileToSelectColumnsFor(fileIndex)
             setShowDialog(true)
         }
     };
 
-    const setDataLabels = (labels: string[][]) => {
+    /*const setDataLabels = (labels: string[][]) => {
         setDisplayedDataLabels(labels)
         setShowDialog(false)
-    }
+    }*/
 
     // Only append to duplicates
     function formatDataLabels(dataLabels: string[]) {
@@ -287,8 +288,6 @@ export function CspComparisonDemo() {
             allSfcData.push(sfcData)
         })
 
-        console.log(allMinSfcValues)
-
         if (setMinMaxValues) {
             setMinSfcValues(allMinSfcValues)
             setMaxSfcValues(allMaxSfcValues)
@@ -315,6 +314,7 @@ export function CspComparisonDemo() {
     const onDataLabelsSet = (newLabels: string[]) => {
         setDisplayedDataLabels([...displayedDataLabels?.slice(0, fileToSelectColumnsFor) ?? [], newLabels,
             ...displayedDataLabels?.slice(fileToSelectColumnsFor + 1) ?? []])
+        setShowDialog(false)
     };
 
     const getMaxDisplayedNumLines = () => {
@@ -406,14 +406,17 @@ export function CspComparisonDemo() {
                                          minSfcValue={minSfcValues[i]} setMinSfcValue={(val: number) => onMinSfcValChanged(val, i)}
                                          setMaxSfcValue={(val: number)=> onMaxSfcValuesChanged(val, i)}
                                          maxSfcValue={maxSfcValues[i]} initialMinSfcValue={initialMinSfcValues[i]}
-                                         initialMaxSfcValue={initialMaxSfcValues[i]} onChooseColumnsClick={selectDataColumns}
+                                         initialMaxSfcValue={initialMaxSfcValues[i]} onChooseColumnsClick={() => selectDataColumns(i)}
                                          resetBtnPos={'right'}/>
                 </div>
             </div>
         })}
         <UploadButton onClick={e => uploadFile(e, fileNames.length)} label={"Upload file..."}
                       currentFile={''}/>
-        <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels && fileToSelectColumnsFor > -1 ? displayedDataLabels[fileToSelectColumnsFor] : []}
+        <SelectColumnsDialog show={showDialog} setShow={setShowDialog} demoName={'comparison'}
+                             currentLabels={displayedDataLabels && fileToSelectColumnsFor > -1
+                                 ? displayedDataLabels[fileToSelectColumnsFor]
+                                 : []}
                              allDataLabels={allDataLabelsRef.current && fileToSelectColumnsFor > -1
                                  ? allDataLabelsRef.current[fileToSelectColumnsFor]
                                  : []}

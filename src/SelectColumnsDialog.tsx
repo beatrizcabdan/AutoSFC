@@ -7,6 +7,7 @@ export function SelectColumnsDialog(props: {
     allDataLabels: string[],
     setDataLabels: (newLabels: string[]) => void,
     currentLabels: string[] | null,
+    demoName: string
 }) {
     const [submittable, setSubmittable] = useState(true)
 
@@ -24,6 +25,7 @@ export function SelectColumnsDialog(props: {
 
     useEffect(() => {
         if (props.allDataLabels && props.currentLabels) {
+            console.log(props)
             init();
         }
     }, [props.allDataLabels, props.currentLabels])
@@ -67,7 +69,7 @@ export function SelectColumnsDialog(props: {
                 <form method="dialog" onSubmit={onSubmit}>
                     <div className={'checkbox-list'}>
                     {props.allDataLabels.map((label, i) => {
-                        const id = `checkbox${String(i)}`
+                        const id = `${props.demoName}-checkbox${String(i)}`
                         return <div key={i}>
                             <input type="checkbox" name="state_name" value="Connecticut" id={id}
                                    checked={labelsToCheckedMap.get(label) ?? false} onChange={e => onFormChange(label, e.currentTarget.checked)}/>
