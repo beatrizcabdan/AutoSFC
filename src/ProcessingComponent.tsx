@@ -21,7 +21,8 @@ export function ProcessingComponent(props: {
     initialMaxSfcValue: number,
     resetBtnPos?: string,
     encoderSwitch?: React.JSX.Element,
-    variant?: 'full' | 'reduced'
+    variant?: 'full' | 'reduced',
+    onChooseColumnsClick?: () => void
 }) {
 
     // TODO: Decide on how reset should work when presets are used
@@ -74,6 +75,9 @@ export function ProcessingComponent(props: {
                     </label>
                 </React.Fragment>
             )}
+            {props.variant === 'reduced' &&
+                <Button className={'button choose-columns-button'} onClick={props.onChooseColumnsClick}
+                        variant={'outlined'}>Choose columns...</Button>}
             {props.variant === 'full' && <Divider variant={'fullWidth'}/>}
             {props.encoderSwitch && <>
                 <span className={'input-label encoder-label'}>Encoding</span>

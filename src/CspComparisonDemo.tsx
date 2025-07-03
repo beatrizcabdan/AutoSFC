@@ -406,7 +406,7 @@ export function CspComparisonDemo() {
                                          minSfcValue={minSfcValues[i]} setMinSfcValue={(val: number) => onMinSfcValChanged(val, i)}
                                          setMaxSfcValue={(val: number)=> onMaxSfcValuesChanged(val, i)}
                                          maxSfcValue={maxSfcValues[i]} initialMinSfcValue={initialMinSfcValues[i]}
-                                         initialMaxSfcValue={initialMaxSfcValues[i]}
+                                         initialMaxSfcValue={initialMaxSfcValues[i]} onChooseColumnsClick={selectDataColumns}
                                          resetBtnPos={'right'}/>
                 </div>
             </div>

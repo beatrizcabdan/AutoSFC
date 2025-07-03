@@ -1,4 +1,4 @@
-import {Dispatch, FormEvent, MutableRefObject, SetStateAction, useEffect, useState} from "react";
+import React, {Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
 import './SelectColumnsDialog.scss'
 
 export function SelectColumnsDialog(props: {
@@ -51,6 +51,15 @@ export function SelectColumnsDialog(props: {
         init()
         props.setShow(false);
     }
+
+    useEffect(() => {
+        const body = document.querySelector('body')!
+        if (props.show) {
+            body.classList.add('modal-open')
+        } else {
+            body.classList.remove('modal-open')
+        }
+    }, [props.show]);
 
     return <div className={`light-box ${props.show ? 'show' : ''}`}>
             <dialog open={props.show} className={'dialog'}>

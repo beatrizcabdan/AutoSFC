@@ -10,11 +10,13 @@ $vert-container-padding: 1.2rem;
 $horiz-container-padding: 1.8rem;
 
 $primary-color: #006fd5;
+$primary-color-medium: #2699ff;
 $primary-color-light: #b9e0ff;
 
 :export {
     #{'primaryColor'}: #{$primary-color};
     #{'primaryColorLight'}: #{$primary-color-light};
+    #{'primaryColorMedium'}: #{$primary-color-medium};
 }
 
 * {
@@ -53,7 +55,14 @@ html {
   --input-border: #c3c3c3;
 
   --primary-color: $primary-color;
+  --primary-color-medium: #2699ff;
   --primary-color-light: $primary-color-light;
+}
+
+body {
+  &.modal-open {
+    overflow: hidden;
+  }
 }
 
 #root {

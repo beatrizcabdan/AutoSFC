@@ -1,5 +1,4 @@
 #comp-demo-div {
-    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -178,6 +177,22 @@
                         }
                     }
 
+                    .choose-columns-button {
+                        border-radius: 6px;
+                        color: var(--text-color-light);
+                        font-weight: 700;
+                        font-size: 0.6rem;
+                        letter-spacing: 0.02rem;
+                        transition: all 0.2s;
+                        white-space: nowrap;
+                        grid-column: 1 / 4;
+                        border-width: 2px;
+                        width: fit-content;
+                        justify-self: center;
+                        border-color: var(--button-active);
+                        margin-top: 0.5rem;
+                    }
+
                     #sfc-header {
                         grid-column: 5 / 7;
                         align-self: center;
@@ -187,6 +202,10 @@
 
                     .min-sfc-label {
                         grid-row: 2;
+                    }
+
+                    .max-sfc-label {
+                        grid-row: 3;
                     }
 
                     span.max-sfc-label, span.min-sfc-label {
@@ -213,6 +232,12 @@
                         grid-column: 7;
                         grid-row: 2 / 4;
                         justify-self: flex-end;
+                    }
+
+                    .choose-columns-button, #reset-button {
+                        span {
+                            height: 100%;
+                        }
                     }
                 }
             }
