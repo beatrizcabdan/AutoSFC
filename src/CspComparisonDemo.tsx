@@ -16,7 +16,7 @@ const { primaryColor } = App
 
 const preset = demoPreset5
 
-// TODO: Choose labels, deleting/hiding files, more compact layout, presets... (later)
+// TODO: Fix width, cspRange changing when other file is transformed, deleting/hiding files, more compact layout, presets... (later)
 // Good demo values:
 // accel_x: 4000 / 729
 // accel_y: 5000 / 729
@@ -52,8 +52,8 @@ export function CspComparisonDemo() {
     const [sfcData, setSfcData] = useState<number[][]>([])
 
     // Use default scaling factor when scale is undefined (this to allow removing all digits in inputs)
-    const [scales, setScales] = useState<(number | undefined)[][]>([])
-    const [offsets, setOffsets] = useState<(number | undefined)[][]>([])
+    const [scales, setScales] = useState<(number | undefined)[][]>([[729, 729], [10, 10]])
+    const [offsets, setOffsets] = useState<(number | undefined)[][]>([[4000, 5000], [5000, 5005]])
     const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(DEFAULT_BITS_PER_SIGNAL)
 
     const allDataLabelsRef = useRef<string[][]>([])
@@ -156,11 +156,6 @@ export function CspComparisonDemo() {
             setShowDialog(true)
         }
     };
-
-    /*const setDataLabels = (labels: string[][]) => {
-        setDisplayedDataLabels(labels)
-        setShowDialog(false)
-    }*/
 
     // Only append to duplicates
     function formatDataLabels(dataLabels: string[]) {
