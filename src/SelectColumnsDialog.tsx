@@ -25,7 +25,6 @@ export function SelectColumnsDialog(props: {
 
     useEffect(() => {
         if (props.allDataLabels && props.currentLabels) {
-            console.log(props)
             init();
         }
     }, [props.allDataLabels, props.currentLabels])

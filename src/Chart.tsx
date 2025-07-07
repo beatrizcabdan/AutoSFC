@@ -80,9 +80,9 @@ export function Chart(props: {
 
     function getScatterX(i: number, canvas: HTMLCanvasElement, padding: number, fileIndex?: number) {
         const totalNumLines = props.totalNumLines ?? props.data[0].length - 1
-        // If multi file chart, need to compute offset if number of lines < totalNumLines
-        const offset = fileIndex !== undefined ? (totalNumLines - (props.data[fileIndex][0] as number[]).length) : 0
-        return ((i + offset) / totalNumLines) * (canvas.height - padding * 2) + padding
+        // If multi file chart & lines < totalNumLines, need to add vertical spacing
+        const yMultiplier = fileIndex !== undefined ? (totalNumLines / (props.data[fileIndex][0] as number[]).length) : 1
+        return ((i * yMultiplier) / totalNumLines) * (canvas.height - padding * 2) + padding
     }
 
     function getLineY(canvas: HTMLCanvasElement, curvePadding: number, point: number) {
@@ -118,7 +118,7 @@ export function Chart(props: {
 
     const drawSfcPoint = (i: number, canvas: HTMLCanvasElement, curvePadding: number,
                           m: number, minMorton: number, maxMorton: number, markerIndex: number, color?: string,
-                          fileIndex?: number) => {
+                          fileIndex?: number, yMultiplier = 1) => {
         const x = getScatterX(i, canvas, curvePadding, fileIndex)
         const y = (canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING) * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
         // Draw point
@@ -245,6 +245,7 @@ export function Chart(props: {
             } else {
                 // SFC scatterplot
                 props.sfcData!.forEach((m, i) => {
+                    // Comparison demo
                     if (Array.isArray(m)) {
                         m.forEach(el => drawSfcBar(canvas, curvePadding, el,
                             minSfcValue, maxSfcValue, markerIndex, axisPadding, i))
@@ -254,10 +255,11 @@ export function Chart(props: {
                 })
 
                 props.sfcData!.forEach((m, i) => {
+                    // Comparison demo
                     if (Array.isArray(m)) {
                         m.forEach((el, j) =>
-                            drawSfcPoint(j, canvas, curvePadding, el, minSfcValue, maxSfcValue, markerIndex,
-                                props.lineColors ? props.lineColors[i] : 'black', i))
+                        drawSfcPoint(j, canvas, curvePadding, el, minSfcValue, maxSfcValue, markerIndex,
+                            props.lineColors ? props.lineColors[i] : 'black', i))
                     } else {
                         drawSfcPoint(i, canvas, curvePadding, m, minSfcValue, maxSfcValue, markerIndex);
                     }
