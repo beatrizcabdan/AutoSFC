@@ -359,10 +359,10 @@ export function CspComparisonDemo() {
                             <FormControlLabel control={<Checkbox defaultChecked
                                                          sx={{color: LINE_COLORS[i], '&.Mui-checked': {color: LINE_COLORS[i],}}}/>}
                                               label="Show" className={'show-checkbox'}/>
-                            <FormControlLabel control={<IconButton onClick={e => {
+                            {/*<FormControlLabel control={<IconButton onClick={e => {
                             }}>
                                 <DeleteIcon/>
-                            </IconButton>} label={'Delete'} className={'delete-row-button'}/>
+                            </IconButton>} label={'Delete'} className={'delete-row-button'}/>*/}
                         </div>
                         <div className={"file-container"}>
                             <UploadButton onClick={e => uploadFile(e, i)} label={"Upload file..."}
@@ -406,8 +406,8 @@ export function CspComparisonDemo() {
                 </div>
             </div>
         })}
-        <UploadButton onClick={e => uploadFile(e, fileNames.length)} label={"Upload file..."}
-                      currentFile={''}/>
+        {/*<UploadButton onClick={e => uploadFile(e, fileNames.length)} label={"Upload file..."}
+                      currentFile={''}/>*/}
         <SelectColumnsDialog show={showDialog} setShow={setShowDialog} demoName={'comparison'}
                              currentLabels={displayedDataLabels && fileToSelectColumnsFor > -1
                                  ? displayedDataLabels[fileToSelectColumnsFor]
