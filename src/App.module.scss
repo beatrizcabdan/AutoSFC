@@ -1,9 +1,11 @@
 @use 'sass:math';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
-$canvas-height: 26vw;
-$canvas-width: 35vw;
+$canvas-height: 21vw;
+$canvas-width: 1.35 * $canvas-height;
 $curve-padding-factor: 0.04;
+
+$side-padding: 10rem;
 
 $def-control-width: 27rem;
 $vert-container-padding: 1.2rem;
@@ -84,14 +86,14 @@ body {
   align-items: center;
   gap: 1.5rem;
   margin-top: 2rem;
-  padding: 0 8rem;
-  width: fit-content;
+  padding: 0 $side-padding;
+  width: 100%;
 }
 
 .charts {
   font-family: Inter, sans-serif;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: flex-end;
   flex-direction: row;
   gap: 2.0rem;
@@ -124,6 +126,7 @@ body {
 
     .chartitle {
       margin: 0.5rem;
+      white-space: nowrap;
     }
 
     .canvas-container {
@@ -767,7 +770,7 @@ input[type="number"] {
 .tabcontent {
   background-color: white;
   margin-top: 2rem;
-  padding: 0 8rem;
+  padding: 0 $side-padding;
 }
 
 .papers-container {
