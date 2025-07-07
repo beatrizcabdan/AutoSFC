@@ -125,6 +125,7 @@ export function CspComparisonDemo(e: React.ChangeEvent<HTMLInputElement>) {
 
                     // Only render after last iteration
                     if (numLabels.length === filePaths.length) {
+                        console.log(newTransformedData)
                         computeSetSfcData(newTransformedData, bitsPerSignal, encoder, true, true);
                         setData(newData)
                         setTransformedData(newTransformedData)
@@ -187,16 +188,17 @@ export function CspComparisonDemo(e: React.ChangeEvent<HTMLInputElement>) {
                     const lines = text
                         .trim()
                         .split(/[,;]?\n/)
+
                     const dataLabels = lines[0]
                         .split(/[,;]/)
                     formatDataLabels(dataLabels);
                     allDataLabelsRef.current[fileIndex] = dataLabels
-
                     setDisplayedDataLabels([
                         ...allDataLabelsRef.current.slice(0, fileIndex),
                         dataLabels.slice(dataLabels.length - 2),
                         ...allDataLabelsRef.current.slice(fileIndex + 1)
                     ])
+
                     startLines[fileIndex] = 0
                     setStartLines([...startLines])
                     endLines[fileIndex] = lines.length - 2 // -1 due to header row
@@ -204,6 +206,12 @@ export function CspComparisonDemo(e: React.ChangeEvent<HTMLInputElement>) {
                     const url = URL.createObjectURL(file)
                     setFileNames([...fileNames.slice(0, fileIndex), file.name, ...fileNames.slice(fileIndex + 1)])
                     setFilePaths([...filePaths.slice(0, fileIndex), url, ...filePaths.slice(fileIndex + 1)])
+                    setPlotFile([...plotFile, true])
+
+                    if (fileIndex == filePaths.length) {
+                        setOffsets([...offsets, Array.from(Array(2).keys()).map(() => DEFAULT_OFFSET)])
+                        setScales([...scales, Array.from(Array(2).keys()).map(() => DEFAULT_SCALING_FACTOR)])
+                    }
                 } else {
                     alert("Error reading the file. Please try again.");
                 }
@@ -256,6 +264,7 @@ export function CspComparisonDemo(e: React.ChangeEvent<HTMLInputElement>) {
         setTransformedData([...transformedData.slice(0, fileIndex), [...transformedData[fileIndex]], ...transformedData.slice(fileIndex + 1)])
         setMinMaxChartValues(data)
         computeSetSfcData(transformedData, bitsPerSignal, undefined, true)
+        console.log(transformedData)
     };
 
     const onBitsPerSignalChanged = (bits: number | string) => {
@@ -285,6 +294,7 @@ export function CspComparisonDemo(e: React.ChangeEvent<HTMLInputElement>) {
         })
 
         if (setMinMaxValues) {
+            console.log(allMinSfcValues)
             setMinSfcValues(allMinSfcValues)
             setMaxSfcValues(allMaxSfcValues)
 
@@ -412,8 +422,8 @@ export function CspComparisonDemo(e: React.ChangeEvent<HTMLInputElement>) {
                 </div>
             </div>
         })}
-        {/*<UploadButton onClick={e => uploadFile(e, fileNames.length)} label={"Upload file..."}
-                      currentFile={''}/>*/}
+        <UploadButton onClick={e => uploadFile(e, fileNames.length)} label={"Upload file..."}
+                      currentFile={''}/>
         <SelectColumnsDialog show={showDialog} setShow={setShowDialog} demoName={'comparison'}
                              currentLabels={displayedDataLabels && fileToSelectColumnsFor > -1
                                  ? displayedDataLabels[fileToSelectColumnsFor]
