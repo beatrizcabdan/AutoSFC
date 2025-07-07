@@ -23,7 +23,7 @@ const preset = default_demo1
 // sampleTimeStamp.microseconds: 5000 / 10
 // groundSpeed: 5005 / 10
 
-export function CspComparisonDemo() {
+export function CspComparisonDemo(e: React.ChangeEvent<HTMLInputElement>) {
     const EXAMPLE_FILE_PATHS = [preset.file1, preset.file2]
     const LINE_COLORS = [primaryColor, 'green', 'red', 'purple', 'brown', 'orange']
 
@@ -55,6 +55,8 @@ export function CspComparisonDemo() {
     const [scales, setScales] = useState<(number | undefined)[][]>([preset.file1_scales, preset.file2_scales])
     const [offsets, setOffsets] = useState<(number | undefined)[][]>([preset.file1_offsets, preset.file2_offsets])
     const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(preset.bitsPerSignal)
+
+    const [plotFile, setPlotFile] = useState([true, true])
 
     const allDataLabelsRef = useRef<string[][]>([])
 
@@ -325,6 +327,11 @@ export function CspComparisonDemo() {
         setMaxSfcValues([...maxSfcValues])
     }
 
+    function onShowCheckboxClick(e: React.ChangeEvent<HTMLInputElement>, fileIndex: number) {
+        plotFile[fileIndex] = e.target.checked
+        setPlotFile([...plotFile])
+    }
+
     return <div id={'comp-demo-div'}>
         <h1>CSP comparison demo</h1>
         <div className={"charts"} id={'demo2-charts'}>
@@ -333,7 +340,7 @@ export function CspComparisonDemo() {
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
                    xAxisName={"Sfc value"} bitsPerSignal={bitsPerSignal}
                    yAxisName={"Time steps"} yAxisLabelPos={"right"} lineColors={LINE_COLORS}
-                   sfcData={sfcData} minSfcRange={minSfcValues} maxSfcRange={maxSfcValues}/>
+                   sfcData={sfcData} minSfcRange={minSfcValues} maxSfcRange={maxSfcValues} plotFile={plotFile}/>
         </div>
         <div className={'global-transform-div control-container'}>
             <EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch} size={'small'}/>
@@ -355,7 +362,7 @@ export function CspComparisonDemo() {
                 <div className={'control-container comparison-row-div'}>
                     <div className={'left-control-grid'}>
                         <div className={'first-buttons-column'}>
-                            <FormControlLabel control={<Checkbox defaultChecked
+                            <FormControlLabel control={<Checkbox defaultChecked onChange={e => onShowCheckboxClick(e, i)}
                                                          sx={{color: LINE_COLORS[i], '&.Mui-checked': {color: LINE_COLORS[i],}}}/>}
                                               label="Show" className={'show-checkbox'}/>
                             {/*<FormControlLabel control={<IconButton onClick={e => {

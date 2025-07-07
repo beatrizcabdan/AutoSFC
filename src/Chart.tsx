@@ -45,7 +45,8 @@ export function Chart(props: {
     sfcData?: number[] | number[][],
     encoderSwitch?: React.JSX.Element,
     id?: string,
-    totalNumLines?: number // Total number of lines in chart
+    totalNumLines?: number,
+    plotFile?: boolean[]
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
@@ -249,21 +250,21 @@ export function Chart(props: {
                 // SFC scatterplot
                 props.sfcData!.forEach((m, i) => {
                     // Comparison demo
-                    if (Array.isArray(m)) {
+                    if (Array.isArray(m) && props.plotFile && props.plotFile[i]) {
                         m.forEach(el => drawSfcBar(canvas, curvePadding, el,
                             minSfcValue, maxSfcValue, markerIndex, axisPadding, i, "demo1")) //demo-1
-                    } else {
+                    } else if (!Array.isArray(m)) {
                         drawSfcBar(canvas, curvePadding, m, minSfcValue, maxSfcValue, markerIndex, axisPadding)
                     }
                 })
 
                 props.sfcData!.forEach((m, i) => {
                     // Comparison demo
-                    if (Array.isArray(m)) {
+                    if (Array.isArray(m) && props.plotFile && props.plotFile[i]) {
                         m.forEach((el, j) =>
                         drawSfcPoint(j, canvas, curvePadding, el, minSfcValue, maxSfcValue, markerIndex,
                             props.lineColors ? props.lineColors[i] : 'black', i))
-                    } else {
+                    } else if (!Array.isArray(m)) {
                         drawSfcPoint(i, canvas, curvePadding, m, minSfcValue, maxSfcValue, markerIndex);
                     }
                 })
@@ -273,7 +274,7 @@ export function Chart(props: {
             ctx = canvas.getContext('2d')
         }
     }, [canvasRef.current, props.data, props.transformedData, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
-        props.offsets, props.bitsPerSignal, props.sfcData, props.minSfcRange, props.maxSfcRange]);
+        props.offsets, props.bitsPerSignal, props.sfcData, props.minSfcRange, props.maxSfcRange, props.plotFile]);
 
     return <div className={'chart'} id={props.id ? props.id + '-chart' : ''}>
         <div className={'canvas-container'}>
