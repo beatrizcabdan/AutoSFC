@@ -23,7 +23,7 @@ const preset = default_demo1
 // sampleTimeStamp.microseconds: 5000 / 10
 // groundSpeed: 5005 / 10
 
-export function CspComparisonDemo(e: React.ChangeEvent<HTMLInputElement>) {
+export function CspComparisonDemo() {
     const EXAMPLE_FILE_PATHS = [preset.file1, preset.file2]
     const LINE_COLORS = [primaryColor, 'green', 'red', 'purple', 'brown', 'orange']
 
