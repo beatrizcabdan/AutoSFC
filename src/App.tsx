@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unused-vars,no-unused-vars */
 // noinspection JSUnusedLocalSymbols
 
-import './App.scss'
+import './App.module.scss'
 
 import React from 'react';
 import {PaperContainer} from "./PaperContainer.tsx";
-import {Demo1} from "./Demo1.tsx";
+import {EncodingDemo} from "./EncodingDemo.tsx";
+import {CspComparisonDemo} from "./CspComparisonDemo.tsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum PlayStatus {
@@ -33,7 +34,8 @@ function App() {
             </div>
 
             <div id={'main'}>
-                <Demo1 />
+                <EncodingDemo />
+                <CspComparisonDemo />
             </div>
 
             <div className="tabcontent" id={'work'}>

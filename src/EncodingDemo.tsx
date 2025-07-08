@@ -10,57 +10,17 @@ import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {ProcessingComponent} from "./ProcessingComponent.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR, PlayStatus} from "./App.tsx";
-
-const demoPreset1 = {
-    dataPointInterval: 1,
-    dataRangeStart: 0,
-    dataRangeEnd: -1,
-    lineDataSmoothing: 0
-}
-
-const demoPreset2 = {
-    dataPointInterval: 5,
-    dataRangeStart: 13000,
-    dataRangeEnd: 14000,
-    lineDataSmoothing: 1.0
-}
-
-const demoPreset3 = {
-    dataPointInterval: 5,
-    dataRangeStart: 63000,
-    dataRangeEnd: 64000,
-    lineDataSmoothing: 1.0
-}
-
-const demoPreset4 = {
-    dataPointInterval: 1,
-    dataRangeStart: 1000,
-    dataRangeEnd: 1020,
-    lineDataSmoothing: 0
-}
-
-const paperPreset = {
-    dataPointInterval: 1,
-    dataRangeStart: 720,
-    dataRangeEnd: 880,
-    lineDataSmoothing: 0
-}
-
-const demoPreset5 = {
-    dataPointInterval: 1,
-    dataRangeStart: 0,
-    dataRangeEnd: 236,
-    lineDataSmoothing: 0,
-    sfcRangeMin: 0,
-    sfcRangeMax: 1000000000
-}
+import {demoPreset5} from "./Common.ts";
+import './EncodingDemo.scss'
+import App from './App.module.scss'
+const { primaryColor } = App
 
 const preset = demoPreset5
 
-export function Demo1() {
+export function EncodingDemo() {
     const SLIDER_START_VAL = 100
     const EXAMPLE_FILE_PATH = './emergency_braking.csv'
-    const LINE_COLORS = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
+    const LINE_COLORS = [primaryColor, 'orange', 'green', 'red', 'purple', 'brown']
 
     const [filePath, setFilePath] = useState(EXAMPLE_FILE_PATH)
     const [fileName, setFileName] = useState(EXAMPLE_FILE_PATH)
@@ -390,9 +350,8 @@ export function Demo1() {
         computeSetSFCData(transformedData, bitsPerSignal, newEncoder, true)
         setEncoder(newEncoder)
     };
-    return <>
-        <h1>AutoSFC tool demo</h1>
-
+    return <div id={'encoding-demo-div'}>
+        <h1>Encoding demo</h1>
         <div className={"charts"}>
             <Chart name={"Original signals plot"} data={showSignalTransforms ? transformedData : data}
                    scales={scales} offsets={offsets}
@@ -405,10 +364,9 @@ export function Demo1() {
             <Chart name={"Encoded signals plot (CSP)"} data={data} transformedData={transformedData}
                    scales={scales}
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
-                   xAxisName={"Morton"} bitsPerSignal={bitsPerSignal}
+                   xAxisName={"SFC Value"} bitsPerSignal={bitsPerSignal}
                    yAxisName={"Time steps"} yAxisLabelPos={"right"} currentSignalXVal={signalMarkerPos}
-                   sfcData={sfcData} minSFCrange={minSFCvalue} maxSFCrange={maxSFCvalue}
-                   encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch}/>}/>
+                   sfcData={sfcData} minSfcRange={[minSFCvalue]} maxSfcRange={[maxSFCvalue]}/>
         </div>
         <div className={"controls"}>
             <div className={"vert-control-wrapper"}>
@@ -434,12 +392,12 @@ export function Demo1() {
                                          onChange={(e, newValue) => onZoomSliderChange(e, newValue)}/>
                         <div className={"text-controls"}>
                             <label className={"input-label"}>
-                                Start row:
+                                Start row
                                 <input type="number" value={startLine}
                                        onChange={(e) => setStartLine(Number(e.target.value))}/>
                             </label>
                             <label className={"input-label"}>
-                                End row:
+                                End row
                                 <input type="number" value={endLine}
                                        onChange={(e) => setEndLine(Number(e.target.value))}/>
                             </label>
@@ -462,22 +420,25 @@ export function Demo1() {
             </div>
             <div className={"vert-control-wrapper"}>
                 <div className={"vert-control-wrapper"}>
-                    <ProcessingComponent displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS}
+                    <ProcessingComponent variant={'full'} displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS}
                                          scales={scales} offsets={offsets}
                                          bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
                                          showSignalTransforms={showSignalTransforms}
                                          setShowSignalTransforms={onShowSignalTransformsChanged}
-                                         onOffsetsChanged={onOffsetsChanged} minSFCvalue={minSFCvalue}
-                                         setMinSFCvalue={setMinSFCvalue} setMaxSFCvalue={setMaxSFCvalue}
-                                         maxSFCvalue={maxSFCvalue}
-                                         initialMinSFCvalue={initialMinSFCvalue}
-                                         initialMaxSFCvalue={initialMaxSFCvalue}
-                                         onBitsPerSignalChanged={onBitsPerSignalChanged}/>
+                                         onOffsetsChanged={onOffsetsChanged} minSfcValue={minSFCvalue}
+                                         setMinSfcValue={setMinSFCvalue} setMaxSfcValue={setMaxSFCvalue}
+                                         maxSfcValue={maxSFCvalue}
+                                         initialMinSfcValue={initialMinSFCvalue}
+                                         initialMaxSfcValue={initialMaxSFCvalue}
+                                         onBitsPerSignalChanged={onBitsPerSignalChanged}
+                                         encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch} size={'small'}
+                                                                className={'encoder-label'}/>}
+                    />
                 </div>
             </div>
         </div>
 
-        <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels}
-                             dataLabelsRef={allDataLabelsRef} setDataLabels={setDataLabels}/>
-    </>;
+        <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels} demoName={'encoding'}
+                             allDataLabels={allDataLabelsRef.current ?? []} setDataLabels={setDataLabels}/>
+    </div>;
 }

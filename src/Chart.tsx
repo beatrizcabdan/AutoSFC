@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment*/
 
 import React, {useEffect, useRef, useState} from "react";
-import {makeGaussKernel, mortonInterlace} from "./utils.ts";
+import {makeGaussKernel} from "./utils.ts";
 import {Legend} from "./Legend.tsx";
-import {DEFAULT_BITS_PER_SIGNAL} from "./App.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
     const smoothedArr: number[] = []
@@ -23,8 +22,8 @@ function getSmoothedData(data: number[], smoothing: number) {
 
 export function Chart(props: {
     name: string,
-    data: number[][],
-    scales: (number | undefined)[],
+    data: number[][] | number[][][],
+    scales: (number | undefined)[] | (number | undefined)[][],
     type: string,
     xAxisName: string,
     yAxisName: string,
@@ -32,19 +31,22 @@ export function Chart(props: {
     maxValue: number,
     minValue: number,
     legendLabels?: string[] | null,
-    currentSignalXVal: number,
+    currentSignalXVal?: number,
     startTimeXticks?: number,
     finishTimeXticks?: number,
     lineDataSmoothing?: number,
     onLegendClick?: () => void,
     lineColors?: string[],
-    offsets: (number | undefined)[],
+    offsets: (number | undefined)[] | (number | undefined)[][],
     bitsPerSignal?: number | string,
-    transformedData: number[][],
-    minSFCrange?: number,
-    maxSFCrange?: number,
-    sfcData?: number[],
-    encoderSwitch?: React.JSX.Element
+    transformedData: number[][] | number[][][],
+    minSfcRange?: number[],
+    maxSfcRange?: number[],
+    sfcData?: number[] | number[][],
+    encoderSwitch?: React.JSX.Element,
+    id?: string,
+    totalNumLines?: number,
+    plotFile?: boolean[]
 }) {
     const PLOT_NUM_Y_VALUES = 8
     const PLOT_NUM_X_VALUES = 9
@@ -63,7 +65,7 @@ export function Chart(props: {
 
     const [xTickMarks, setXTickMarks] = useState<string[]>([])
     const [yTickMarks, setYTickMarks] = useState<string[]>([])
-    const [mortonRightYValues, setMortonRightYValues] = useState<string[]>([])
+    const [mortonRightYValues, setSfcRightYValues] = useState<string[]>([])
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const curvePaddingRef = useRef(0)
@@ -77,39 +79,67 @@ export function Chart(props: {
         return (i / (props.data[0].length - 1)) * (canvas.width - padding * 2 - leftExtraPadding) + padding + leftExtraPadding;
     }
 
-    function getScatterX(i: number, canvas: HTMLCanvasElement, padding: number) {
-        return (i / (props.data[0].length - 1)) * (canvas.height - padding * 2) + padding
+    function getScatterX(i: number, canvas: HTMLCanvasElement, padding: number, fileIndex?: number) {
+        const totalNumLines = props.totalNumLines ?? props.data[0].length - 1
+        // If multi file chart & lines < totalNumLines, need to add vertical spacing
+        const yMultiplier = fileIndex !== undefined ? (totalNumLines / (props.data[fileIndex][0] as number[]).length) : 1
+        return ((i * yMultiplier) / totalNumLines) * (canvas.height - padding * 2) + padding
     }
 
     function getLineY(canvas: HTMLCanvasElement, curvePadding: number, point: number) {
         return (canvas.height - curvePadding * 2) * (props.maxValue - point) / (props.maxValue - props.minValue) + curvePadding;
     }
 
-    // TODO: Decouple signal/Morton charts
+    const drawSfcBar = (canvas: HTMLCanvasElement, curvePadding: number, m: number,
+                        minMorton: number, maxMorton: number, markerIndex: number, axisPadding: number, fileIndex?: number, demo?: string) => {
+        // markerIndex is play position (usually 100%, so last row)
+
+        const curveCanvasWidth = canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING
+        const y = curveCanvasWidth * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
+
+        const barX = y - MORTON_BAR_WIDTH / 2
+        const sfcData = (fileIndex !== undefined ? props.sfcData![fileIndex] : props.sfcData) as unknown as number[]
+
+        const signalX = curveCanvasWidth * (sfcData[sfcData.length - 1 - markerIndex] - minMorton)
+            / (maxMorton - minMorton) + curvePadding
+        const currentBarDistance = Math.abs(barX - signalX) / curveCanvasWidth
+
+        const defaultColor = {r: 204, g: 204, b: 204}
+        // Only partially color SFC plot if there's a play position
+        const markedColor = props.currentSignalXVal === undefined
+            ? {r: 204, g: 204, b: 204}
+            : {r: 0, g: 150, b: 255}
+        const coloredWidth = 0.03
+        const markedWeight = Math.max(coloredWidth - currentBarDistance, 0) / coloredWidth
+
+        ctx.fillStyle = `rgb(
+                        ${markedColor.r * markedWeight + defaultColor.r * (1 - markedWeight)},
+                        ${markedColor.g * markedWeight + defaultColor.g * (1 - markedWeight)},
+                        ${markedColor.b * markedWeight + defaultColor.b * (1 - markedWeight)})`
+
+        ctx.fillRect(barX, axisPadding, MORTON_BAR_WIDTH, canvas.height - 2 * axisPadding)
+    }
+
+    const drawSfcPoint = (i: number, canvas: HTMLCanvasElement, curvePadding: number,
+                          m: number, minMorton: number, maxMorton: number, markerIndex: number, color?: string,
+                          fileIndex?: number, yMultiplier = 1) => {
+        const x = getScatterX(i, canvas, curvePadding, fileIndex)
+        const y = (canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING) * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
+        // Draw point
+        ctx.fillStyle = (props.sfcData!.length - i) <= markerIndex ? (color ?? 'black') : 'transparent'
+        ctx.beginPath();
+        ctx.lineWidth = 0.5
+        // noinspection JSSuspiciousNameCombination
+        ctx.arc(y, x, Math.floor(MORTON_PIXEL_DIAM / 2), 0, 2 * Math.PI);
+        ctx.fill()
+        ctx.closePath()
+    }
+
+// TODO: Decouple signal/Morton charts
     useEffect(() => {
-        let bitsPerSignal = Number(typeof props.bitsPerSignal == 'string' ? DEFAULT_BITS_PER_SIGNAL : props.bitsPerSignal)
-        if (!Number.isFinite(props.bitsPerSignal) || !Number.isInteger(props.bitsPerSignal)) {
-            bitsPerSignal = DEFAULT_BITS_PER_SIGNAL;
-        }
-
         if (props.data.length > 0 && canvasRef.current) {
-            const minMorton = props.minSFCrange ?? -1
-            const maxMorton = props.maxSFCrange ?? -1
-
-            // Add truncating processing
-            // const truncatedData = props.transformedData.map(column => column.map(value =>
-            //     Math.trunc(value)))
-
-            // IF MORTON TOGGLE
-            // const mortonData = morton_interlace(truncatedData, bitsPerSignal).reverse()
-            // const mortonSorted = [...mortonData].sort((a, b) => a - b)
-
-            // IF HILBERT TOGGLE
-            // const mortonData = bigUint64ToNumberArray(hilbert_encode(truncatedData, bitsPerSignal)).reverse();
-            // const mortonSorted = [...mortonData].sort((a, b) => a - b)
-
-            // const minMorton = mortonSorted[0];
-            // const maxMorton = mortonSorted[mortonSorted.length - 1];
+            const minSfcValue = props.minSfcRange ? Math.min(...props.minSfcRange) : -1
+            const maxSfcValue = props.maxSfcRange ? Math.max(...props.maxSfcRange) : -1
 
             const canvas: HTMLCanvasElement = canvasRef.current!
             // TODO: Dynamic canvas res?
@@ -125,14 +155,16 @@ export function Chart(props: {
 
             // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
             const columns: number[][] = []
-            const markerIndex = Math.floor((props.data[0].length - 1) * props.currentSignalXVal / 100)
+            const markerIndex = props.currentSignalXVal === undefined ? // No play position
+                1
+                : Math.floor((props.data[0].length - 1) * props.currentSignalXVal / 100)
 
-            // const mortonLeftYValues = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
-            const mortonXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
-                .map(i => (i * (maxMorton - minMorton) / (PLOT_NUM_X_VALUES - 1) + minMorton).toExponential(1))
-            const mortonRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
-                .map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_Y_VALUES - 1)).toString())
-            setMortonRightYValues(mortonRightYValues)
+            const sfcXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
+                .map(i => (i * (maxSfcValue - minSfcValue) / (PLOT_NUM_X_VALUES - 1) + minSfcValue).toExponential(1))
+            const numTimeSteps = props.totalNumLines ?? props.data[0].length - 1
+            const sfcRightYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
+                .map(i => Math.floor(i * numTimeSteps / (PLOT_NUM_Y_VALUES - 1)).toString())
+            setSfcRightYValues(sfcRightYValues)
 
             let lineXValues = [...Array(PLOT_NUM_X_VALUES).keys()].map(i => Math.floor(i * (props.data[0].length - 1) / (PLOT_NUM_X_VALUES - 1)).toString())
 
@@ -143,7 +175,7 @@ export function Chart(props: {
                 lineXValues = Array.from({ length: PLOT_NUM_X_VALUES }, (_, i) => Math.round(props.startTimeXticks + i * step).toString());
             }
 
-            const xTickMarks = props.type === 'scatter' ? mortonXValues : lineXValues
+            const xTickMarks = props.type === 'scatter' ? sfcXValues : lineXValues
             setXTickMarks(xTickMarks)
 
             const lineYValues = [...Array(PLOT_NUM_Y_VALUES).keys()]
@@ -167,7 +199,8 @@ export function Chart(props: {
 
             // Signals chart
             if (props.type == 'line') {
-                props.data.forEach((column, i) => {
+                const data = props.data as unknown as number[][] // Only one file as input in EncodingDemo
+                data.forEach((column, i) => {
                     // Draw lines
                     ctx.strokeStyle = props.lineColors![i % props.lineColors!.length]
                     ctx.beginPath()
@@ -214,40 +247,26 @@ export function Chart(props: {
                     ctx.closePath()
                 })
             } else {
-                // Morton scatterplot
-                // Draw bar
-                props.sfcData!.forEach((m) => {
-                    const curveCanvasWidth = canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING
-                    const y = curveCanvasWidth * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
-
-                    const barX = y - MORTON_BAR_WIDTH / 2
-                    const signalX = curveCanvasWidth * (props.sfcData![props.sfcData!.length - 1 - markerIndex] - minMorton)
-                        / (maxMorton - minMorton) + curvePadding
-                    const currentBarDistance = Math.abs(barX - signalX) / curveCanvasWidth
-
-                    const defaultColor = {r: 204, g: 204, b: 204}
-                    const markedColor = {r: 0, g: 150, b: 255}
-                    const coloredWidth = 0.03
-                    const markedWeight = Math.max(coloredWidth - currentBarDistance, 0) / coloredWidth
-                    ctx.fillStyle = `rgb(
-                        ${markedColor.r * markedWeight + defaultColor.r * (1 - markedWeight)},
-                        ${markedColor.g * markedWeight + defaultColor.g * (1 - markedWeight)},
-                        ${markedColor.b * markedWeight + defaultColor.b * (1 - markedWeight)})`
-                    ctx.fillRect(barX, axisPadding, MORTON_BAR_WIDTH, canvas.height - 2 * axisPadding)
+                // SFC scatterplot
+                props.sfcData!.forEach((m, i) => {
+                    // Comparison demo
+                    if (Array.isArray(m) && props.plotFile && props.plotFile[i]) {
+                        m.forEach(el => drawSfcBar(canvas, curvePadding, el,
+                            minSfcValue, maxSfcValue, markerIndex, axisPadding, i, "demo1")) //demo-1
+                    } else if (!Array.isArray(m)) {
+                        drawSfcBar(canvas, curvePadding, m, minSfcValue, maxSfcValue, markerIndex, axisPadding)
+                    }
                 })
 
-                // Draw points
                 props.sfcData!.forEach((m, i) => {
-                    const x = getScatterX(i, canvas, curvePadding)
-                    const y = (canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING) * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
-                    // Draw point
-                    ctx.fillStyle = (props.sfcData!.length - i) <= markerIndex ? 'black' : 'transparent'
-                    ctx.beginPath();
-                    ctx.lineWidth = 0.5
-                    // noinspection JSSuspiciousNameCombination
-                    ctx.arc(y, x, Math.floor(MORTON_PIXEL_DIAM / 2), 0, 2 * Math.PI);
-                    ctx.fill()
-                    ctx.closePath()
+                    // Comparison demo
+                    if (Array.isArray(m) && props.plotFile && props.plotFile[i]) {
+                        m.forEach((el, j) =>
+                        drawSfcPoint(j, canvas, curvePadding, el, minSfcValue, maxSfcValue, markerIndex,
+                            props.lineColors ? props.lineColors[i] : 'black', i))
+                    } else if (!Array.isArray(m)) {
+                        drawSfcPoint(i, canvas, curvePadding, m, minSfcValue, maxSfcValue, markerIndex);
+                    }
                 })
             }
 
@@ -255,9 +274,9 @@ export function Chart(props: {
             ctx = canvas.getContext('2d')
         }
     }, [canvasRef.current, props.data, props.transformedData, props.maxValue, props.minValue, props.currentSignalXVal, props.scales,
-        props.offsets, props.bitsPerSignal, props.sfcData, props.minSFCrange, props.maxSFCrange]);
+        props.offsets, props.bitsPerSignal, props.sfcData, props.minSfcRange, props.maxSfcRange, props.plotFile]);
 
-    return <div className={'chart'}>
+    return <div className={'chart'} id={props.id ? props.id + '-chart' : ''}>
         <div className={'canvas-container'}>
             <div className={'canvas-wrapper'} id={props.type === 'line' ? 'left-canvas' : 'right-canvas'}>
                 <h2 className={'chartitle'}>{props.name}</h2>
@@ -269,7 +288,7 @@ export function Chart(props: {
                             <span className={'y-tick-line'}/>
                         </div>})}
                 </div>
-                <canvas ref={canvasRef} className={props.type}></canvas>
+                <canvas ref={canvasRef} className={props.type} id={props.id ? props.id + '-canvas' : ''}></canvas>
                 <div className={'chartXTicks'}>{
                     Array.from(Array(PLOT_NUM_X_VALUES).keys()).map(i => {
                         return <div key={i} className={'x-tick-mark'}>
@@ -277,7 +296,7 @@ export function Chart(props: {
                             <span className={'x-tick-mark-label'}>{xTickMarks[i]}</span>
                         </div>})}
                 </div>
-                {props.type === 'line' ? <p className={'chart-x-axis-name'}>{props.xAxisName}</p> : props.encoderSwitch}
+                <p className={'chart-x-axis-name'}>{props.xAxisName}</p>
                 {props.type === 'scatter' && <div className={'chartYTicks'} id={'right-axis'}>{
                     Array.from(Array(PLOT_NUM_Y_VALUES).keys()).map(i => {
                         return <div key={i} className={'y-tick-mark'}>
@@ -286,7 +305,8 @@ export function Chart(props: {
                         </div>})}
                 </div>}
                 {props.yAxisLabelPos === 'right' && <p className={'y-axis-label'}>{props.yAxisName}</p>}
-                {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!} lineColors={props.lineColors}/>}
+                {props.legendLabels && <Legend labels={props.legendLabels} onClick={props.onLegendClick!}
+                                               lineColors={props.lineColors}/>}
             </div>
         </div>
     </div>;

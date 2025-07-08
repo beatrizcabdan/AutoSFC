@@ -1,8 +1,14 @@
-import {Dispatch, FormEvent, MutableRefObject, SetStateAction, useEffect, useState} from "react";
+import React, {Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
 import './SelectColumnsDialog.scss'
 
-export function SelectColumnsDialog(props: {show: boolean, setShow: Dispatch<SetStateAction<boolean>>, dataLabelsRef:  MutableRefObject<string[]>,
-    setDataLabels: (newLabels: string[]) => void, currentLabels: string[] | null}) {
+export function SelectColumnsDialog(props: {
+    show: boolean,
+    setShow: Dispatch<SetStateAction<boolean>>,
+    allDataLabels: string[],
+    setDataLabels: (newLabels: string[]) => void,
+    currentLabels: string[] | null,
+    demoName: string
+}) {
     const [submittable, setSubmittable] = useState(true)
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -10,7 +16,7 @@ export function SelectColumnsDialog(props: {show: boolean, setShow: Dispatch<Set
 
     function init() {
         const map = new Map<string, boolean>()
-        props.dataLabelsRef.current.forEach(l => {
+        props.allDataLabels.forEach(l => {
             map.set(l, props.currentLabels!.includes(l))
         })
         setLabelsToCheckedMap(map)
@@ -18,10 +24,10 @@ export function SelectColumnsDialog(props: {show: boolean, setShow: Dispatch<Set
     }
 
     useEffect(() => {
-        if (props.dataLabelsRef.current && props.currentLabels) {
+        if (props.allDataLabels && props.currentLabels) {
             init();
         }
-    }, [props.dataLabelsRef.current, props.currentLabels])
+    }, [props.allDataLabels, props.currentLabels])
     
     function onSubmit(e: FormEvent) {
         if (!submittable) {
@@ -47,13 +53,22 @@ export function SelectColumnsDialog(props: {show: boolean, setShow: Dispatch<Set
         props.setShow(false);
     }
 
+    useEffect(() => {
+        const body = document.querySelector('body')!
+        if (props.show) {
+            body.classList.add('modal-open')
+        } else {
+            body.classList.remove('modal-open')
+        }
+    }, [props.show]);
+
     return <div className={`light-box ${props.show ? 'show' : ''}`}>
             <dialog open={props.show} className={'dialog'}>
                 <h2>Select displayed data (two series)</h2>
                 <form method="dialog" onSubmit={onSubmit}>
                     <div className={'checkbox-list'}>
-                    {props.dataLabelsRef.current.map((label, i) => {
-                        const id = `checkbox${String(i)}`
+                    {props.allDataLabels.map((label, i) => {
+                        const id = `${props.demoName}-checkbox${String(i)}`
                         return <div key={i}>
                             <input type="checkbox" name="state_name" value="Connecticut" id={id}
                                    checked={labelsToCheckedMap.get(label) ?? false} onChange={e => onFormChange(label, e.currentTarget.checked)}/>

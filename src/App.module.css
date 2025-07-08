@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
 * {
   box-sizing: border-box;
 }
@@ -7,6 +8,7 @@ html {
   --text-color: #3d3d3d;
   --text-color-light: #575757;
   --legend-border: #a8a8a8;
+  font-family: Inter, sans-serif;
 }
 
 #root {
@@ -18,7 +20,6 @@ html {
   gap: 3rem;
   width: 100%;
   flex-direction: column;
-  font-family: Inter, sans-serif;
   color: var(--text-color);
 }
 
@@ -121,4 +122,4 @@ html {
   padding: 14px 50px;
 }
 
-/*# sourceMappingURL=App.css.map */
+/*# sourceMappingURL=App.module.css.map */
