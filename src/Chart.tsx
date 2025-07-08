@@ -90,7 +90,9 @@ export function Chart(props: {
     }
 
     const drawSfcBar = (canvas: HTMLCanvasElement, curvePadding: number, m: number,
-                        minMorton: number, maxMorton: number, markerIndex: number, axisPadding: number, fileIndex?: number) => {
+                        minMorton: number, maxMorton: number, markerIndex: number, axisPadding: number, fileIndex?: number, demo?: string) => {
+        // markerIndex is play position (usually 100%, so last row)
+
         const curveCanvasWidth = canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING
         const y = curveCanvasWidth * (m - minMorton) / (maxMorton - minMorton) + curvePadding + LEFT_AXIS_EXTRA_PADDING
 
@@ -113,6 +115,7 @@ export function Chart(props: {
                         ${markedColor.r * markedWeight + defaultColor.r * (1 - markedWeight)},
                         ${markedColor.g * markedWeight + defaultColor.g * (1 - markedWeight)},
                         ${markedColor.b * markedWeight + defaultColor.b * (1 - markedWeight)})`
+
         ctx.fillRect(barX, axisPadding, MORTON_BAR_WIDTH, canvas.height - 2 * axisPadding)
     }
 
@@ -152,7 +155,7 @@ export function Chart(props: {
             // TODO: Move Morton encoding/logic to App.tsx, make Chart generic
             const columns: number[][] = []
             const markerIndex = props.currentSignalXVal === undefined ? // No play position
-                100
+                1
                 : Math.floor((props.data[0].length - 1) * props.currentSignalXVal / 100)
 
             const sfcXValues = [...Array(PLOT_NUM_X_VALUES).keys()]
@@ -248,7 +251,7 @@ export function Chart(props: {
                     // Comparison demo
                     if (Array.isArray(m)) {
                         m.forEach(el => drawSfcBar(canvas, curvePadding, el,
-                            minSfcValue, maxSfcValue, markerIndex, axisPadding, i))
+                            minSfcValue, maxSfcValue, markerIndex, axisPadding, i, "demo1")) //demo-1
                     } else {
                         drawSfcBar(canvas, curvePadding, m, minSfcValue, maxSfcValue, markerIndex, axisPadding)
                     }
