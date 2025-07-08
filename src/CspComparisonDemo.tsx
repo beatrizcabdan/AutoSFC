@@ -141,7 +141,6 @@ export function CspComparisonDemo() {
                 })
             })
         }
-
     }
 
     onresize = debounce(loadFiles)
