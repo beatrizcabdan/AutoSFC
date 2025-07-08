@@ -7,14 +7,14 @@ import {UploadButton} from "./UploadButton.tsx";
 import {DataRangeSlider} from "./DataRangeSlider.tsx";
 import {ProcessingComponent} from "./ProcessingComponent.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
-import {demoPreset5} from "./Common.ts";
+import {default_demo1} from "./Common.ts";
 import './CspComparisonDemo.scss'
 import {Checkbox, FormControlLabel, IconButton} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import App from './App.module.scss'
 const { primaryColor } = App
 
-const preset = demoPreset5
+const preset = default_demo1
 
 // TODO: Fix width, cspRange changing when other file is transformed, deleting/hiding files, more compact layout, presets... (later)
 // Good demo values:
@@ -24,16 +24,16 @@ const preset = demoPreset5
 // groundSpeed: 5005 / 10
 
 export function CspComparisonDemo() {
-    const EXAMPLE_FILE_PATHS = ['./emergency_braking.csv', './example-data.csv']
+    const EXAMPLE_FILE_PATHS = [preset.file1, preset.file2]
     const LINE_COLORS = [primaryColor, 'green', 'red', 'purple', 'brown', 'orange']
 
     const [filePaths, setFilePaths] = useState(EXAMPLE_FILE_PATHS)
     const [fileNames, setFileNames] = useState(EXAMPLE_FILE_PATHS)
     const DATA_POINT_INTERVAL = preset.dataPointInterval
 
-    const [dataNumLines, setDataNumLines] = useState<number[]>([236, 473])
+    const [dataNumLines, setDataNumLines] = useState<number[]>([100, 100])
     const [startLines, setStartLines] = useState<number[]>([0, 0])
-    const [endLines, setEndLines] = useState<number[]>([236, 473])
+    const [endLines, setEndLines] = useState<number[]>([100, 100])
 
     const [encoder, setEncoder] = useState('morton')
 
@@ -43,8 +43,8 @@ export function CspComparisonDemo() {
     const [initialMaxSfcValues, setInitialMaxSfcValues] = useState<number[]>([])
 
     const [displayedDataLabels, setDisplayedDataLabels] = useState<string[][] | null>([
-        ['accel_x', 'accel_y'],
-        ['sampleTimeStamp.microseconds', 'groundSpeed']
+        preset.file1_signals,
+        preset.file2_signals
     ])
 
     const [data, setData] = useState<number[][][]>([])
@@ -52,9 +52,9 @@ export function CspComparisonDemo() {
     const [sfcData, setSfcData] = useState<number[][]>([])
 
     // Use default scaling factor when scale is undefined (this to allow removing all digits in inputs)
-    const [scales, setScales] = useState<(number | undefined)[][]>([[729, 729], [10, 10]])
-    const [offsets, setOffsets] = useState<(number | undefined)[][]>([[4000, 5000], [5000, 5005]])
-    const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(DEFAULT_BITS_PER_SIGNAL)
+    const [scales, setScales] = useState<(number | undefined)[][]>([preset.file1_scales, preset.file2_scales])
+    const [offsets, setOffsets] = useState<(number | undefined)[][]>([preset.file1_offsets, preset.file2_offsets])
+    const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(preset.bitsPerSignal)
 
     const allDataLabelsRef = useRef<string[][]>([])
 
