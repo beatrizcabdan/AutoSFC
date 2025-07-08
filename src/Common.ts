@@ -36,3 +36,16 @@ export const demoPreset5 = {
     sfcRangeMin: 0,
     sfcRangeMax: 1000000000
 }
+
+ export const default_demo1 = {
+    dataPointInterval: 1,
+    file1: "./one_cell_sq00.csv",
+    file2: "./two_cells_sq00.csv",
+    file1_signals: ["cell_0", "cell_1", "cell_2", "cell_3", "cell_4", "cell_5"],
+    file2_signals: ["cell_0", "cell_1", "cell_2", "cell_3", "cell_4", "cell_5"],
+    file1_offsets: new Array(6).fill(10),
+    file2_offsets: new Array(6).fill(10),
+    file1_scales: new Array(6).fill(5),
+    file2_scales: new Array(6).fill(5),
+    bitsPerSignal: 3
+}
