@@ -13,9 +13,23 @@
         margin-bottom: 0.5rem;
     }
 
+    #presets-container {
+        width: auto;
+
+        .preset-list-container, #preset-list {
+            width: 100%;
+        }
+    }
+
     @media (max-width: 1280px) {
         .text-controls {
             flex-direction: column !important;
+        }
+    }
+    
+    @media (min-width: 1081px) {
+        #process-container, .vert-control-wrapper {
+            height: 100%;
         }
     }
 }

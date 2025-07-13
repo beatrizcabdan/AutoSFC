@@ -311,11 +311,13 @@
 }
 
 @media (max-width: 1200px) {
-    #process-container {
-        width: fit-content !important;
+    #comp-demo-div {
+        #process-container {
+            width: fit-content !important;
 
-        .signals-grid {
-            grid-template-columns: 9ch repeat(2, min-content) 1rem min-content auto !important;
+            .signals-grid {
+                grid-template-columns: 9ch repeat(2, min-content) 1rem min-content auto !important;
+            }
         }
     }
 }
