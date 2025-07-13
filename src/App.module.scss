@@ -92,8 +92,8 @@ body {
 }
 
 @media (max-width: 1200px) {
-  #main {
-    padding: 0 $side-padding-narrow;
+  #main, .tabcontent {
+    padding: 0 $side-padding-narrow !important;
   }
 }
 
@@ -784,7 +784,7 @@ input[type="number"] {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  padding: 20px;
+  padding: 20px 0;
 }
 
 .paper-block {
