@@ -6,6 +6,7 @@ $canvas-width: 1.35 * $canvas-height;
 $curve-padding-factor: 0.04;
 
 $side-padding: 10rem;
+$side-padding-narrow: 5vw;
 
 $def-control-width: 27rem;
 $vert-container-padding: 1.2rem;
@@ -88,6 +89,12 @@ body {
   margin-top: 2rem;
   padding: 0 $side-padding;
   width: 100%;
+}
+
+@media (max-width: 1200px) {
+  #main {
+    padding: 0 $side-padding-narrow;
+  }
 }
 
 .charts {

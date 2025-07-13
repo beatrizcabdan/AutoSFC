@@ -13,6 +13,7 @@
         width: 100%;
         display: flex;
         flex-direction: column;
+        align-items: center;
 
         .control-container {
             padding: 1.2rem;
@@ -109,16 +110,6 @@
                             gap: 0.5rem;
                             align-items: center;
                         }
-                    }
-                }
-            }
-
-            @media (max-width: 1200px) {
-                #process-container {
-                    width: fit-content !important;
-
-                    .signals-grid {
-                        grid-template-columns: 9ch repeat(2, min-content) 1rem min-content auto !important;
                     }
                 }
             }
@@ -316,5 +307,15 @@
 @media (max-width: 1080px) {
     #process-container {
         width: 35rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    #process-container {
+        width: fit-content !important;
+
+        .signals-grid {
+            grid-template-columns: 9ch repeat(2, min-content) 1rem min-content auto !important;
+        }
     }
 }
