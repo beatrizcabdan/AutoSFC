@@ -8,7 +8,7 @@ import {PaperContainer} from "./PaperContainer.tsx";
 import {EncodingDemo} from "./EncodingDemo.tsx";
 import {CspComparisonDemo} from "./CspComparisonDemo.tsx";
 import {Fab} from "@mui/material";
-import NavigationIcon from '@mui/icons-material/Navigation';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum PlayStatus {
@@ -37,6 +37,19 @@ function App() {
     const getScrollButtonClass = () => {
         return scrollPos > window.innerHeight ? '' : 'disabled';
 
+    }
+    const onScrollButtonClick = () => {
+        const frames = 90
+        const scrollSpeed = 20 * scrollPos / frames
+        let frameCount = 0
+        const int = setInterval(() => {
+            if (document.scrollingElement!.scrollTop <= 0) {
+                clearInterval(int)
+            } else {
+                document.scrollingElement!.scrollBy({top: -scrollSpeed * Math.exp(-frameCount * 0.2)})
+                frameCount++
+            }
+        }, 17)
     }
     return (
         <>
@@ -117,8 +130,9 @@ function App() {
                 href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a> for more info.
             </div>
 
-            <Fab variant="extended" color={'primary'} className={getScrollButtonClass()} size={'small'}>
-                <NavigationIcon sx={{ mr: 1 }} />
+            <Fab variant="extended" color={'primary'} className={getScrollButtonClass()} size={'small'}
+                 onClick={onScrollButtonClick}>
+                <ArrowUpwardIcon sx={{ mr: 1 }} />
                 to top
             </Fab>
 
