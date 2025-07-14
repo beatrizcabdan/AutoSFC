@@ -746,7 +746,7 @@ input[type="number"] {
   box-shadow: rgba(0 0 0 / 0.2) 0 5px 5px 1px;
 }
 
-.topnav a {
+.topnav div {
   float: left;
   text-align: center;
   padding: 14px 16px;
@@ -754,9 +754,11 @@ input[type="number"] {
   font-size: 17px;
   color: white;
   transition: background-color 0.3s;
+  cursor: pointer;
+  font-weight: 500;
 }
 
-.topnav a:hover {
+.topnav div:hover {
   background-color: var(--text-color-light);
 }
 
