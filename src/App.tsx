@@ -60,7 +60,8 @@ function App() {
             </div>
 
             <div className="topnav">
-                <a className="active" href="#main">Demo</a>
+                <a className="active" href="#encoding-demo-div">Encoding Demo</a>
+                <a href="#comp-demo-div">Comparison Demo</a>
                 <a href="#work">Previous work</a>
                 <a href="#about">About SFCs</a>
                 <a href="#contact">Contact</a>
