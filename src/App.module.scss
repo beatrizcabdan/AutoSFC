@@ -773,10 +773,13 @@ input[type="number"] {
 }
 
 .MuiFab-extended {
+  padding: 1.2rem !important;
   border-radius: 20px !important;
   position: fixed !important;
   bottom: 2rem;
   right: 2rem;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.02rem !important;
   font-weight: 700 !important;
   transition: all 0.5s !important;
   box-shadow: 0 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12) !important;

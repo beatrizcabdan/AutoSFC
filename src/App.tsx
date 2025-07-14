@@ -117,9 +117,9 @@ function App() {
                 href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a> for more info.
             </div>
 
-            <Fab variant="extended" color={'primary'} className={getScrollButtonClass()}>
+            <Fab variant="extended" color={'primary'} className={getScrollButtonClass()} size={'small'}>
                 <NavigationIcon sx={{ mr: 1 }} />
-                Back to top
+                to top
             </Fab>
 
         </>
