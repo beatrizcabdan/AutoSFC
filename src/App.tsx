@@ -7,6 +7,8 @@ import React from 'react';
 import {PaperContainer} from "./PaperContainer.tsx";
 import {EncodingDemo} from "./EncodingDemo.tsx";
 import {CspComparisonDemo} from "./CspComparisonDemo.tsx";
+import {Fab} from "@mui/material";
+import NavigationIcon from '@mui/icons-material/Navigation';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum PlayStatus {
@@ -96,6 +98,11 @@ function App() {
                 Demo of SFC encoding for automotive data. Site under construction. Contact Beatriz Cabrero-Daniel at <a
                 href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a> for more info.
             </div>
+
+            <Fab variant="extended" color={'primary'}>
+                <NavigationIcon sx={{ mr: 1 }} />
+                Back to top
+            </Fab>
 
         </>
     )
