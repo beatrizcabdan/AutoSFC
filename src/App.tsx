@@ -3,7 +3,7 @@
 
 import './App.module.scss'
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {PaperContainer} from "./PaperContainer.tsx";
 import {EncodingDemo} from "./EncodingDemo.tsx";
 import {CspComparisonDemo} from "./CspComparisonDemo.tsx";
@@ -20,6 +20,24 @@ export const DEFAULT_OFFSET = 100
 export const DEFAULT_BITS_PER_SIGNAL = 14
 
 function App() {
+    const [scrollPos, setScrollPos] = useState(0)
+
+    const onScroll = () => {
+        setScrollPos(document.documentElement.scrollTop)
+    }
+
+    useEffect(() => {
+        document.addEventListener('scroll', onScroll)
+        window.onunload = () => {
+            document.removeEventListener('scroll', onScroll)
+        }
+    }, []);
+
+
+    const getScrollButtonClass = () => {
+        return scrollPos > window.innerHeight ? '' : 'disabled';
+
+    }
     return (
         <>
             <div className="landing-section">
@@ -99,7 +117,7 @@ function App() {
                 href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a> for more info.
             </div>
 
-            <Fab variant="extended" color={'primary'}>
+            <Fab variant="extended" color={'primary'} className={getScrollButtonClass()}>
                 <NavigationIcon sx={{ mr: 1 }} />
                 Back to top
             </Fab>
