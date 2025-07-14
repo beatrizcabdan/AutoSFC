@@ -51,6 +51,17 @@ function App() {
             }
         }, 17)
     }
+
+    function scrollToSection(section: string) {
+        const element = document.querySelector(section)!
+        const topPos = element.getBoundingClientRect().top + window.scrollY
+
+        window.scrollTo({
+            top: topPos,
+            behavior: 'smooth'
+        })
+    }
+
     return (
         <>
             <div className="landing-section">
@@ -60,10 +71,11 @@ function App() {
             </div>
 
             <div className="topnav">
-                <a className="active" href="#main">Demo</a>
-                <a href="#work">Previous work</a>
-                <a href="#about">About SFCs</a>
-                <a href="#contact">Contact</a>
+                <div className="active" onClick={() => scrollToSection("#encoding-demo-div")}>Encoding Demo</div>
+                <div onClick={() => scrollToSection("#comp-demo-div")}>Comparison Demo</div>
+                <div onClick={() => scrollToSection("#work")}>Previous work</div>
+                <div onClick={() => scrollToSection("#about")}>About SFCs</div>
+                <div onClick={() => scrollToSection("#contact")}>Contact</div>
             </div>
 
             <div id={'main'}>
