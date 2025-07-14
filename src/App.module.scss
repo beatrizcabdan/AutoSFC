@@ -60,12 +60,30 @@ html {
   --primary-color: $primary-color;
   --primary-color-medium: #2699ff;
   --primary-color-light: $primary-color-light;
+
+  width: 100vw;
+}
+
+@media (max-width: 800px) {
+  #root {
+    width: fit-content !important;
+
+    #main {
+      width: fit-content !important;
+
+      #encoding-demo-div {
+        width: fit-content;
+      }
+    }
+  }
 }
 
 body {
   &.modal-open {
     overflow: hidden;
   }
+
+  width: 100%;
 }
 
 #root {
@@ -374,6 +392,7 @@ input[type="number"] {
   align-items: flex-start;
   --gap: 20px;
   gap: var(--gap);
+  // overflow-x: scroll;
 
   #sfcrangecontrol {
     flex: 1 1 7rem;
