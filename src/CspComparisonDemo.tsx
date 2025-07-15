@@ -334,7 +334,7 @@ export function CspComparisonDemo() {
 
     return <div id={'comp-demo-div'}>
         <h1>CSP comparison demo</h1>
-        <p>Overlays multiple CSPs to visually compare the multimodal datapoints after dimensionality reduction.</p>
+        <p>Overlays multiple CSPs to visually compare the multimodal data points after dimensionality reduction.</p>
         <div className={"charts"} id={'demo2-charts'}>
             <Chart name={"Encoded signals plot (CSP)"} data={data} transformedData={transformedData}
                    scales={scales} id={'demo2'} totalNumLines={getMaxDisplayedNumLines()}
