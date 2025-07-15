@@ -352,6 +352,7 @@ export function EncodingDemo() {
     };
     return <div id={'encoding-demo-div'}>
         <h1>Encoding demo</h1>
+        <p>Visualizes both the original and encoded signals side-by-side, and allows transformations on the input signal in real time.</p>
         <div className={"charts"}>
             <Chart name={"Original signals plot"} data={showSignalTransforms ? transformedData : data}
                    scales={scales} offsets={offsets}
@@ -420,7 +421,8 @@ export function EncodingDemo() {
             </div>
             <div className={"vert-control-wrapper"}>
                 <div className={"vert-control-wrapper"}>
-                    <ProcessingComponent variant={'full'} displayedDataLabels={displayedDataLabels} lineColors={LINE_COLORS}
+                    <ProcessingComponent variant={'full'} displayedDataLabels={displayedDataLabels}
+                                         lineColors={LINE_COLORS}
                                          scales={scales} offsets={offsets}
                                          bitsPerSignal={bitsPerSignal} onScalesChanged={onScalesChanged}
                                          showSignalTransforms={showSignalTransforms}
@@ -431,14 +433,16 @@ export function EncodingDemo() {
                                          initialMinSfcValue={initialMinSFCvalue}
                                          initialMaxSfcValue={initialMaxSFCvalue}
                                          onBitsPerSignalChanged={onBitsPerSignalChanged}
-                                         encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch} size={'small'}
-                                                                className={'encoder-label'}/>}
+                                         encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch}
+                                                                       size={'small'}
+                                                                       className={'encoder-label'}/>}
                     />
                 </div>
             </div>
         </div>
 
-        <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels} demoName={'encoding'}
+        <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels}
+                             demoName={'encoding'}
                              allDataLabels={allDataLabelsRef.current ?? []} setDataLabels={setDataLabels}/>
     </div>;
 }
