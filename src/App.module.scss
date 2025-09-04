@@ -780,6 +780,10 @@ input[type="number"] {
   height: 95vh; /* full viewport height */
   background-image: linear-gradient(rgba(0, 0, 0, 0.6), var(--text-color));
 
+  * {
+    padding: 0 1rem;
+  }
+
   img {
     max-width: 17rem; /* adjust size as necessary */
     height: auto;
@@ -857,4 +861,19 @@ input[type="number"] {
 
 h1 + p {
   margin-top: 0;
+}
+
+@media (max-width: $small-screen-limit) {
+  #root {
+    width: 100% !important;
+    font-size: 14px;
+
+    #main {
+      width: 100% !important;
+
+      #encoding-demo-div {
+        width: 100%;
+      }
+    }
+  }
 }
