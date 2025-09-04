@@ -5,6 +5,8 @@ $canvas-height: 21vw;
 $canvas-width: 1.35 * $canvas-height;
 $curve-padding-factor: 0.04;
 
+$small-screen-limit: 700px; // Mobile site for widths below this
+
 $side-padding: 10rem;
 $side-padding-narrow: 5vw;
 
@@ -788,6 +790,14 @@ input[type="number"] {
   p {
     color: white;
     max-width: 28rem;
+
+    &.size-warning-p {
+        display: none;
+
+        @media (max-width: $small-screen-limit) {
+            display: initial;
+        }
+    }
   }
 }
 

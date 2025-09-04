@@ -68,6 +68,7 @@ function App() {
                 <img src="./logo2.png" alt="AutoSFC logo" className="header-img"/>
                 <p>AutoSFC is a web-based demo for the research-activities around the usage of Space-Filling Curves
                     (SFC) for encoding and reducing the dimensionality of automotive data.</p>
+                <p className={'size-warning-p'}>This website is optimized for larger screen sizes.</p>
             </div>
 
             <div className="topnav">
