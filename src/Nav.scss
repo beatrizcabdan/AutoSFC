@@ -1,0 +1,29 @@
+@use 'App.module';
+
+.topnav {
+    overflow: hidden;
+    background-color: var(--text-color);
+    color: white;
+    padding: 0 50px;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    box-shadow: rgba(0 0 0 / 0.2) 0 5px 5px 1px;
+}
+
+.topnav div {
+    float: left;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    color: white;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.topnav div:hover {
+    background-color: var(--text-color-light);
+}
