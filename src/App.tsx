@@ -2,7 +2,6 @@
 // noinspection JSUnusedLocalSymbols
 
 import './App.module.scss'
-import './Nav.scss'
 
 import React, {useEffect, useState} from 'react';
 import {PaperContainer} from "./PaperContainer.tsx";
@@ -131,7 +130,7 @@ function App() {
 
             <Fab variant="extended" color={'primary'} className={getScrollButtonClass()} size={'small'}
                  onClick={onScrollButtonClick}>
-                <ArrowUpwardIcon sx={{ mr: 1 }} />
+                <ArrowUpwardIcon sx={{ mr: 0, ml: 0 }} />
                 to top
             </Fab>
 
