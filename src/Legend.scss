@@ -15,7 +15,7 @@
         position: absolute;
         top: 0;
         left: 50%;
-        translate: -50% -250%;
+        translate: -50% -210%;
         text-transform: uppercase;
         font-size: 0.7rem;
         opacity: 0;
@@ -23,9 +23,10 @@
         background: white;
         border-radius: 5px;
         box-shadow: rgba(0, 0, 0, 0.2) 0 0 6px 1px;
-        padding: 0.8rem;
+        padding: 0.7rem 0.4rem;
         height: fit-content;
         letter-spacing: 0.07rem;
+        line-height: initial !important;
 
         &.show {
             opacity: 1;
