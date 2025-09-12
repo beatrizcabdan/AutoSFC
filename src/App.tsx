@@ -3,7 +3,7 @@
 
 import './App.module.scss'
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {PaperContainer} from "./PaperContainer.tsx";
 import {EncodingDemo} from "./EncodingDemo.tsx";
 import {CspComparisonDemo} from "./CspComparisonDemo.tsx";
@@ -20,11 +20,17 @@ export const DEFAULT_SCALING_FACTOR = 10
 export const DEFAULT_OFFSET = 100
 export const DEFAULT_BITS_PER_SIGNAL = 14
 
+const HIDE_MOBILE_NAV_WHEN_SCROLLING_DOWN = false
+
 function App() {
     const [scrollPos, setScrollPos] = useState(0)
+    const [hideMobileNav, setHideMobileNav] = useState(false)
+    const scrollPosRef = useRef<number>(0)
 
     const onScroll = () => {
         setScrollPos(document.documentElement.scrollTop)
+        setHideMobileNav(document.documentElement.scrollTop > scrollPosRef.current && HIDE_MOBILE_NAV_WHEN_SCROLLING_DOWN)
+        scrollPosRef.current = document.documentElement.scrollTop
     }
 
     useEffect(() => {
@@ -62,7 +68,7 @@ function App() {
                 <p className={'size-warning-p'}>This website is optimized for larger screen sizes.</p>
             </div>
 
-            <Nav/>
+            <Nav scrollPos={scrollPos} hideMobileNav={hideMobileNav}/>
 
             <div id={'main'}>
                 <EncodingDemo />

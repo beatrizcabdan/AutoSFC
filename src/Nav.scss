@@ -44,6 +44,19 @@
         padding: 0 0.5rem;
         display: flex;
         justify-content: space-evenly;
+        position: fixed;
+        bottom: 0;
+        top: unset;
+        box-shadow: rgba(0 0 0 / 0.2) 0 -0.08rem 0.2rem 0.15rem;
+        transition: bottom 0.3s;
+    }
+
+    .topnav.hide {
+        bottom: -100%
+    }
+
+    .topnav.top-pos {
+        box-shadow: rgba(0 0 0 / 0.2) 0 -0.08rem 0.2rem 0.05rem;
     }
 
     .topnav div {

@@ -777,6 +777,7 @@ input[type="number"] {
   }
 }
 
+// Scroll-to-top button
 .MuiFab-extended {
   padding: 1.2rem !important;
   border-radius: 20px !important;
@@ -835,6 +836,7 @@ h1 + p {
   margin-top: 0;
 }
 
+/*MOBILE SCREENS*/
 @media (max-width: $small-screen-limit) {
   #root {
     width: 100% !important;
@@ -847,5 +849,11 @@ h1 + p {
         width: 100%;
       }
     }
+  }
+
+  // Scroll-to-top button
+  .MuiFab-extended {
+    bottom: 6rem;
+    right: 1rem;
   }
 }
