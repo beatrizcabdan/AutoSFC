@@ -1,3 +1,5 @@
+@use 'App.module';
+
 #encoding-demo-div {
     display: flex;
     flex-direction: column;
@@ -32,10 +34,40 @@
             font-size: 2.2vw;
         }
     }
-    
+
     @media (min-width: 1081px) {
         #process-container, .vert-control-wrapper {
             height: 100%;
+        }
+    }
+}
+
+@media (max-width: App.$small-screen-limit) {
+    .charts {
+        flex-direction: column !important;
+        align-items: center !important;
+
+        .chart {
+            align-self: unset !important;
+
+            .canvas-container {
+                .canvas-wrapper {
+                    grid-template-columns: 5vw 8vw auto 13vw !important;
+
+                    canvas {
+                        width: 70vw !important;
+                        height: 52vw !important;
+                    }
+
+                    .chartitle {
+                        font-size: 1.5rem !important;
+                    }
+
+                    .chart-x-axis-name {
+                        margin-top: 1.5rem;
+                    }
+                }
+            }
         }
     }
 }

@@ -68,3 +68,9 @@
         }
     }
 }
+
+@media (max-width: App.$small-screen-limit) {
+    .legend-container .legend {
+        max-width: none;
+    }
+}
