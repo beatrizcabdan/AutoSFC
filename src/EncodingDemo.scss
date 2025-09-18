@@ -52,7 +52,31 @@
 
             .canvas-container {
                 .canvas-wrapper {
-                    grid-template-columns: 5vw 8vw auto 13vw !important;
+                    .chartYTicks {
+                        width: 100% !important;
+                    }
+
+                    &#left-canvas {
+                        grid-template-columns: 5vw 8vw 70vw 13vw !important;
+                    }
+
+                    &#right-canvas {
+                        grid-template-columns: 13vw 70vw 8vw 5vw !important;
+
+                        .chartYTicks:first-of-type {
+                            margin: 0;
+                        }
+
+                        .y-axis-label {
+                            height: max-content;
+                        }
+
+                        .chartitle {
+                            text-align: center;
+                            margin: 1rem auto 0.5rem;
+                            grid-column: 1 / 5;
+                        }
+                    }
 
                     canvas {
                         width: 70vw !important;
