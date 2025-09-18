@@ -76,3 +76,19 @@
     }
 }
 
+@media (max-width: App.$small-screen-limit) {
+    .light-box .dialog h2 {
+        line-height: initial;
+    }
+
+    .light-box .dialog .checkbox-list {
+        line-height: initial;
+        align-items: flex-start;
+
+        div {
+            display: flex;
+            align-items: center;
+            column-gap: 0.3rem;
+        }
+    }
+}
