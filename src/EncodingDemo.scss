@@ -56,6 +56,12 @@
                         width: 100% !important;
                     }
 
+                    .x-tick-mark:not(:nth-child(2n+1)) {
+                        .x-tick-mark-label {
+                            display: none !important;
+                        }
+                    }
+
                     &#left-canvas {
                         grid-template-columns: 5vw 8vw 70vw 13vw !important;
                     }
