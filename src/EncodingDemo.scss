@@ -100,4 +100,37 @@
             }
         }
     }
+
+    #encoding-demo-div {
+        .controls {
+            flex-direction: column;
+
+            .vert-control-wrapper {
+                width: 100%;
+
+                #process-container {
+                    width: 100%;
+
+                    .encoder-switch {
+                        // align-items: center;
+                        // flex-direction: column;
+                        display: grid;
+                        grid-auto-rows: min-content min-content;
+                        gap: 0.1rem 0.5rem;
+
+                        .encoding-label {
+                            grid-column: 1;
+                        }
+
+                        .MuiSwitch-root {
+                            rotate: 90deg;
+                            grid-column: 2;
+                            grid-row: 1 / 3;
+                            align-self: center;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
