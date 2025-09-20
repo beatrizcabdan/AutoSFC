@@ -104,12 +104,66 @@
     #encoding-demo-div {
         .controls {
             flex-direction: column;
+            gap: 0;
 
             .vert-control-wrapper {
                 width: 100%;
 
+                &:nth-of-type(1), #first-control-row, .control-row {
+                    gap: 0;
+
+                    .separator {
+                        content: '';
+                        position: absolute;
+                        border-top: 1px solid rgba(0, 0, 0, 0.12);
+                        bottom: 0;
+                        left: 20px;
+                        width: calc(100% - 40px);
+                    }
+
+                    // All controls
+                    .file-container, .position-container, #range-container, #presets-container, #process-container {
+                        box-shadow: none;
+                        border-left: 1px solid rgba(0, 0, 0, 0.12);
+                        border-right: 1px solid rgba(0, 0, 0, 0.12);
+                        // border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+                    }
+
+                    // All controls but first and last
+                    .file-container, #range-container, #presets-container {
+                        border-radius: 0;
+                        position: relative;
+
+                        &:after {
+                            @extend .separator
+                        }
+                    }
+
+                    // First control
+                    .position-container {
+                        border-top: 1px solid rgba(0, 0, 0, 0.12);
+                        border-bottom-left-radius: 0;
+                        border-bottom-right-radius: 0;
+                        position: relative;
+
+                        &:after {
+                            @extend .separator
+                        }
+                    }
+
+                    // Last control
+                    #process-container {
+                        border-top: 0;
+                        border-top-left-radius: 0;
+                        border-top-right-radius: 0;
+                    }
+                }
+
                 #process-container {
                     width: 100%;
+                    border: 1px solid rgba(0, 0, 0, 0.12);
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 0;
 
                     .encoder-switch {
                         // align-items: center;
