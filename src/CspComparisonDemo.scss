@@ -1,3 +1,5 @@
+@use 'App.module';
+
 #comp-demo-div {
     display: flex;
     flex-direction: column;
@@ -317,6 +319,54 @@
 
             .signals-grid {
                 grid-template-columns: 9ch repeat(2, min-content) 1rem min-content auto !important;
+            }
+        }
+    }
+}
+
+@media (max-width: App.$small-screen-limit) {
+    #comp-demo-div {
+
+        #demo2-charts {
+            flex-direction: column !important;
+            width: fit-content;
+
+            #demo2-chart {
+                .canvas-container {
+                    flex-direction: column;
+                    align-items: center;
+
+                    .canvas-wrapper {
+                        .chartitle {
+                            text-align: center;
+                            margin: 1rem auto 0.5rem;
+                            grid-column: 1 / 5;
+                        }
+
+                        &#right-canvas {
+                            grid-template-columns: 13vw 70vw 8vw 5vw !important;
+
+                            canvas {
+                                width: 70vw !important;
+                                height: 52vw !important;
+                            }
+
+                            .chartYTicks:first-of-type {
+                                margin: 0;
+                            }
+
+                            .chartYTicks {
+                                width: 100% !important;
+                            }
+                        }
+
+                        .x-tick-mark:not(:nth-child(2n+1)) {
+                            .x-tick-mark-label {
+                                display: none !important;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
