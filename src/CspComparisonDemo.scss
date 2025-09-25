@@ -365,6 +365,10 @@
                                 display: none !important;
                             }
                         }
+
+                        .y-axis-label {
+                            height: max-content;
+                        }
                     }
                 }
             }
