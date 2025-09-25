@@ -352,7 +352,7 @@ export function EncodingDemo() {
     };
     return <div id={'encoding-demo-div'}>
         <h1>Encoding demo</h1>
-        <p>Visualizes both the original and encoded signals side-by-side, and allows transformations on the input signal in real time.</p>
+        <p className={'demo-description-p'}>Visualizes both the original and encoded signals side-by-side, and allows transformations on the input signal in real time.</p>
         <div className={"charts"}>
             <Chart name={"Original signals plot"} data={showSignalTransforms ? transformedData : data}
                    scales={scales} offsets={offsets}
