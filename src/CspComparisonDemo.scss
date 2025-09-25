@@ -326,6 +326,9 @@
 
 @media (max-width: App.$small-screen-limit) {
     #comp-demo-div {
+        .global-transform-div {
+            width: 100%;
+        }
 
         #demo2-charts {
             flex-direction: column !important;
@@ -369,6 +372,113 @@
                         .y-axis-label {
                             height: max-content;
                         }
+                    }
+                }
+            }
+        }
+
+        #demo2-controls {
+            .comparison-row-div {
+                flex-direction: column;
+                padding: 0;
+                gap: 0;
+
+                .left-control-grid {
+                    width: 100%;
+                    padding: 1rem;
+                    border-bottom: 1px solid rgba(0 0 0 / 0.15);
+
+                    .first-buttons-column {
+                        grid-row: 1;
+                        gap: 0;
+                        width: fit-content;
+
+                        .show-checkbox {
+                            padding: 0;
+                            margin: 0;
+                        }
+                    }
+
+                    .file-container {
+                        grid-column: 1 / 3;
+                    }
+
+                    #range-container {
+                        grid-column: 1 / 3;
+                        padding-bottom: 0;
+                    }
+                }
+            }
+
+            #process-container {
+                border: none !important;
+                padding: 1rem !important;
+                width: 100% !important;
+
+                .signals-grid {
+                    grid-template-columns: repeat(6, 1fr) !important;
+
+                    .choose-columns-button {
+                        grid-column: 2 / 6 !important;
+                    }
+
+                    .signal-cell {
+                        grid-column: 1 / 3 !important;
+                        padding-left: 1ch;
+                    }
+
+                    .signal-label {
+                        grid-column: 1 / 3;
+                    }
+
+                    .offset-label {
+                        grid-column: 3 / 5;
+                    }
+
+                    .scale-label {
+                        grid-column: 5 / 7;
+                    }
+
+                    #reset-button {
+                        margin: 1rem 0 0 0 !important;
+                        grid-column: 1 / 7 !important;
+                        grid-row: unset !important;
+                        order: 5;
+                    }
+
+                    #sfc-header {
+                        border-top: 1px solid rgba(0 0 0 / 0.15);
+                        margin-top: 1rem !important;
+                        margin-bottom: 0;
+                        order: 2;
+                        grid-column: 1 / 7 !important;
+                        line-height: 2.0rem;
+                        padding-top: 0.5rem !important;
+                    }
+
+                    .min-sfc-label {
+                        order: 3;
+                        grid-row: unset !important;
+                    }
+
+                    .max-sfc-label {
+                        order: 4;
+                        grid-row: unset !important;
+                    }
+
+                    span.min-sfc-label, span.max-sfc-label {
+                        grid-column: 1 / 3 !important;
+                        justify-self: left !important;
+                        padding-left: 1ch;
+                    }
+
+                    label.min-sfc-label, label.max-sfc-label {
+                        grid-column: 4 / 7 !important;
+                        justify-self: left !important;
+                    }
+
+                    .MuiDivider-vertical {
+                        display: none;
                     }
                 }
             }
