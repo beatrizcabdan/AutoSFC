@@ -780,7 +780,7 @@ input[type="number"] {
 // Scroll-to-top button
 .MuiFab-extended {
   padding: 1.2rem !important;
-  border-radius: 20px !important;
+  border-radius: 50% !important;
   position: fixed !important;
   bottom: 2rem;
   right: 2rem;
@@ -790,6 +790,8 @@ input[type="number"] {
   transition: all 0.5s !important;
   box-shadow: 0 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12) !important;
   opacity: 0.85;
+  height: 2.5rem !important;
+  width: 2.5rem !important;
 
   &.disabled {
     pointer-events: none;

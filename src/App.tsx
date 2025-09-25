@@ -137,7 +137,6 @@ function App() {
             <Fab variant="extended" color={'primary'} className={getScrollButtonClass()} size={'small'}
                  onClick={onScrollButtonClick}>
                 <ArrowUpwardIcon sx={{ mr: 0, ml: 0 }} />
-                to top
             </Fab>
 
         </>
