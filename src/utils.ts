@@ -240,3 +240,13 @@ function bigUint64ToNumberArray(bigArray: BigUint64Array): number[] {
         return num;
     });
 }
+
+export function scrollToSection(section: string) {
+    const element = document.querySelector(section)!
+    const topPos = element.getBoundingClientRect().top + window.scrollY
+
+    window.scrollTo({
+        top: topPos,
+        behavior: 'smooth'
+    })
+}

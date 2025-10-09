@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import './Nav.scss'
+import {scrollToSection} from "./utils.ts";
 
 interface NavProps {
     scrollPos: number,
@@ -15,16 +16,6 @@ export function Nav({scrollPos, hideMobileNav}: NavProps) {
         const navHeight = topnav ? topnav.offsetHeight * 100 / h : -1
         setNavHeight(navHeight)
     }, []);
-
-    function scrollToSection(section: string) {
-        const element = document.querySelector(section)!
-        const topPos = element.getBoundingClientRect().top + window.scrollY
-
-        window.scrollTo({
-            top: topPos,
-            behavior: 'smooth'
-        })
-    }
 
     return <div className={`topnav ${scrollPos < navHeight ? 'top-pos' : ''} ${hideMobileNav ? 'hide' : ''}`}>
         <div className="active" onClick={() => scrollToSection("#encoding-demo-div")}>
