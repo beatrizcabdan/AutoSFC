@@ -13,6 +13,8 @@ import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR, PlaySta
 import {demoPreset5} from "./Common.ts";
 import './EncodingDemo.scss'
 import App from './App.module.scss'
+import {useSearchParams} from "react-router-dom";
+
 const { primaryColor } = App
 
 const preset = demoPreset5
@@ -57,12 +59,14 @@ export function EncodingDemo() {
     const [maxChartValue, setMaxChartValue] = useState<number>(-1)
 
     const [signalMarkerPos, setSignalMarkerPos] = useState<number>(SLIDER_START_VAL)
-    const [playStatus, setPlayStatus] = useState(PlayStatus.PAUSED)
+    const [playStatus, setPlayStatus] = useState(PlayStatus.REACHED_END)
     const playbackIntervalRef = useRef(-1)
 
     const [showDialog, setShowDialog] = useState(false)
 
     const [currentPresetName, setCurrentPresetName] = useState('')
+
+    const [searchParams, setSearchParams] = useSearchParams()
 
     const loadFile = () => {
         fetch(filePath).then(r => {
@@ -159,6 +163,10 @@ export function EncodingDemo() {
 
     // Clear interval when unmounting the component
     useEffect(() => {
+        console.log(searchParams)
+        if (searchParams?.has('autoplay', 'true')) {
+            onPlayClick()
+        }
         return () => clearInterval(playbackIntervalRef.current);
     }, []);
 

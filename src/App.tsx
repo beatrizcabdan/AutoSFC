@@ -17,6 +17,11 @@ export enum PlayStatus {
     PLAYING, PAUSED, REACHED_END
 }
 
+export interface ISearchParams {
+    preset?: string | null,
+    autoplay?: boolean | null
+}
+
 export const DEFAULT_SCALING_FACTOR = 10
 export const DEFAULT_OFFSET = 100
 export const DEFAULT_BITS_PER_SIGNAL = 14
