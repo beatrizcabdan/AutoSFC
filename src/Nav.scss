@@ -24,6 +24,10 @@
     font-weight: 500;
     display: flex;
     gap: 0.4rem;
+
+    &.hide {
+        display: none;
+    }
 }
 
 .topnav div:hover {

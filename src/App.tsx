@@ -76,6 +76,7 @@ function App() {
     const getVisibilityClassName = () => {
         return searchParams.has('anonymize', 'true') ? 'hide' : '';
     }
+
     return (
         <>
             <div className="landing-section">
@@ -85,7 +86,7 @@ function App() {
                 <p className={'size-warning-p'}>This website is optimized for larger screen sizes.</p>
             </div>
 
-            <Nav scrollPos={scrollPos} hideMobileNav={hideMobileNav}/>
+            <Nav scrollPos={scrollPos} hideMobileNav={hideMobileNav} contactVisibilityClassName={getVisibilityClassName()}/>
 
             <div id={'main'}>
                 <EncodingDemo />

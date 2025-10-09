@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from "react";
 import './Nav.scss'
 import {scrollToSection} from "./utils.ts";
+import {useSearchParams} from "react-router-dom";
 
 interface NavProps {
     scrollPos: number,
-    hideMobileNav: boolean
+    hideMobileNav: boolean,
+    contactVisibilityClassName?: string
 }
 
-export function Nav({scrollPos, hideMobileNav}: NavProps) {
+export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName}: NavProps) {
     const [navHeight, setNavHeight] = useState(0)
 
     useEffect(() => {
@@ -30,8 +32,8 @@ export function Nav({scrollPos, hideMobileNav}: NavProps) {
         <div onClick={() => scrollToSection("#about")}>
             <span className="material-symbols-outlined">info</span>About SFCs
         </div>
-        <div onClick={() => scrollToSection("#contact")}>
-            <span className="material-symbols-outlined">alternate_email</span>Contact
+        <div className={contactVisibilityClassName} onClick={() => scrollToSection("#contact")}>
+            <span className={`material-symbols-outlined`}>alternate_email</span>Contact
         </div>
     </div>
 }
