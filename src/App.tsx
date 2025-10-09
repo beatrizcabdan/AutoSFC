@@ -10,6 +10,7 @@ import {CspComparisonDemo} from "./CspComparisonDemo.tsx";
 import {Fab} from "@mui/material";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {Nav} from "./Nav.tsx";
+import {BrowserRouter} from "react-router-dom";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum PlayStatus {
@@ -60,7 +61,7 @@ function App() {
     }
 
     return (
-        <>
+        <BrowserRouter>
             <div className="landing-section">
                 <img src="./logo2.png" alt="AutoSFC logo" className="header-img"/>
                 <p>AutoSFC is a web-based demo for the research-activities around the usage of Space-Filling Curves
@@ -138,8 +139,7 @@ function App() {
                  onClick={onScrollButtonClick}>
                 <ArrowUpwardIcon sx={{ mr: 0, ml: 0 }} />
             </Fab>
-
-        </>
+        </BrowserRouter>
     )
 }
 
