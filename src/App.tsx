@@ -10,7 +10,7 @@ import {CspComparisonDemo} from "./CspComparisonDemo.tsx";
 import {Fab} from "@mui/material";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {Nav} from "./Nav.tsx";
-import {BrowserRouter, useSearchParams} from "react-router-dom";
+import {useSearchParams} from "react-router-dom";
 import {scrollToSection} from "./utils.ts";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -20,7 +20,8 @@ export enum PlayStatus {
 
 export interface ISearchParams {
     preset?: string | null,
-    autoplay?: boolean | null
+    autoplay?: boolean | null,
+    anonymize?: boolean
 }
 
 export const DEFAULT_SCALING_FACTOR = 10
@@ -33,7 +34,7 @@ function App() {
     const [scrollPos, setScrollPos] = useState(0)
     const [hideMobileNav, setHideMobileNav] = useState(false)
     const scrollPosRef = useRef<number>(0)
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams] = useSearchParams()
 
     const onScroll = () => {
         setScrollPos(document.documentElement.scrollTop)
@@ -72,6 +73,9 @@ function App() {
         }, 17)
     }
 
+    const getVisibilityClassName = () => {
+        return searchParams.has('anonymize', 'true') ? 'hide' : '';
+    }
     return (
         <>
             <div className="landing-section">
@@ -131,7 +135,7 @@ function App() {
                 </div>
             </div>
 
-            <div className="tabcontent" id={'contact'}>
+            <div className={`tabcontent ${(getVisibilityClassName())}`} id={'contact'}>
                 <h1>Want to collaborate? Contact us!</h1>
 
                 <p>This website is under construction. If you want to know more about Space-Filling Curves (SFCs), or
@@ -142,9 +146,12 @@ function App() {
                 <br/>
             </div>
 
-            <div className="footer">
-                Demo of SFC encoding for automotive data. Site under construction. Contact Beatriz Cabrero-Daniel at <a
+            {/*Switch to inverse anonymization logic after publication*/}
+            <div className={`footer ${getVisibilityClassName()}`}>
+                Demo of SFC encoding for automotive data. Site under construction.
+                <span id={'contact-info'} className={getVisibilityClassName()}> Contact Beatriz Cabrero-Daniel at <a
                 href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a> for more info.
+                </span>
             </div>
 
             <Fab variant="extended" color={'primary'} className={getScrollButtonClass()} size={'small'}

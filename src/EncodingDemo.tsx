@@ -163,7 +163,6 @@ export function EncodingDemo() {
 
     // Clear interval when unmounting the component
     useEffect(() => {
-        console.log(searchParams)
         if (searchParams?.has('autoplay', 'true')) {
             onPlayClick()
         }

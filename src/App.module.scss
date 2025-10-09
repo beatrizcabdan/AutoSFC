@@ -805,6 +805,10 @@ input[type="number"] {
   background-color: white;
   margin-top: 2rem;
   padding: 0 $side-padding;
+
+  &#contact.hide {
+    display: none;
+  }
 }
 
 .papers-container {
@@ -840,6 +844,18 @@ input[type="number"] {
 
 h1 + p {
   margin-top: 0;
+}
+
+.footer {
+  text-align: center;
+}
+
+.footer.hide {
+  margin-top: 5rem;
+}
+
+.footer #contact-info.hide {
+  display: none;
 }
 
 /*MOBILE SCREENS*/
