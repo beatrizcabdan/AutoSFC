@@ -58,8 +58,6 @@ export function PresetComponent(props: {
     useEffect(() => {
         const paramPresetName = searchParams.get('preset')
         if (presets && paramPresetName) {
-            console.log(paramPresetName)
-            console.log(presets)
             const idx = presets?.findIndex(p => p.name === paramPresetName)
             if (idx === undefined) {
                 console.error(`No preset with name ${paramPresetName} found.`)
@@ -186,6 +184,9 @@ export function PresetComponent(props: {
     }
 
     function removePreset(index: number) {
+        if (searchParams.get('preset') !== undefined && presets![index].name === searchParams.get('preset')) {
+            setSearchParams({})
+        }
         setPresets(presets => [...presets!.slice(0, index), ...presets!.slice(index + 1)])
         setDeletedIndex(-1)
     }
@@ -197,12 +198,14 @@ export function PresetComponent(props: {
         // Don't allow multiple presets with same name
         if (e.key === 'Enter' && !presets?.some((p, i) => i != presetIndex && p.name === targetVal)) {
             setEditablePresetNameIdx(-1)
+            if (props.currentPresetName === presets![presetIndex].name) {
+                console.log(targetVal)
+                setSearchParams({preset: targetVal})
+            }
+
             const newPresets = [...presets!]
             newPresets[presetIndex].name = targetVal
             setPresets(newPresets)
-            if (props.currentPresetName === presets![presetIndex].name) {
-                setSearchParams({preset: targetVal})
-            }
         }
     }
 
