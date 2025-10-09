@@ -200,7 +200,9 @@ export function PresetComponent(props: {
             const newPresets = [...presets!]
             newPresets[presetIndex].name = targetVal
             setPresets(newPresets)
-            setSearchParams({preset: targetVal})
+            if (props.currentPresetName === presets![presetIndex].name) {
+                setSearchParams({preset: targetVal})
+            }
         }
     }
 
