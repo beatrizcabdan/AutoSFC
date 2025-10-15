@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import './Nav.scss'
 import {scrollToSection} from "./utils.ts";
-import {useSearchParams} from "react-router-dom";
 
 interface NavProps {
     scrollPos: number,
