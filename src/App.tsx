@@ -10,7 +10,7 @@ import {CspComparisonDemo} from "./CspComparisonDemo.tsx";
 import {Fab} from "@mui/material";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {Nav} from "./Nav.tsx";
-import {useSearchParams} from "react-router-dom";
+import {useSearchParams, useNavigate} from "react-router-dom";
 import {scrollToSection} from "./utils.ts";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -33,14 +33,32 @@ const HIDE_MOBILE_NAV_WHEN_SCROLLING_DOWN = true
 function App() {
     const [hideMobileNav, setHideMobileNav] = useState(false)
     const scrollPosRef = useRef<number>(0)
+    const currentSectionRef = useRef<string>('')
+    const posToSectionsMapRef = useRef<Map<number, string>>()
     const [scrollButtonClass, setScrollButtonClass] = useState('disabled')
     const [searchParams] = useSearchParams()
+    const navigate = useNavigate()
 
     const onScroll = useCallback(() => {
         const scrollingUp = document.documentElement.scrollTop < scrollPosRef.current
         setHideMobileNav(!scrollingUp && HIDE_MOBILE_NAV_WHEN_SCROLLING_DOWN)
         setScrollButtonClass(scrollPosRef.current > window.innerHeight && scrollingUp ? '' : 'disabled')
         scrollPosRef.current = document.documentElement.scrollTop
+        const sectionPositions = posToSectionsMapRef.current ? Array.from(posToSectionsMapRef.current?.keys()) : []
+        let currentSection: string | undefined = ''
+        for (let i = 0; i < sectionPositions.length; i++){
+            const pos = sectionPositions[i];
+            if (scrollPosRef.current >= pos) {
+                currentSection = posToSectionsMapRef.current?.get(pos)
+            } else {
+                break
+            }
+        }
+        console.log(currentSection)
+        if (currentSectionRef.current !== currentSection) {
+            navigate(`/${currentSection}`)
+            currentSectionRef!.current = currentSection ?? ''
+        }
     }, [scrollPosRef])
 
     useEffect(() => {
@@ -56,6 +74,15 @@ function App() {
             scrollToSection('#encoding-demo-div')
         }
 
+        const sections = ['#encoding-demo-div', '#comp-demo-div', '#work', '#about', '#contact']
+        const posToSectionMap = new Map<number, string>();
+        sections.forEach(section => {
+            const element = document.querySelector(section)!
+            const topPos = Math.floor(element.getBoundingClientRect().top + window.scrollY)
+            posToSectionMap.set(topPos, section)
+            posToSectionsMapRef.current?.set(topPos, section)
+        })
+        posToSectionsMapRef.current = posToSectionMap
     }, []);
 
     const onScrollButtonClick = () => {
