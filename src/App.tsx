@@ -10,7 +10,7 @@ import {CspComparisonDemo} from "./CspComparisonDemo.tsx";
 import {Fab} from "@mui/material";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {Nav} from "./Nav.tsx";
-import {useSearchParams} from "react-router-dom";
+import {useSearchParams, useNavigate} from "react-router-dom";
 import {scrollToSection} from "./utils.ts";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -35,6 +35,7 @@ function App() {
     const scrollPosRef = useRef<number>(0)
     const [scrollButtonClass, setScrollButtonClass] = useState('disabled')
     const [searchParams] = useSearchParams()
+    const navigate = useNavigate()
 
     const onScroll = useCallback(() => {
         const scrollingUp = document.documentElement.scrollTop < scrollPosRef.current
@@ -70,6 +71,7 @@ function App() {
                 frameCount++
             }
         }, 17)
+        navigate('')
     }
 
     const getVisibilityClassName = () => {
