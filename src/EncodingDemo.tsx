@@ -170,6 +170,7 @@ export function EncodingDemo() {
     }, []);
 
     function startPlayback() {
+        // @ts-ignore
         playbackIntervalRef.current = setInterval(() => {
                 setSignalMarkerPos((signalMarkerPos) => Number(signalMarkerPos) + 0.1)
             },

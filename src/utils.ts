@@ -227,6 +227,7 @@ export function debounce(func: () => void, time = 200) {
         if (timer) {
             clearTimeout(timer);
         }
+        // @ts-ignore
         timer = setTimeout(func, time);
     };
 }
