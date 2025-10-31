@@ -251,3 +251,9 @@ export function scrollToSection(section: string) {
         behavior: 'smooth'
     })
 }
+
+export const createPath =
+    (sectionId: string, searchParams: URLSearchParams) => {
+    const queryString = searchParams.toString()
+    return `${queryString ? ('?' + queryString) : ''}${sectionId}`
+}

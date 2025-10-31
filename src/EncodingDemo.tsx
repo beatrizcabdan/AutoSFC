@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
-import {debounce, hilbertEncode, mortonInterlace} from "./utils.ts";
+import {createPath, debounce, hilbertEncode, mortonInterlace} from "./utils.ts";
 import {Preset, PresetComponent} from "./PresetComponent.tsx";
 import {Chart} from "./Chart.tsx";
 import {EncoderSwitch} from "./EncoderSwitch.tsx";
@@ -20,7 +20,7 @@ const {primaryColor} = App
 const preset = demoPreset5
 
 interface EncodingDemoProps {
-    onSectionClick: (sectionId: string) => void
+    onSectionClick: (path: string, sectionId: string) => void
 }
 
 export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
@@ -70,7 +70,7 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
 
     const [currentPresetName, setCurrentPresetName] = useState('')
 
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams] = useSearchParams()
 
     const loadFile = () => {
         fetch(filePath).then(r => {
@@ -364,8 +364,10 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
     };
     return <div id={'encoding-demo-div'}>
         <h1>
-            <a href={'#encoding-demo-div'} onClick={e => e.preventDefault()}>
-                <span onClick={() => onSectionClick('#encoding-demo-div')}>#</span></a>Encoding demo
+            <a href={createPath('#encoding-demo-div', searchParams)}
+               onClick={e => e.preventDefault()}>
+                <span onClick={() => onSectionClick(createPath('#encoding-demo-div', searchParams),
+                    '#encoding-demo-div')}>#</span></a>Encoding demo
         </h1>
         <p className={'demo-description-p'}>The AutoSFC encoding demo allows researchers to visualize and adjust
             parameters in real time, and to apply transformations on the input signal in real time. Once a file is

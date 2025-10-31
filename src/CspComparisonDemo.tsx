@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR} from "./App.tsx";
-import {debounce, hilbertEncode, mortonInterlace} from "./utils.ts";
+import {createPath, debounce, hilbertEncode, mortonInterlace} from "./utils.ts";
 import {Chart} from "./Chart.tsx";
 import {EncoderSwitch} from "./EncoderSwitch.tsx";
 import {UploadButton} from "./UploadButton.tsx";
@@ -9,9 +9,9 @@ import {ProcessingComponent} from "./ProcessingComponent.tsx";
 import {SelectColumnsDialog} from "./SelectColumnsDialog.tsx";
 import {default_demo1} from "./Common.ts";
 import './CspComparisonDemo.scss'
-import {Checkbox, FormControlLabel, IconButton} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import {Checkbox, FormControlLabel} from "@mui/material";
 import App from './App.module.scss'
+import {useSearchParams} from "react-router-dom";
 
 const {primaryColor} = App
 
@@ -25,7 +25,7 @@ const preset = default_demo1
 // groundSpeed: 5005 / 10
 
 interface CspComparisonDemoProps {
-    onSectionClick: (sectionId: string) => void
+    onSectionClick: (path: string, sectionId: string) => void
 }
 
 export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
@@ -70,6 +70,8 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
 
     const [showDialog, setShowDialog] = useState(false)
     const [fileToSelectColumnsFor, setFileToSelectColumnsFor] = useState(-1)
+
+    const [searchParams] = useSearchParams()
 
     const loadFiles = async () => {
         const newData: number[][][] = []
@@ -339,8 +341,10 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
 
     return <div id={'comp-demo-div'}>
         <h1>
-            <a href={'#comp-demo-div'} onClick={e => e.preventDefault()}>
-                <span onClick={() => onSectionClick('#comp-demo-div')}>#</span>
+            <a href={createPath('#comp-demo-div', searchParams)}
+               onClick={e => e.preventDefault()}>
+                <span onClick={() => onSectionClick(createPath('#comp-demo-div', searchParams),'#comp-demo-div')}>
+                    #</span>
             </a>
             CSP comparison demo</h1>
         <p className={'demo-description-p'}>The CSP comparison demo overlays multiple CSPs to visually compare the

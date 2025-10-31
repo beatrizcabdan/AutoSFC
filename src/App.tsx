@@ -11,7 +11,7 @@ import {Fab} from "@mui/material";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {Nav} from "./Nav.tsx";
 import {useSearchParams, useNavigate} from "react-router-dom";
-import {scrollToSection} from "./utils.ts";
+import {createPath, scrollToSection} from "./utils.ts";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum PlayStatus {
@@ -34,6 +34,7 @@ function App() {
     const [hideMobileNav, setHideMobileNav] = useState(false)
     const scrollPosRef = useRef<number>(0)
     const [scrollButtonClass, setScrollButtonClass] = useState('disabled')
+    const [contactClass, setContactClass] = useState('')
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
 
@@ -56,12 +57,12 @@ function App() {
         if (searchParams.has('preset')) {
             scrollToSection('#encoding-demo-div')
         }
+        setContactClass(searchParams.has('anonymize', 'true') ? 'hide' : '')
+    }, [searchParams]);
 
-    }, []);
-
-    const onSectionClick = (sectionId: string) => {
+    const onSectionClick = (path: string, sectionId: string) => {
         scrollToSection(sectionId);
-        navigate(sectionId)
+        navigate(path)
     }
 
     const onScrollButtonClick = () => {
@@ -76,11 +77,7 @@ function App() {
                 frameCount++
             }
         }, 17)
-        navigate('')
-    }
-
-    const getVisibilityClassName = () => {
-        return searchParams.has('anonymize', 'true') ? 'hide' : '';
+        navigate(createPath('', searchParams))
     }
 
     return (
@@ -93,7 +90,7 @@ function App() {
             </div>
 
             <Nav scrollPos={scrollPosRef.current} hideMobileNav={hideMobileNav} onSectionClick={onSectionClick}
-                 contactVisibilityClassName={getVisibilityClassName()}/>
+                 contactVisibilityClassName={contactClass} searchParams={searchParams}/>
 
             <div id={'main'}>
                 <EncodingDemo onSectionClick={onSectionClick}/>
@@ -101,8 +98,10 @@ function App() {
             </div>
 
             <div className="tabcontent" id={'work'}>
-                <h1><a href={'#work'} onClick={e => e.preventDefault()}>
-                    <span onClick={() => onSectionClick('#work')}>#</span></a>
+                <h1><a href={createPath('#work', searchParams)}
+                       onClick={e => e.preventDefault()}>
+                    <span onClick={() => onSectionClick(createPath('#work', searchParams),'#work')}>
+                        #</span></a>
                     Previous work using Space-Filling Curves (SFCs)</h1>
 
                 <div className="papers-container">
@@ -127,8 +126,10 @@ function App() {
                 </div>
             </div>
             <div className="tabcontent" id={'about'}>
-                <h1><a href={'#about'} onClick={e => e.preventDefault()}>
-                    <span onClick={() => onSectionClick('#about')}>#</span></a>
+                <h1><a href={createPath('#about', searchParams)}
+                       onClick={e => e.preventDefault()}>
+                    <span onClick={() => onSectionClick(createPath('#about', searchParams),'#about')}>
+                        #</span></a>
                     Space-Filling Curves (SFCs): what and why?</h1>
                 <div className="papers-container">
                     <PaperContainer title={"Space-Filling Curves"}
@@ -147,9 +148,11 @@ function App() {
                 </div>
             </div>
 
-            <div className={`tabcontent ${(getVisibilityClassName())}`} id={'contact'}>
-                <h1><a href={'#contact'} onClick={e => e.preventDefault()}>
-                    <span onClick={() => onSectionClick('#contact')}>#</span></a>
+            <div className={`tabcontent ${contactClass}`} id={'contact'}>
+                <h1><a href={createPath('#contact', searchParams)}
+                       onClick={e => e.preventDefault()}>
+                    <span onClick={() => onSectionClick('#contact', createPath('#contact', searchParams))}>
+                        #</span></a>
                     Want to collaborate? Contact us!</h1>
 
                 <p>This website is under construction. If you want to know more about Space-Filling Curves (SFCs), or
@@ -161,9 +164,9 @@ function App() {
             </div>
 
             {/*Switch to inverse anonymization logic after publication*/}
-            <div className={`footer ${getVisibilityClassName()}`}>
+            <div className={`footer ${contactClass}`}>
                 Demo of SFC encoding for automotive data. Site under construction.
-                <span id={'contact-info'} className={getVisibilityClassName()}> Contact Beatriz Cabrero-Daniel at <a
+                <span id={'contact-info'} className={contactClass}> Contact Beatriz Cabrero-Daniel at <a
                 href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a> for more info.
                 </span>
             </div>
