@@ -101,7 +101,9 @@ function App() {
             </div>
 
             <div className="tabcontent" id={'work'}>
-                <h1><span onClick={() => onSectionClick('#work')}>#</span>Previous work using Space-Filling Curves (SFCs)</h1>
+                <h1><a href={'#work'} onClick={e => e.preventDefault()}>
+                    <span onClick={() => onSectionClick('#work')}>#</span></a>
+                    Previous work using Space-Filling Curves (SFCs)</h1>
 
                 <div className="papers-container">
                     <PaperContainer
@@ -125,7 +127,9 @@ function App() {
                 </div>
             </div>
             <div className="tabcontent" id={'about'}>
-                <h1><span onClick={() => onSectionClick('#about')}>#</span>Space-Filling Curves (SFCs): what and why?</h1>
+                <h1><a href={'#about'} onClick={e => e.preventDefault()}>
+                    <span onClick={() => onSectionClick('#about')}>#</span></a>
+                    Space-Filling Curves (SFCs): what and why?</h1>
                 <div className="papers-container">
                     <PaperContainer title={"Space-Filling Curves"}
                                     description={"The present book provides an introduction to using space-filling curves (SFC) as tools in scientific computing. Special focus is laid on the representation of SFC and on resulting algorithms."}
@@ -144,7 +148,9 @@ function App() {
             </div>
 
             <div className={`tabcontent ${(getVisibilityClassName())}`} id={'contact'}>
-                <h1><span onClick={() => onSectionClick('#contact')}>#</span>Want to collaborate? Contact us!</h1>
+                <h1><a href={'#contact'} onClick={e => e.preventDefault()}>
+                    <span onClick={() => onSectionClick('#contact')}>#</span></a>
+                    Want to collaborate? Contact us!</h1>
 
                 <p>This website is under construction. If you want to know more about Space-Filling Curves (SFCs), or
                     driving event detection using them, feel free to send us an email to Beatriz Cabrero-Daniel at <a

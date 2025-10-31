@@ -363,7 +363,10 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
         setEncoder(newEncoder)
     };
     return <div id={'encoding-demo-div'}>
-        <h1><span onClick={() => onSectionClick('#encoding-demo-div')}>#</span>Encoding demo</h1>
+        <h1>
+            <a href={'#encoding-demo-div'} onClick={e => e.preventDefault()}>
+                <span onClick={() => onSectionClick('#encoding-demo-div')}>#</span></a>Encoding demo
+        </h1>
         <p className={'demo-description-p'}>The AutoSFC encoding demo allows researchers to visualize and adjust
             parameters in real time, and to apply transformations on the input signal in real time. Once a file is
             uploaded, the tool parses the CSV data and loads the signals into memory. After loading, it activates the

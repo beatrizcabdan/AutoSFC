@@ -338,7 +338,11 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
     }
 
     return <div id={'comp-demo-div'}>
-        <h1><span onClick={() => onSectionClick('#comp-demo-div')}>#</span>CSP comparison demo</h1>
+        <h1>
+            <a href={'#comp-demo-div'} onClick={e => e.preventDefault()}>
+                <span onClick={() => onSectionClick('#comp-demo-div')}>#</span>
+            </a>
+            CSP comparison demo</h1>
         <p className={'demo-description-p'}>The CSP comparison demo overlays multiple CSPs to visually compare the
             multi-modal data points after dimensionality reduction to find similarities and differences. Once files are
             uploaded, the tool parses the CSV data, loads the signals, and renders the CSPs into the same plot.

@@ -50,6 +50,7 @@ h1 {
     opacity: 0;
     transition: all 0.2s;
     cursor: pointer;
+    font-weight: 900;
 
     &:hover {
       color: $primary-color-medium;

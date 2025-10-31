@@ -8,6 +8,19 @@ interface NavProps {
     onSectionClick: (sectionId: string) => void
 }
 
+function NavLink(props: {
+    title: string,
+    sectionId: string,
+    onSectionClick: (sectionId: string) => void,
+    className?: string | undefined
+}) {
+    return <a onClick={e => e.preventDefault()} href={props.sectionId}>
+        <div className={`active ${props.className ?? ''}`} onClick={() => props.onSectionClick(props.sectionId)}>
+            <span className="material-symbols-outlined">swap_horiz</span>{props.title}
+        </div>
+    </a>;
+}
+
 export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName, onSectionClick}: NavProps) {
     const [navHeight, setNavHeight] = useState(0)
 
@@ -19,20 +32,10 @@ export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName, onSec
     }, []);
 
     return <div className={`topnav ${scrollPos < navHeight ? 'top-pos' : ''} ${hideMobileNav ? 'hide' : ''}`}>
-        <div className="active" onClick={() => onSectionClick("#encoding-demo-div")}>
-            <span className="material-symbols-outlined">swap_horiz</span>Encoding Demo
-        </div>
-        <div onClick={() => onSectionClick('#comp-demo-div')}>
-            <span className="material-symbols-outlined">barcode</span>Comparison Demo
-        </div>
-        <div onClick={() => onSectionClick("#work")}>
-            <span className="material-symbols-outlined">article</span>Previous work
-        </div>
-        <div onClick={() => onSectionClick("#about")}>
-            <span className="material-symbols-outlined">info</span>About SFCs
-        </div>
-        <div className={contactVisibilityClassName} onClick={() => onSectionClick("#contact")}>
-            <span className={`material-symbols-outlined`}>alternate_email</span>Contact
-        </div>
+        <NavLink sectionId={"#encoding-demo-div"} onSectionClick={onSectionClick} title={'Encoding Demo'}/>
+        <NavLink sectionId={"#comp-demo-div"} onSectionClick={onSectionClick} title={'Comparison Demo'}/>
+        <NavLink sectionId={"#work"} onSectionClick={onSectionClick} title={'Previous work'}/>
+        <NavLink sectionId={"#about"} onSectionClick={onSectionClick} title={'About SFCs'}/>
+        <NavLink className={contactVisibilityClassName} sectionId={"#contact"} onSectionClick={onSectionClick} title={'Contact'}/>
     </div>
 }
