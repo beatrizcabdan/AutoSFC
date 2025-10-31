@@ -59,6 +59,11 @@ function App() {
 
     }, []);
 
+    const onSectionClick = (sectionId: string) => {
+        scrollToSection(sectionId);
+        navigate(sectionId)
+    }
+
     const onScrollButtonClick = () => {
         const frames = 90
         const scrollSpeed = 20 * scrollPosRef.current / frames
@@ -87,16 +92,16 @@ function App() {
                 <p className={'size-warning-p'}>This website is optimized for larger screen sizes.</p>
             </div>
 
-            <Nav scrollPos={scrollPosRef.current} hideMobileNav={hideMobileNav}
+            <Nav scrollPos={scrollPosRef.current} hideMobileNav={hideMobileNav} onSectionClick={onSectionClick}
                  contactVisibilityClassName={getVisibilityClassName()}/>
 
             <div id={'main'}>
-                <EncodingDemo />
-                <CspComparisonDemo />
+                <EncodingDemo onSectionClick={onSectionClick}/>
+                <CspComparisonDemo onSectionClick={onSectionClick}/>
             </div>
 
             <div className="tabcontent" id={'work'}>
-                <h1>Previous work using Space-Filling Curves (SFCs)</h1>
+                <h1><span onClick={() => onSectionClick('#work')}>#</span>Previous work using Space-Filling Curves (SFCs)</h1>
 
                 <div className="papers-container">
                     <PaperContainer
@@ -120,7 +125,7 @@ function App() {
                 </div>
             </div>
             <div className="tabcontent" id={'about'}>
-                <h1>Space-Filling Curves (SFCs): what and why?</h1>
+                <h1><span onClick={() => onSectionClick('#about')}>#</span>Space-Filling Curves (SFCs): what and why?</h1>
                 <div className="papers-container">
                     <PaperContainer title={"Space-Filling Curves"}
                                     description={"The present book provides an introduction to using space-filling curves (SFC) as tools in scientific computing. Special focus is laid on the representation of SFC and on resulting algorithms."}
@@ -139,7 +144,7 @@ function App() {
             </div>
 
             <div className={`tabcontent ${(getVisibilityClassName())}`} id={'contact'}>
-                <h1>Want to collaborate? Contact us!</h1>
+                <h1><span onClick={() => onSectionClick('#contact')}>#</span>Want to collaborate? Contact us!</h1>
 
                 <p>This website is under construction. If you want to know more about Space-Filling Curves (SFCs), or
                     driving event detection using them, feel free to send us an email to Beatriz Cabrero-Daniel at <a

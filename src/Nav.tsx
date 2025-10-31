@@ -1,17 +1,15 @@
 import React, {useEffect, useState} from "react";
 import './Nav.scss'
-import {scrollToSection} from "./utils.ts";
-import {useNavigate} from "react-router-dom";
 
 interface NavProps {
     scrollPos: number,
     hideMobileNav: boolean,
-    contactVisibilityClassName?: string
+    contactVisibilityClassName?: string,
+    onSectionClick: (sectionId: string) => void
 }
 
-export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName}: NavProps) {
+export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName, onSectionClick}: NavProps) {
     const [navHeight, setNavHeight] = useState(0)
-    const navigate = useNavigate()
 
     useEffect(() => {
         const topnav = document.querySelector('.topnav') as HTMLElement
@@ -20,10 +18,6 @@ export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName}: NavP
         setNavHeight(navHeight)
     }, []);
 
-    const onSectionClick = (sectionId: string) => {
-        scrollToSection(sectionId);
-        navigate(sectionId)
-    }
     return <div className={`topnav ${scrollPos < navHeight ? 'top-pos' : ''} ${hideMobileNav ? 'hide' : ''}`}>
         <div className="active" onClick={() => onSectionClick("#encoding-demo-div")}>
             <span className="material-symbols-outlined">swap_horiz</span>Encoding Demo
