@@ -15,7 +15,8 @@ function NavLink(props: {
     sectionId: string,
     onSectionClick: (path: string, sectionId: string) => void,
     className?: string | undefined,
-    searchParams: URLSearchParams
+    searchParams: URLSearchParams,
+    icon: string
 }) {
 
     const pathRef = useRef('')
@@ -28,7 +29,7 @@ function NavLink(props: {
               href={pathRef.current}>
         <div className={`active ${props.className ?? ''}`} onClick={() => props.onSectionClick(pathRef.current,
             props.sectionId)}>
-            <span className="material-symbols-outlined">swap_horiz</span>{props.title}
+            <span className="material-symbols-outlined">{props.icon}</span>{props.title}
         </div>
     </a>;
 }
@@ -44,15 +45,15 @@ export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName, onSec
     }, []);
 
     return <div className={`topnav ${scrollPos < navHeight ? 'top-pos' : ''} ${hideMobileNav ? 'hide' : ''}`}>
-        <NavLink sectionId={"#encoding-demo-div"} onSectionClick={onSectionClick}
+        <NavLink sectionId={"#encoding-demo-div"} onSectionClick={onSectionClick} icon={'swap_horiz'}
                  title={'Encoding Demo'} searchParams={searchParams}/>
         <NavLink sectionId={"#comp-demo-div"} onSectionClick={onSectionClick} searchParams={searchParams}
-                 title={'Comparison Demo'}/>
+                 title={'Comparison Demo'} icon={'barcode'}/>
         <NavLink sectionId={"#work"} onSectionClick={onSectionClick} searchParams={searchParams}
-                 title={'Previous work'}/>
+                 title={'Previous work'} icon={'article'}/>
         <NavLink sectionId={"#about"} onSectionClick={onSectionClick} searchParams={searchParams}
-                 title={'About SFCs'}/>
+                 title={'About SFCs'} icon={'info'}/>
         <NavLink className={contactVisibilityClassName} sectionId={"#contact"} onSectionClick={onSectionClick}
-                 searchParams={searchParams} title={'Contact'}/>
+                 searchParams={searchParams} icon={'alternate_email'} title={'Contact'}/>
     </div>
 }
