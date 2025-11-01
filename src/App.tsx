@@ -100,7 +100,7 @@ function App() {
             <div className="tabcontent" id={'work'}>
                 <h1><a href={createPath('#work', searchParams)}
                        onClick={e => e.preventDefault()}>
-                    <span onClick={() => onSectionClick(createPath('#work', searchParams),'#work')}>
+                    <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#work', searchParams),'#work')}>
                         #</span></a>
                     Previous work using Space-Filling Curves (SFCs)</h1>
 
@@ -128,7 +128,7 @@ function App() {
             <div className="tabcontent" id={'about'}>
                 <h1><a href={createPath('#about', searchParams)}
                        onClick={e => e.preventDefault()}>
-                    <span onClick={() => onSectionClick(createPath('#about', searchParams),'#about')}>
+                    <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#about', searchParams),'#about')}>
                         #</span></a>
                     Space-Filling Curves (SFCs): what and why?</h1>
                 <div className="papers-container">
@@ -151,7 +151,7 @@ function App() {
             <div className={`tabcontent ${contactClass}`} id={'contact'}>
                 <h1><a href={createPath('#contact', searchParams)}
                        onClick={e => e.preventDefault()}>
-                    <span onClick={() => onSectionClick('#contact', createPath('#contact', searchParams))}>
+                    <span className={'section-hash-span'} onClick={() => onSectionClick('#contact', createPath('#contact', searchParams))}>
                         #</span></a>
                     Want to collaborate? Contact us!</h1>
 

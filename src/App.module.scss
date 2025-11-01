@@ -39,11 +39,11 @@ h1 {
   align-self: center;
   position: relative;
 
-  &:hover span, span:hover {
+  &:hover .section-hash-span, .section-hash-span:hover {
     opacity: 1;
   }
 
-  span {
+  .section-hash-span {
     position: absolute;
     color: $primary-color-medium-light;
     translate: -1.2ch 0;
@@ -51,6 +51,9 @@ h1 {
     transition: all 0.2s;
     cursor: pointer;
     font-weight: 900;
+    font-size: 2.5rem;
+    text-align: center;
+    padding-top: 0.2rem;
 
     &:hover {
       color: $primary-color-medium;

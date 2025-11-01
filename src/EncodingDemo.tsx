@@ -366,7 +366,7 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
         <h1>
             <a href={createPath('#encoding-demo-div', searchParams)}
                onClick={e => e.preventDefault()}>
-                <span onClick={() => onSectionClick(createPath('#encoding-demo-div', searchParams),
+                <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#encoding-demo-div', searchParams),
                     '#encoding-demo-div')}>#</span></a>Encoding demo
         </h1>
         <p className={'demo-description-p'}>The AutoSFC encoding demo allows researchers to visualize and adjust
