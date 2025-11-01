@@ -898,6 +898,11 @@ h1 + p {
   h1 {
     margin: 1rem 0.5rem 0 !important;
     font-size: 2.0rem;
+
+    .section-hash-span {
+      padding-top: 0.2rem;
+      font-size: 1.7rem;
+    }
   }
 
   .demo-description-p {
