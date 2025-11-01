@@ -1,6 +1,6 @@
 @use 'App.module';
 
-#comp-demo-div {
+#comparison-demo {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -313,7 +313,7 @@
 }
 
 @media (max-width: 1200px) {
-    #comp-demo-div {
+    #comparison-demo {
         #process-container {
             width: fit-content !important;
 
@@ -325,7 +325,7 @@
 }
 
 @media (max-width: App.$small-screen-limit) {
-    #comp-demo-div {
+    #comparison-demo {
         .global-transform-div {
             width: 100%;
         }

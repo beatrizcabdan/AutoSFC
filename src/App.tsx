@@ -55,7 +55,7 @@ function App() {
 
     useEffect(() => {
         if (searchParams.has('preset')) {
-            scrollToSection('#encoding-demo-div')
+            scrollToSection('#encoding-demo')
         }
         setContactClass(searchParams.has('anonymize', 'true') ? 'hide' : '')
     }, [searchParams]);
@@ -97,10 +97,10 @@ function App() {
                 <CspComparisonDemo onSectionClick={onSectionClick}/>
             </div>
 
-            <div className="tabcontent" id={'work'}>
-                <h1><a href={createPath('#work', searchParams)}
+            <div className="tabcontent" id={'previous-work'}>
+                <h1><a href={createPath('#previous-work', searchParams)}
                        onClick={e => e.preventDefault()}>
-                    <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#work', searchParams),'#work')}>
+                    <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#previous-work', searchParams),'#previous-work')}>
                         #</span></a>
                     Previous work using Space-Filling Curves (SFCs)</h1>
 

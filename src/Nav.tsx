@@ -45,11 +45,11 @@ export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName, onSec
     }, []);
 
     return <div className={`topnav ${scrollPos < navHeight ? 'top-pos' : ''} ${hideMobileNav ? 'hide' : ''}`}>
-        <NavLink sectionId={"#encoding-demo-div"} onSectionClick={onSectionClick} icon={'swap_horiz'}
+        <NavLink sectionId={"#encoding-demo"} onSectionClick={onSectionClick} icon={'swap_horiz'}
                  title={'Encoding Demo'} searchParams={searchParams}/>
-        <NavLink sectionId={"#comp-demo-div"} onSectionClick={onSectionClick} searchParams={searchParams}
+        <NavLink sectionId={"#comparison-demo"} onSectionClick={onSectionClick} searchParams={searchParams}
                  title={'Comparison Demo'} icon={'barcode'}/>
-        <NavLink sectionId={"#work"} onSectionClick={onSectionClick} searchParams={searchParams}
+        <NavLink sectionId={"#previous-work"} onSectionClick={onSectionClick} searchParams={searchParams}
                  title={'Previous work'} icon={'article'}/>
         <NavLink sectionId={"#about"} onSectionClick={onSectionClick} searchParams={searchParams}
                  title={'About SFCs'} icon={'info'}/>

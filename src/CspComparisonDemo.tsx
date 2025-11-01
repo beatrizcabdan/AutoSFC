@@ -339,11 +339,11 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
         setPlotFile([...plotFile])
     }
 
-    return <div id={'comp-demo-div'}>
+    return <div id={'comparison-demo'}>
         <h1>
-            <a href={createPath('#comp-demo-div', searchParams)}
+            <a href={createPath('#comparison-demo', searchParams)}
                onClick={e => e.preventDefault()}>
-                <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#comp-demo-div', searchParams),'#comp-demo-div')}>
+                <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#comparison-demo', searchParams),'#comp-demo-div')}>
                     #</span>
             </a>
             CSP comparison demo</h1>

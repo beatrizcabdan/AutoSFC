@@ -362,12 +362,12 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
         computeSetSFCData(transformedData, bitsPerSignal, newEncoder, true)
         setEncoder(newEncoder)
     };
-    return <div id={'encoding-demo-div'}>
+    return <div id={'encoding-demo'}>
         <h1>
-            <a href={createPath('#encoding-demo-div', searchParams)}
+            <a href={createPath('#encoding-demo', searchParams)}
                onClick={e => e.preventDefault()}>
-                <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#encoding-demo-div', searchParams),
-                    '#encoding-demo-div')}>#</span></a>Encoding demo
+                <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#encoding-demo', searchParams),
+                    '#encoding-demo')}>#</span></a>Encoding demo
         </h1>
         <p className={'demo-description-p'}>The AutoSFC encoding demo allows researchers to visualize and adjust
             parameters in real time, and to apply transformations on the input signal in real time. Once a file is
