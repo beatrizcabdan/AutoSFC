@@ -343,7 +343,7 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
         <h1>
             <a href={createPath('#comparison-demo', searchParams)}
                onClick={e => e.preventDefault()}>
-                <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#comparison-demo', searchParams),'#comp-demo-div')}>
+                <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#comparison-demo', searchParams),'#comparison-demo')}>
                     #</span>
             </a>
             CSP comparison demo</h1>

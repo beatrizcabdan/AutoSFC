@@ -834,6 +834,8 @@ input[type="number"] {
   background-color: white;
   margin-top: 2rem;
   padding: 0 $side-padding;
+  display: flex;
+  flex-direction: column;
 
   &#contact {
     display: flex;
