@@ -11,16 +11,8 @@ interface NavProps {
     setShowSubMenu: (value: (((prevState: boolean) => boolean) | boolean)) => void
 }
 
-function NavLink(props: {
-    title: string,
-    sectionId: string,
-    onSectionClick: (path: string, sectionId: string) => void,
-    className?: string | undefined,
-    searchParams: URLSearchParams,
-    icon: string,
-    id?: string
-}) {
-
+function NavLink(props: { title: string, sectionId: string, onSectionClick: (path: string, sectionId: string) => void,
+    className?: string | undefined, searchParams: URLSearchParams, icon: string, id?: string }) {
     const pathRef = useRef('')
 
     useEffect(() => {
@@ -34,7 +26,8 @@ function NavLink(props: {
               href={pathRef.current} id={props.id ?? ''}>
         <div className={`navlink-div active ${props.className ?? ''}`}
              onClick={onDivClick}>
-            <span className="material-symbols-outlined">{props.icon}</span>{props.title}
+            <span className="material-symbols-outlined">{props.icon}</span>
+            <span className={'navlink-text-span'}>{props.title}</span>
         </div>
     </a>
 }
@@ -44,7 +37,6 @@ interface HamburgerMenuProps {
 }
 
 function HamburgerMenu({onMenuClick}: HamburgerMenuProps) {
-
     return <a id={'hamburger-menu-a'} onClick={e => {
         e.preventDefault();
         onMenuClick()

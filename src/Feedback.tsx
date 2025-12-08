@@ -15,12 +15,12 @@ interface OpenFeedbackWinBtnProps {
     onClick?: () => void
 }
 
-// TODO: decide on pos for this on mobile
 export const OpenFeedbackWinBtn = ({onClick}: OpenFeedbackWinBtnProps) =>
     <Button id={'open-feedback-win-btn'} onClick={onClick}>
     Feedback
 </Button>
 
+// TODO: Fix mobile dialog
 export const FeedbackDialog = (props: {
     show: boolean,
     setShow: Dispatch<SetStateAction<boolean>> }) => {
