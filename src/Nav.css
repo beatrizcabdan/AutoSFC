@@ -559,8 +559,8 @@ h1 + p {
     top: unset;
     transition: bottom 0.3s;
     z-index: 2500;
-    background-color: transparent;
     box-shadow: rgba(0, 0, 0, 0.2) 0 -0.08rem 0.2rem 0.15rem;
+    background-color: var(--text-color);
   }
   .topnav.hide {
     bottom: -100%;
@@ -570,9 +570,10 @@ h1 + p {
   }
   .topnav .link-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     z-index: 100;
-    background-color: var(--text-color);
+    max-width: 26rem;
+    box-shadow: none;
   }
   .topnav .link-container #contact-link {
     display: none;

@@ -65,8 +65,8 @@
         top: unset;
         transition: bottom 0.3s;
         z-index: 2500;
-        background-color: transparent;
         box-shadow: rgba(0 0 0 / 0.2) 0 -0.08rem 0.2rem 0.15rem;
+        background-color: var(--text-color);
 
         &.hide {
             bottom: -100%
@@ -78,9 +78,10 @@
 
         .link-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             z-index: 100;
-            background-color: var(--text-color);
+            max-width: 26rem;
+            box-shadow: none;
 
             #contact-link {
                 display: none;
