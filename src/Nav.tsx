@@ -24,7 +24,7 @@ function NavLink(props: { title: string, sectionId: string, onSectionClick: (pat
     }
     return <a onClick={e => e.preventDefault()}
               href={pathRef.current} id={props.id ?? ''}>
-        <div className={`navlink-div active ${props.className ?? ''}`}
+        <div className={`navlink-div ${props.className ?? ''}`}
              onClick={onDivClick}>
             <span className="material-symbols-outlined">{props.icon}</span>
             <span className={'navlink-text-span'}>{props.title}</span>
@@ -47,12 +47,8 @@ function HamburgerMenu({onMenuClick}: HamburgerMenuProps) {
     </a>;
 }
 
-export function NavSubMenu(props: {
-    contactClassName: string | undefined,
-    onContactClick: (path: string, sectionId: string) => void,
-    searchParams: URLSearchParams,
-    show: boolean,
-    onFeedbackBtnClick: () => void
+export function NavSubMenu(props: { contactClassName: string | undefined, onContactClick: (path: string, sectionId: string) => void,
+    searchParams: URLSearchParams, show: boolean, onFeedbackBtnClick: () => void
 }) {
     const onFeedbackBtnClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault()
@@ -61,9 +57,8 @@ export function NavSubMenu(props: {
     return <div id={"nav-submenu-div"} className={`${!props.show ? 'hide' : ''}`}>
         <NavLink className={props.contactClassName} sectionId={"#contact"} onSectionClick={props.onContactClick}
                  searchParams={props.searchParams} icon={"alternate_email"} title={"Contact"} id={"contact-link"}/>
-        <a onClick={onFeedbackBtnClick} href={''} id={''}>
-            <div className={`navlink-div active`} onClick={() => {
-            }}>
+        <a onClick={onFeedbackBtnClick} href={''}>
+            <div className={`navlink-div`}>
                 <span className="material-symbols-outlined">feedback</span>Feedback
             </div>
         </a>

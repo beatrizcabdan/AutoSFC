@@ -245,7 +245,6 @@ function bigUint64ToNumberArray(bigArray: BigUint64Array): number[] {
 export function scrollToSection(section: string) {
     const element = document.querySelector(section)!
     const topPos = element.getBoundingClientRect().top + window.scrollY
-    console.log(element, topPos)
 
     window.scrollTo({
         top: topPos,

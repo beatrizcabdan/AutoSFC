@@ -94,6 +94,10 @@
 
                 .navlink-div {
                     width: 100%;
+
+                    &:hover {
+                        background-color: initial;
+                    }
                 }
             }
         }
@@ -115,10 +119,6 @@
 
                 svg {
                     margin: 0;
-                }
-
-                .navlink-text-span {
-
                 }
             }
         }
