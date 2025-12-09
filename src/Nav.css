@@ -517,10 +517,10 @@ h1 + p {
   z-index: 1;
   display: flex;
   justify-content: center;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 0.3125rem 0.3125rem 0.0625rem;
 }
 .topnav .link-container {
   width: 100%;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 0.3125rem 0.3125rem 0.0625rem;
 }
 .topnav .link-container .navlink-div:hover {
   background-color: var(--text-color-light);
