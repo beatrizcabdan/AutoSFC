@@ -8,10 +8,12 @@ interface NavProps {
     contactVisibilityClassName?: string,
     onSectionClick: (path: string, sectionId: string) => void,
     searchParams: URLSearchParams,
-    setShowSubMenu: (value: (((prevState: boolean) => boolean) | boolean)) => void
+    setShowSubMenu: (value: (((prevState: boolean) => boolean) | boolean)) => void,
+    showSubMenu: boolean
 }
 
-function NavLink(props: { title: string, sectionId: string, onSectionClick: (path: string, sectionId: string) => void,
+function NavLink(props: {
+    title: string, sectionId: string, onSectionClick: (path: string, sectionId: string) => void,
     className?: string | undefined, searchParams: URLSearchParams, icon: string, id?: string }) {
     const pathRef = useRef('')
 
@@ -33,21 +35,21 @@ function NavLink(props: { title: string, sectionId: string, onSectionClick: (pat
 }
 
 interface HamburgerMenuProps {
-    onMenuClick: () => void
+    onMenuClick: () => void,
+    subMenuVisible?: boolean
 }
 
-function HamburgerMenu({onMenuClick}: HamburgerMenuProps) {
-    return <a id={'hamburger-menu-a'} onClick={e => {
-        e.preventDefault();
-        onMenuClick()
-    }}>
-        <div className={`active navlink-div`}>
+function HamburgerMenu({onMenuClick, subMenuVisible}: HamburgerMenuProps) {
+    return <a id={`hamburger-menu-a`} onClick={e =>
+    {e.preventDefault();onMenuClick()}}>
+        <div className={`navlink-div ${subMenuVisible ? 'active' : ''}`}>
             <span className="material-symbols-outlined">menu</span>More
         </div>
     </a>;
 }
 
-export function NavSubMenu(props: { contactClassName: string | undefined, onContactClick: (path: string, sectionId: string) => void,
+export function NavSubMenu(props: {
+    contactClassName: string | undefined, onContactClick: (path: string, sectionId: string) => void,
     searchParams: URLSearchParams, show: boolean, onFeedbackBtnClick: () => void
 }) {
     const onFeedbackBtnClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -67,7 +69,7 @@ export function NavSubMenu(props: { contactClassName: string | undefined, onCont
 }
 
 export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName, onSectionClick, searchParams,
-                        setShowSubMenu}: NavProps) {
+                        setShowSubMenu, showSubMenu}: NavProps) {
     const [navHeight, setNavHeight] = useState(0)
 
     useEffect(() => {
@@ -90,7 +92,7 @@ export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName, onSec
                      title={'About SFCs'} icon={'info'}/>
             <NavLink className={contactVisibilityClassName} sectionId={"#contact"} onSectionClick={onSectionClick}
                      searchParams={searchParams} icon={'alternate_email'} title={'Contact'} id={'contact-link'}/>
-            <HamburgerMenu onMenuClick={() => setShowSubMenu(prev => !prev)}/>
+            <HamburgerMenu subMenuVisible={showSubMenu} onMenuClick={() => setShowSubMenu(prev => !prev)}/>
         </div>
     </div>
 }

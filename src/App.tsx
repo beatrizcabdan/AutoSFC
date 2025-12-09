@@ -69,6 +69,9 @@ function App() {
     }, [searchParams]);
 
     const onSectionClick = (path: string, sectionId: string) => {
+        if (showSubMenu) {
+            setShowSubMenu(false)
+        }
         scrollToSection(sectionId);
         navigate(path)
     }
@@ -98,7 +101,8 @@ function App() {
             </div>
 
             <Nav scrollPos={scrollPosRef.current} hideMobileNav={hideMobileNav} onSectionClick={onSectionClick}
-                 contactVisibilityClassName={contactClass} searchParams={searchParams} setShowSubMenu={setShowSubMenu}/>
+                 contactVisibilityClassName={contactClass} searchParams={searchParams} setShowSubMenu={setShowSubMenu}
+                showSubMenu={showSubMenu}/>
             <NavSubMenu contactClassName={contactClass} onContactClick={onSectionClick} searchParams={searchParams}
                         show={showSubMenu && !hideMobileNav} onFeedbackBtnClick={() => setShowFeedbackForm(true)}/>
 

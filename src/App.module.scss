@@ -26,6 +26,8 @@ $primary-color-border: #1976d280;
 $primary-color-border-hover: #1976d2;
 $secondary-color: orange;
 
+$text-color: #3d3d3d;
+
 :export {
   #{'primaryColor'}: #{$primary-color};
   #{'primaryColorLight'}: #{$primary-color-light};

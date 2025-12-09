@@ -66,12 +66,12 @@ h3 {
 }
 
 html {
-  --text-color: #3d3d3d;
+  --text-color: $text-color;
   --text-color-light: #575757;
   --legend-border: #a8a8a8;
   --button-border: #7a7a7a;
   --light-gray: #e8e8e8;
-  --button-active: #ba2323;
+  --button-active: #d3d3d3;
   --input-border: #c3c3c3;
   --primary-color: $primary-color;
   --primary-color-medium: #2699ff;

@@ -582,12 +582,25 @@ h1 + p {
     display: flex;
     justify-content: center;
     width: 20%;
+    transition: all 0.3s;
   }
   .topnav .link-container a .navlink-div {
     width: 100%;
+    transition: all 0.3s;
   }
   .topnav .link-container a .navlink-div:hover {
     background-color: initial;
+  }
+  .topnav .link-container #hamburger-menu-a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .topnav .link-container #hamburger-menu-a .navlink-div {
+    transition: all 0.3s;
+  }
+  .topnav .link-container #hamburger-menu-a .navlink-div.active {
+    background-color: var(--text-color-light);
   }
   .topnav .link-container a, #nav-submenu-div a {
     height: 100%;
