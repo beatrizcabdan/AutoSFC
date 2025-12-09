@@ -141,6 +141,7 @@
         z-index: 1;
         position: absolute;
         gap: 5rem;
+        display: none;
 
         &.show {
             opacity: 1;

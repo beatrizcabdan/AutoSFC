@@ -524,6 +524,9 @@ h1 + p {
   opacity: 1;
   pointer-events: all;
 }
+.light-box.show .dialog {
+  scale: 1;
+}
 .light-box .dialog {
   position: fixed;
   top: 50%;
@@ -535,6 +538,8 @@ h1 + p {
   margin: 0;
   padding: 1rem 3rem;
   pointer-events: all;
+  scale: 0;
+  transition: all 0.3s;
 }
 .light-box .dialog h2 {
   line-height: 0.8rem;
