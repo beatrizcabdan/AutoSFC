@@ -573,6 +573,9 @@ h1 + p {
 }
 
 @media (max-width: 700px) {
+  .light-box .dialog {
+    width: 90%;
+  }
   .light-box .dialog h2 {
     line-height: initial;
   }
