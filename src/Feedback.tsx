@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
     Button,
     FormControl,
@@ -9,7 +10,7 @@ import {
 } from "@mui/material"
 import './Feedback.scss'
 import {Dialog} from "./Dialog.tsx";
-import React, {Dispatch, FormEvent, SetStateAction, useState} from "react";
+import React, {Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
 
 interface OpenFeedbackWinBtnProps {
     onClick?: () => void
@@ -21,8 +22,7 @@ export const OpenFeedbackWinBtn = ({onClick}: OpenFeedbackWinBtnProps) =>
 </Button>
 
 // TODO: Fix mobile dialog
-export const FeedbackDialog = (props: {
-    show: boolean,
+export const FeedbackDialog = (props: { show: boolean,
     setShow: Dispatch<SetStateAction<boolean>> }) => {
     const defaultFeedbackType = 'feedback'
     const [submittable, setSubmittable] = useState(false)
@@ -41,6 +41,17 @@ export const FeedbackDialog = (props: {
         setSubmitted(false)
     }
 
+    const enterListener = (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            document.removeEventListener('keydown', enterListener)
+            onCancel()
+        }
+    }
+
+    useEffect(() => {
+        return () => document.removeEventListener('keydown', enterListener)
+    }, []);
+
     function onSubmit(e: FormEvent<HTMLFormElement>) {
         if (!submittable) {
             e.preventDefault()
@@ -52,13 +63,18 @@ export const FeedbackDialog = (props: {
             type: feedbackType,
             message: message
         })
-        console.log(JSON.parse(json))
-        // reInit()
-        // props.setShow(false);
+        const subject = feedbackType.charAt(0).toUpperCase() + feedbackType.slice(1) + ' for autosfc.org'
+        const mail = document.createElement("a");
+        mail.href = `mailto:beatriz.cabrero-daniel@gu.se,ao@antolsson.se?subject=${subject}&body=${message}`;
+        mail.click();
+
         setSubmitted(true)
+        setSubmittable(false)
+        document.addEventListener('keydown', enterListener)
     }
 
     function onCancel() {
+        document.removeEventListener('keydown', enterListener)
         reInit()
         props.setShow(false);
     }
@@ -117,7 +133,7 @@ export const FeedbackDialog = (props: {
             </div>
             <div id={'thanks-dialog-div'} className={submitted ? 'show' : ''}>
                 <h2>Thanks for your feedback! 🙌</h2>
-                <Button className={'button'} onClick={onCancel}>Close</Button>
+                <Button className={'button'} type={'button'} onClick={onCancel}>Close</Button>
             </div>
         </>
     </Dialog>
