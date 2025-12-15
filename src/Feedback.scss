@@ -28,7 +28,8 @@
 
 .dialog {
     @extend .flex-display;
-    padding: 2rem 2rem !important;
+    $dialog-padding: 2rem;
+    padding: $dialog-padding $dialog-padding !important;
     flex-direction: column;
     gap: 0.2rem;
     position: relative;
@@ -42,7 +43,7 @@
         flex-direction: column;
         gap: 0.5rem;
         opacity: 0;
-        transition: all 0.5s;
+        transition: opacity 1s;
 
         &.show {
             opacity: 1;
@@ -137,15 +138,25 @@
 
         flex-direction: column;
         opacity: 0;
-        transition: all 0.5s;
+        transition: opacity 1s;
         z-index: 1;
         position: absolute;
-        gap: 5rem;
         display: none;
+        justify-content: center;
+        height: calc(100% - 2 * $dialog-padding);
 
         &.show {
             opacity: 1;
             display: flex;
+        }
+
+        h2 {
+            margin-top: 8rem;
+        }
+
+        button {
+            margin-top: auto;
+            width: 40%;
         }
     }
 }
@@ -163,6 +174,12 @@
             .MuiFormControl-root {
                 width: 100%;
             }
+        }
+    }
+
+    #thanks-dialog-div {
+        button {
+            width: 100% !important;
         }
     }
 }

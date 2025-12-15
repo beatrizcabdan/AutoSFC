@@ -601,7 +601,7 @@ h1 + p {
   flex-direction: column;
   gap: 0.5rem;
   opacity: 0;
-  transition: all 0.5s;
+  transition: opacity 1s;
 }
 .dialog #feedback-dialog-div.show {
   opacity: 1;
@@ -669,15 +669,23 @@ h1 + p {
 .dialog #thanks-dialog-div {
   flex-direction: column;
   opacity: 0;
-  transition: all 0.5s;
+  transition: opacity 1s;
   z-index: 1;
   position: absolute;
-  gap: 5rem;
   display: none;
+  justify-content: center;
+  height: calc(100% - 4rem);
 }
 .dialog #thanks-dialog-div.show {
   opacity: 1;
   display: flex;
+}
+.dialog #thanks-dialog-div h2 {
+  margin-top: 8rem;
+}
+.dialog #thanks-dialog-div button {
+  margin-top: auto;
+  width: 40%;
 }
 
 @media (max-width: 700px) {
@@ -690,6 +698,9 @@ h1 + p {
   }
   #feedback-dialog-div #name-email-div .MuiFormControl-root {
     width: 100%;
+  }
+  #thanks-dialog-div button {
+    width: 100% !important;
   }
 }
 
