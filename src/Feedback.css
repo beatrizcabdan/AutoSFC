@@ -458,7 +458,7 @@ h1 + p {
   display: none;
 }
 
-/*MOBILE SCREENS*/
+/* MOBILE SCREENS */
 @media (max-width: 700px) {
   h1 {
     margin: 1rem 0.5rem 0 !important;
@@ -504,7 +504,7 @@ h1 + p {
   }
   .footer {
     margin-top: -1rem;
-    padding: 14px 2rem 6rem;
+    padding: 14px 2rem 28px;
   }
 }
 .button-text, .dialog #feedback-dialog-div form #name-email-div .MuiFormControl-root label, .dialog #feedback-dialog-div form #feedback-type-radio-buttons .MuiRadioGroup-root .radio-button span:nth-of-type(2), .button, .link-button, .no-border-button, #open-feedback-win-btn, .gray-border-button, .blue-border-button {

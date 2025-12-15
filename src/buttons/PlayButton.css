@@ -66,7 +66,7 @@ h3 {
 }
 
 html {
-  --text-color: $text-color;
+  --text-color: #3d3d3d;
   --text-color-light: #575757;
   --legend-border: #a8a8a8;
   --button-border: #7a7a7a;
@@ -507,7 +507,7 @@ h1 + p {
   display: none;
 }
 
-/*MOBILE SCREENS*/
+/* MOBILE SCREENS */
 @media (max-width: 700px) {
   h1 {
     margin: 1rem 0.5rem 0 !important;
@@ -553,7 +553,7 @@ h1 + p {
   }
   .footer {
     margin-top: -1rem;
-    padding: 14px 2rem 6rem;
+    padding: 14px 2rem 21px;
   }
 }
 
@@ -1016,7 +1016,7 @@ h1 + p {
   display: none;
 }
 
-/*MOBILE SCREENS*/
+/* MOBILE SCREENS */
 @media (max-width: 700px) {
   h1 {
     margin: 1rem 0.5rem 0 !important;
@@ -1062,7 +1062,7 @@ h1 + p {
   }
   .footer {
     margin-top: -1rem;
-    padding: 14px 2rem 6rem;
+    padding: 14px 2rem 28px;
   }
 }
 .button-text, .button, .play-button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
