@@ -178,7 +178,7 @@ function App() {
                 <br/>
             </div>
 
-            <OpenFeedbackWinBtn onClick={() => setShowFeedbackForm(true)}/>
+            {contactClass !== 'hide' && <OpenFeedbackWinBtn onClick={() => setShowFeedbackForm(true)}/>}
 
             {/*Switch to inverse anonymization logic after publication*/}
             <div className={`footer ${contactClass}`}>
