@@ -154,5 +154,16 @@
     #open-feedback-win-btn {
         display: none;
     }
+
+    #feedback-dialog-div {
+        #name-email-div {
+            flex-direction: column;
+            width: 100%;
+
+            .MuiFormControl-root {
+                width: 100%;
+            }
+        }
+    }
 }
 
