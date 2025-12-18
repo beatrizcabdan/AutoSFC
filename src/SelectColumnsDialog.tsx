@@ -56,7 +56,7 @@ export function SelectColumnsDialog(props: {
         props.setShow(false);
     }
 
-    return <Dialog show={props.show} title={'Select displayed data (two series)'}>
+    return <Dialog show={props.show} title={'Select displayed data (two series)'} setHide={onCancel}>
         <div id={'select-columns-div'}>
                 <form method="dialog" onSubmit={onSubmit}>
                     <div className={'checkbox-list'}>

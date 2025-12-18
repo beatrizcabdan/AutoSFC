@@ -88,7 +88,7 @@ export const FeedbackDialog = (props: { show: boolean,
         setSubmittable(Boolean(e.target.value))
     }
 
-    return <Dialog show={props.show} title={submitted ? '' : 'We love feedback 💬'}>
+    return <Dialog show={props.show} title={submitted ? '' : 'We love feedback 💬'} setHide={onCancel}>
         <>
             <div id={'feedback-dialog-div'} className={!submitted ? 'show' : ''}>
                 <p>Found a bug or have ideas on how to improve this website? Please let us know!</p>
