@@ -24,11 +24,20 @@ $primary-color-light: #b9e0ff;
 
 $primary-color-border: #1976d280;
 $primary-color-border-hover: #1976d2;
+$secondary-color: orange;
+
+$text-color: #3d3d3d;
 
 :export {
   #{'primaryColor'}: #{$primary-color};
   #{'primaryColorLight'}: #{$primary-color-light};
   #{'primaryColorMedium'}: #{$primary-color-medium};
+}
+
+.flex-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 * {
@@ -464,6 +473,7 @@ input[type="number"] {
   opacity: 0.85;
   height: 2.5rem !important;
   width: 2.5rem !important;
+  background-color: $primary-color;
 
   &.disabled {
     pointer-events: none;
@@ -536,7 +546,7 @@ h1 + p {
   display: none;
 }
 
-/*MOBILE SCREENS*/
+/* MOBILE SCREENS */
 @media (max-width: $small-screen-limit) {
 
   h1 {
@@ -596,6 +606,6 @@ h1 + p {
 
   .footer {
     margin-top: -1rem;
-    padding: 14px 2rem 6rem;
+    padding: 14px 2rem 28px;
   }
 }

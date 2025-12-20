@@ -1,6 +1,7 @@
 import React, {Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
 import './SelectColumnsDialog.scss'
 import {Button} from "@mui/material";
+import {Dialog} from "./Dialog.tsx";
 
 export function SelectColumnsDialog(props: {
     show: boolean,
@@ -55,18 +56,8 @@ export function SelectColumnsDialog(props: {
         props.setShow(false);
     }
 
-    useEffect(() => {
-        const body = document.querySelector('body')!
-        if (props.show) {
-            body.classList.add('modal-open')
-        } else {
-            body.classList.remove('modal-open')
-        }
-    }, [props.show]);
-
-    return <div className={`light-box ${props.show ? 'show' : ''}`}>
-            <dialog open={props.show} className={'dialog'}>
-                <h2>Select displayed data (two series)</h2>
+    return <Dialog show={props.show} title={'Select displayed data (two series)'} setHide={onCancel}>
+        <div id={'select-columns-div'}>
                 <form method="dialog" onSubmit={onSubmit}>
                     <div className={'checkbox-list'}>
                     {props.allDataLabels.map((label, i) => {
@@ -78,11 +69,11 @@ export function SelectColumnsDialog(props: {
                         </div>
                     })}
                     </div>
-                    <div className={'buttons'}>
+                    <div className={'form-buttons'}>
                         <Button type={'submit'} className={`ok-button button ${submittable ? 'enabled' : 'disabled'}`} disabled={!submittable}>OK</Button>
                         <Button onClick={onCancel} className={'button'}>Cancel</Button>
                     </div>
                 </form>
-            </dialog>;
-    </div>
+            </div>
+        </Dialog>
 }

@@ -9,9 +9,10 @@ import {EncodingDemo} from "./EncodingDemo.tsx";
 import {CspComparisonDemo} from "./CspComparisonDemo.tsx";
 import {Fab} from "@mui/material";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import {Nav} from "./Nav.tsx";
+import {Nav, NavSubMenu} from "./Nav.tsx";
 import {useSearchParams, useNavigate} from "react-router-dom";
 import {createPath, scrollToSection} from "./utils.ts";
+import {FeedbackDialog, OpenFeedbackWinBtn} from "./Feedback.tsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum PlayStatus {
@@ -32,18 +33,25 @@ const HIDE_MOBILE_NAV_WHEN_SCROLLING_DOWN = true
 
 function App() {
     const [hideMobileNav, setHideMobileNav] = useState(false)
+    const [showSubMenu, setShowSubMenu] = useState(false)
+
     const scrollPosRef = useRef<number>(0)
     const [scrollButtonClass, setScrollButtonClass] = useState('disabled')
     const [contactClass, setContactClass] = useState('')
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
+    const [showFeedbackForm, setShowFeedbackForm] = useState(false)
 
     const onScroll = useCallback(() => {
         const scrollingUp = document.documentElement.scrollTop < scrollPosRef.current
-        setHideMobileNav(!scrollingUp && HIDE_MOBILE_NAV_WHEN_SCROLLING_DOWN)
+        const hideMenus = !scrollingUp && HIDE_MOBILE_NAV_WHEN_SCROLLING_DOWN
+        setHideMobileNav(hideMenus)
+        if (showSubMenu) {
+            setShowSubMenu(!hideMenus)
+        }
         setScrollButtonClass(scrollPosRef.current > window.innerHeight && scrollingUp ? '' : 'disabled')
         scrollPosRef.current = document.documentElement.scrollTop
-    }, [scrollPosRef])
+    }, [scrollPosRef, showSubMenu])
 
     useEffect(() => {
         document.addEventListener('scroll', onScroll)
@@ -61,6 +69,9 @@ function App() {
     }, [searchParams]);
 
     const onSectionClick = (path: string, sectionId: string) => {
+        if (showSubMenu) {
+            setShowSubMenu(false)
+        }
         scrollToSection(sectionId);
         navigate(path)
     }
@@ -90,7 +101,10 @@ function App() {
             </div>
 
             <Nav scrollPos={scrollPosRef.current} hideMobileNav={hideMobileNav} onSectionClick={onSectionClick}
-                 contactVisibilityClassName={contactClass} searchParams={searchParams}/>
+                 contactVisibilityClassName={contactClass} searchParams={searchParams} setShowSubMenu={setShowSubMenu}
+                showSubMenu={showSubMenu}/>
+            <NavSubMenu contactClassName={contactClass} onContactClick={onSectionClick} searchParams={searchParams}
+                        show={showSubMenu && !hideMobileNav} onFeedbackBtnClick={() => setShowFeedbackForm(true)}/>
 
             <div id={'main'}>
                 <EncodingDemo onSectionClick={onSectionClick}/>
@@ -100,7 +114,8 @@ function App() {
             <div className="tabcontent" id={'previous-work'}>
                 <h1><a href={createPath('#previous-work', searchParams)}
                        onClick={e => e.preventDefault()}>
-                    <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#previous-work', searchParams),'#previous-work')}>
+                    <span className={'section-hash-span'}
+                          onClick={() => onSectionClick(createPath('#previous-work', searchParams),'#previous-work')}>
                         #</span></a>
                     Previous work using Space-Filling Curves (SFCs)</h1>
 
@@ -163,6 +178,8 @@ function App() {
                 <br/>
             </div>
 
+            {contactClass !== 'hide' && <OpenFeedbackWinBtn onClick={() => setShowFeedbackForm(true)}/>}
+
             {/*Switch to inverse anonymization logic after publication*/}
             <div className={`footer ${contactClass}`}>
                 Demo of SFC encoding for automotive data. Site under construction.
@@ -170,6 +187,8 @@ function App() {
                     href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a> for more info.
                 </span>
             </div>
+
+            <FeedbackDialog show={showFeedbackForm} setShow={setShowFeedbackForm}/>
 
             <Fab variant="extended" color={'primary'} className={scrollButtonClass} size={'small'}
                  onClick={onScrollButtonClick}>
