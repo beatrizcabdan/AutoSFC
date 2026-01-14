@@ -52,7 +52,7 @@ h2 {
   text-transform: initial;
 }
 
-h3 {
+h3, .footer #app-info-div {
   line-height: 0;
   text-transform: uppercase;
   letter-spacing: 0.02rem;
@@ -448,6 +448,24 @@ h1 + p {
 
 .footer {
   text-align: center;
+}
+.footer #app-info-div {
+  opacity: 0.6;
+  display: flex;
+  justify-content: center;
+  column-gap: 0.5rem;
+  font-size: 0.65rem;
+  margin-top: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.05rem;
+  flex-wrap: wrap;
+}
+.footer #app-info-div p span {
+  text-transform: none;
+  font-weight: 700;
+}
+.footer #app-info-div p span#mode-span {
+  text-transform: uppercase;
 }
 
 .footer.hide {

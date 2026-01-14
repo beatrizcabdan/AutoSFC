@@ -536,6 +536,31 @@ h1 + p {
 
 .footer {
   text-align: center;
+
+  #app-info-div {
+    @extend h3;
+    opacity: 0.6;
+    display: flex;
+    justify-content: center;
+    column-gap: 0.5rem;
+
+    font-size: 0.65rem;
+    margin-top: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.05rem;
+    flex-wrap: wrap;
+
+    p {
+      span {
+        text-transform: none;
+        font-weight: 700;
+
+        &#mode-span {
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
 }
 
 .footer.hide {

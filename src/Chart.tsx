@@ -2,7 +2,7 @@
 
 import React, {useEffect, useRef, useState} from "react";
 import {makeGaussKernel} from "./utils.ts";
-import {Legend} from "./Legend.tsx";
+import {Legend} from "./legend/Legend.tsx";
 
 function getSmoothedData(data: number[], smoothing: number) {
     const smoothedArr: number[] = []

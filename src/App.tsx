@@ -2,17 +2,20 @@
 // noinspection JSUnusedLocalSymbols
 
 import './App.module.scss'
-
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {PaperContainer} from "./PaperContainer.tsx";
-import {EncodingDemo} from "./EncodingDemo.tsx";
-import {CspComparisonDemo} from "./CspComparisonDemo.tsx";
+import {EncodingDemo} from "./encoding-demo/EncodingDemo.tsx";
+import {CspComparisonDemo} from "./csp-comparison-demo/CspComparisonDemo.tsx";
 import {Fab} from "@mui/material";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import {Nav, NavSubMenu} from "./Nav.tsx";
-import {useSearchParams, useNavigate} from "react-router-dom";
+import {Nav, NavSubMenu} from "./nav/Nav.tsx";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {createPath, scrollToSection} from "./utils.ts";
-import {FeedbackDialog, OpenFeedbackWinBtn} from "./Feedback.tsx";
+import {FeedbackDialog, OpenFeedbackWinBtn} from "./feedback/Feedback.tsx";
+import {LandingSection} from "./landing-section/LandingSection.tsx";
+
+export const API_BASE_URL = 'http://129.16.216.72:80'
+export const DEV_PROJECT_NAME = 'AutoSFC-dev'
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum PlayStatus {
@@ -41,6 +44,13 @@ function App() {
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
     const [showFeedbackForm, setShowFeedbackForm] = useState(false)
+
+    useEffect(() => {
+        // Log and set app details
+        document.title = PROJECT_NAME
+        console.info(`${PROJECT_NAME} ${APP_VERSION} — ${import.meta.env.MODE === 'development' ? 'dev' : 'prod'}\n` +
+            `Latest commit: ${LATEST_COMMIT}`)
+    }, []);
 
     const onScroll = useCallback(() => {
         const scrollingUp = document.documentElement.scrollTop < scrollPosRef.current
@@ -91,18 +101,17 @@ function App() {
         navigate(createPath('', searchParams))
     }
 
+    function getModeName() {
+        return import.meta.env.MODE === 'development' ? 'dev' : 'prod'
+    }
+
     return (
         <>
-            <div className="landing-section">
-                <img src="./logo2.png" alt="AutoSFC logo" className="header-img"/>
-                <p>AutoSFC is a web-based demo for the research-activities around the usage of Space-Filling Curves
-                    (SFC) for encoding and reducing the dimensionality of automotive data.</p>
-                <p className={'size-warning-p'}>This website is optimized for larger screen sizes.</p>
-            </div>
+            <LandingSection modeName={getModeName()}/>
 
             <Nav scrollPos={scrollPosRef.current} hideMobileNav={hideMobileNav} onSectionClick={onSectionClick}
                  contactVisibilityClassName={contactClass} searchParams={searchParams} setShowSubMenu={setShowSubMenu}
-                showSubMenu={showSubMenu}/>
+                 showSubMenu={showSubMenu}/>
             <NavSubMenu contactClassName={contactClass} onContactClick={onSectionClick} searchParams={searchParams}
                         show={showSubMenu && !hideMobileNav} onFeedbackBtnClick={() => setShowFeedbackForm(true)}/>
 
@@ -115,7 +124,7 @@ function App() {
                 <h1><a href={createPath('#previous-work', searchParams)}
                        onClick={e => e.preventDefault()}>
                     <span className={'section-hash-span'}
-                          onClick={() => onSectionClick(createPath('#previous-work', searchParams),'#previous-work')}>
+                          onClick={() => onSectionClick(createPath('#previous-work', searchParams), '#previous-work')}>
                         #</span></a>
                     Previous work using Space-Filling Curves (SFCs)</h1>
 
@@ -143,7 +152,8 @@ function App() {
             <div className="tabcontent" id={'about'}>
                 <h1><a href={createPath('#about', searchParams)}
                        onClick={e => e.preventDefault()}>
-                    <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#about', searchParams),'#about')}>
+                    <span className={'section-hash-span'}
+                          onClick={() => onSectionClick(createPath('#about', searchParams), '#about')}>
                         #</span></a>
                     Space-Filling Curves (SFCs): what and why?</h1>
                 <div className="papers-container">
@@ -166,7 +176,8 @@ function App() {
             <div className={`tabcontent ${contactClass}`} id={'contact'}>
                 <h1><a href={createPath('#contact', searchParams)}
                        onClick={e => e.preventDefault()}>
-                    <span className={'section-hash-span'} onClick={() => onSectionClick('#contact', createPath('#contact', searchParams))}>
+                    <span className={'section-hash-span'}
+                          onClick={() => onSectionClick('#contact', createPath('#contact', searchParams))}>
                         #</span></a>
                     Want to collaborate? Contact us!</h1>
 
@@ -186,13 +197,20 @@ function App() {
                 <span id={'contact-info'} className={contactClass}> Contact Beatriz Cabrero-Daniel at <a
                     href="mailto:beatriz.cabrero-daniel@gu.se">beatriz.cabrero-daniel@gu.se</a> for more info.
                 </span>
+                <div id={'app-info-div'}>
+                    <p>{PROJECT_NAME} <span>{APP_VERSION}</span></p>
+                    <p>•</p>
+                    <p>Latest commit: <span>{LATEST_COMMIT}</span></p>
+                    {(import.meta.env.MODE === 'development' || PROJECT_NAME === DEV_PROJECT_NAME) &&
+                        <><p>•</p><p><span id={'mode-span'}>{getModeName()} mode</span></p></>}
+                </div>
             </div>
 
             <FeedbackDialog show={showFeedbackForm} setShow={setShowFeedbackForm}/>
 
             <Fab variant="extended" color={'primary'} className={scrollButtonClass} size={'small'}
                  onClick={onScrollButtonClick}>
-                <ArrowUpwardIcon sx={{ mr: 0, ml: 0 }} />
+                <ArrowUpwardIcon sx={{mr: 0, ml: 0}}/>
             </Fab>
         </>
     )

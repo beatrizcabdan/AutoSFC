@@ -34,7 +34,8 @@ export const demoPreset5 = {
     dataRangeEnd: 236,
     lineDataSmoothing: 0,
     sfcRangeMin: 0,
-    sfcRangeMax: 1000000000
+    sfcRangeMax: 1000000000,
+    plotTransformedSignals: true
 }
 
  export const default_demo1 = {

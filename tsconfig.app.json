@@ -23,5 +23,8 @@
     "noUncheckedSideEffectImports": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "vite-env.d.ts"
+  ]
 }

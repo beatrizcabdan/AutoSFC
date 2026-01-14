@@ -525,64 +525,87 @@ h1 + p {
     padding: 14px 2rem 28px;
   }
 }
-.button-text, .button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
-  text-transform: uppercase;
-  letter-spacing: 0.02rem;
-  font-size: 0.6rem;
-  font-weight: 700;
+.light-box {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  z-index: 3000;
+  backdrop-filter: blur(1px);
 }
-
-.button-shadow {
-  box-shadow: rgba(0, 0, 0, 0.1) 0 0 2px 2px;
+.light-box.show {
+  opacity: 1;
+  pointer-events: all;
 }
-
-.button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
-  padding: 0 0.5rem;
-  height: 1.8rem;
-  background-color: white;
-  border: 2px solid var(--text-color-light);
-  border-radius: 6px;
+.light-box.show .dialog {
+  scale: 1;
+}
+.light-box .dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  border-radius: 10px;
+  border: 0 solid black;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 0 16px 4px;
+  margin: 0;
+  padding: 1rem 3rem;
+  pointer-events: all;
+  scale: 0;
+  transition: all 0.3s;
+}
+.light-box .dialog h2 {
+  line-height: 0.8rem;
+}
+.light-box .dialog .form-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.light-box .dialog .form-buttons button {
+  margin-top: 1rem;
+  width: 13ch;
+  text-align: center;
+}
+.light-box .dialog .form-buttons .ok-button {
+  border: none;
+  color: white;
+  box-shadow: rgba(0, 0, 0, 0.4) 0 0 4px;
   transition: all 0.2s;
-  color: var(--text-color-light);
 }
-.button:hover, .link-button:hover, .no-border-button:hover, .gray-border-button:hover, .blue-border-button:hover {
-  background-color: var(--light-gray);
-  cursor: pointer;
+.light-box .dialog .form-buttons .ok-button.enabled {
+  background: #006fd5;
 }
-.button:active, .link-button:active, .no-border-button:active, .gray-border-button:active, .blue-border-button:active {
-  background-color: var(--button-active);
+.light-box .dialog .form-buttons .ok-button.enabled:hover {
+  background: #2699ff;
 }
-
-.blue-border-button {
-  border-color: rgba(25, 118, 210, 0.5019607843);
-}
-.blue-border-button:hover {
-  border-color: #1976d2;
+.light-box .dialog .form-buttons .ok-button.disabled {
+  background: var(--button-border);
+  cursor: default;
 }
 
-.gray-border-button {
-  border-color: var(--button-active);
+@media (max-width: 700px) {
+  .light-box .dialog {
+    width: 90%;
+  }
+  .light-box .dialog h2 {
+    line-height: initial;
+  }
+  .light-box .dialog .checkbox-list {
+    line-height: initial;
+    align-items: flex-start;
+  }
+  .light-box .dialog .checkbox-list div {
+    display: flex;
+    align-items: center;
+    column-gap: 0.3rem;
+  }
 }
 
-.no-border-button {
-  border-width: 0;
-}
-
-.link-button {
-  background-color: transparent;
-}
-.link-button a {
-  font-weight: 700;
-  color: var(--text-color-light);
-}
-.link-button:hover:not(:active) a {
-  color: #004c93;
-}
-.link-button:active {
-  background-color: initial;
-}
-.link-button:active a {
-  color: #2699ff;
-}
-
-/*# sourceMappingURL=buttons.css.map */
+/*# sourceMappingURL=Dialog.css.map */
