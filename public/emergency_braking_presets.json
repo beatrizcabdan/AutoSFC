@@ -4,7 +4,7 @@
  "signalEndRow": 236,
  "cspStartRow": 11353,
  "cspEndRow": 15715,
- "bitsPerSignal": 14,
+ "bitsPerSignal": 7,
  "signalTransforms": [
   {
    "signalName": "accel_x",
