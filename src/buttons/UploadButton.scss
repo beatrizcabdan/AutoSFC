@@ -1,25 +1,25 @@
 @use '../App.module';
 @use 'buttons';
 
+.upload-button {
+    @extend .button;
+    @extend .button-shadow;
+}
+
+.upload-button-file-input {
+    display: none;
+}
+
+.upload-button-p {
+    @extend .button-text;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    border: none;
+}
+
 .upload-button-container {
     margin-top: auto;
     margin-bottom: auto;
-
-    button {
-        @extend .button;
-        @extend .button-shadow;
-    }
-
-    .file-input {
-        display: none;
-    }
-
-    p {
-        @extend .button-text;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        border: none;
-    }
 }
 
 #comparison-demo {

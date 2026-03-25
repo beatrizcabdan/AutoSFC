@@ -91,7 +91,7 @@ export function Chart(props: {
     }
 
     const drawSfcBar = (canvas: HTMLCanvasElement, curvePadding: number, m: number,
-                        minMorton: number, maxMorton: number, markerIndex: number, axisPadding: number, fileIndex?: number, demo?: string) => {
+                        minMorton: number, maxMorton: number, markerIndex: number, axisPadding: number, fileIndex?: number) => {
         // markerIndex is play position (usually 100%, so last row)
 
         const curveCanvasWidth = canvas.width - curvePadding * 2 - LEFT_AXIS_EXTRA_PADDING
@@ -252,7 +252,7 @@ export function Chart(props: {
                     // Comparison demo
                     if (Array.isArray(m) && props.plotFile && props.plotFile[i]) {
                         m.forEach(el => drawSfcBar(canvas, curvePadding, el,
-                            minSfcValue, maxSfcValue, markerIndex, axisPadding, i, "demo1")) //demo-1
+                            minSfcValue, maxSfcValue, markerIndex, axisPadding, i))
                     } else if (!Array.isArray(m)) {
                         drawSfcBar(canvas, curvePadding, m, minSfcValue, maxSfcValue, markerIndex, axisPadding)
                     }

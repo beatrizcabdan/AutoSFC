@@ -1,3 +1,5 @@
+// Encoding Demo
+
 export const demoPreset1 = {
     dataPointInterval: 1,
     dataRangeStart: 0,
@@ -38,6 +40,8 @@ export const demoPreset5 = {
     plotTransformedSignals: true
 }
 
+// Comparison Demo
+
  export const default_demo1 = {
     dataPointInterval: 1,
     file1: "./one_cell_sq00.csv",
@@ -49,4 +53,17 @@ export const demoPreset5 = {
     file1_scales: new Array(6).fill(5),
     file2_scales: new Array(6).fill(5),
     bitsPerSignal: 3
+}
+
+export const default_demo2 = {
+    dataPointInterval: 1,
+    file1: "left-lane-change-1.csv",
+    file2: "left-lane-change-2.csv",
+    file1_signals: ["Speed (m/s)", "Steering angle (deg)"],
+    file2_signals: ["Speed (m/s)", "Steering angle (deg)"],
+    file1_offsets: [0, 10],
+    file2_offsets: [0, 10],
+    file1_scales: [1, 4],
+    file2_scales: [1, 4],
+    bitsPerSignal: 5
 }

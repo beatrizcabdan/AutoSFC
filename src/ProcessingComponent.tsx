@@ -2,6 +2,7 @@ import React from "react";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR} from "./App.tsx";
 import {Button, Checkbox, Divider} from "@mui/material";
 import './controls.scss'
+import {SMALL_SCREEN_LIMIT} from "./csp-comparison-demo/CspComparisonDemo.tsx";
 
 export function ProcessingComponent(props: {
     displayedDataLabels: string[] | null,
@@ -39,8 +40,19 @@ export function ProcessingComponent(props: {
         props.setMaxSfcValue(props.initialMaxSfcValue)
     }
 
+    function getLastGridRowSpan(numOfRows: number, displayedDataLabels: string[] | null) {
+        if (props.variant === 'full') {
+            return 'initial'
+        }
+
+        if (!displayedDataLabels) {
+            return `2 / ${2 + numOfRows}`
+        }
+        return `${2 + displayedDataLabels.length} / ${2 + displayedDataLabels.length + numOfRows} !important`
+    }
+
     function getResetButton() {
-        return <Button id={'reset-button'} variant='outlined' onClick={onResetClicked}
+        return <Button sx={{gridRow: getLastGridRowSpan(1, props.displayedDataLabels)}} id={'reset-button'} variant='outlined' onClick={onResetClicked}
                        disabled={props.offsets?.every(v => v === 0) // Disable if no transforms have been made
                            && props.scales?.every(v => v === DEFAULT_SCALING_FACTOR)
                            && props.bitsPerSignal === DEFAULT_BITS_PER_SIGNAL
@@ -48,9 +60,15 @@ export function ProcessingComponent(props: {
                            && props.initialMaxSfcValue == props.maxSfcValue}>Reset all transforms</Button>;
     }
 
+    function setGridTemplateRows(numOfRows: number) {
+        return props.variant === 'reduced' && window.innerWidth > SMALL_SCREEN_LIMIT
+            ? `min-content ${Array(numOfRows).fill('min-content').join(' ')} auto`
+            : 'initial'
+    }
+
     return <div className={'control-container'} id={'process-container'}>
         <h3>Transform</h3>
-        <div className={'signals-grid'}>
+        <div className={'signals-grid'} style={{gridTemplateRows: setGridTemplateRows(Number(props.displayedDataLabels?.length))}}>
             <span className={'input-label signal-label'}>Signal</span>
             <span className={'input-label offset-label'}>Offset</span>
             <span className={'input-label scale-label'}>Scale</span>
@@ -60,7 +78,7 @@ export function ProcessingComponent(props: {
                     <div className={'signal-cell'} key={i}>
                         {props.lineColors && <span style={{background: props.lineColors[i % props.lineColors.length]}}
                                className={'color-line'}></span>}
-                        <span className={'signal-name'}>{signal}</span>
+                        <span title={signal} className={'signal-name'}>{signal}</span>
                     </div>
                     <label className={'input-label offset-label'}>
                         <input type="number" value={(props.offsets && props.offsets[i]) ?? DEFAULT_OFFSET} onBlur={() =>

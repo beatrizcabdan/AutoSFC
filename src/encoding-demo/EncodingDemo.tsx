@@ -10,7 +10,7 @@ import {DataRangeSlider} from "../data-range-slider/DataRangeSlider.tsx";
 import {ProcessingComponent} from "../ProcessingComponent.tsx";
 import {SelectColumnsDialog} from "../select-columns-dialog/SelectColumnsDialog.tsx";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR, PlayStatus} from "../App.tsx";
-import {demoPreset5} from "../Common.ts";
+import {demoPreset5} from "../presets.ts";
 import './EncodingDemo.scss'
 import '../controls.scss'
 import App from '../App.module.scss'
@@ -396,7 +396,7 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
                 <div className={"control-container"} id={"first-control-row"}>
                     <div className={"file-container"}>
                         <h3>Current file</h3>
-                        <UploadButton onClick={uploadFile} label={"Upload file..."}
+                        <UploadButton onClick={uploadFile} label={"Upload file..."} getWrappingDiv={true} getFileNameP={true}
                                       currentFile={fileName.replace(/.\//, "")}/>
                     </div>
                     <div className={"position-container"}>

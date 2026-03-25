@@ -11,28 +11,6 @@
     margin-top: 0.5rem;
     font-family: sans-serif;
 
-    .legend-msg {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        translate: -50% -210%;
-        text-transform: uppercase;
-        font-size: 0.7rem;
-        opacity: 0;
-        transition: opacity 0.3s;
-        background: white;
-        border-radius: 5px;
-        box-shadow: rgba(0, 0, 0, 0.2) 0 0 6px 1px;
-        padding: 0.7rem 0.4rem;
-        height: fit-content;
-        letter-spacing: 0.07rem;
-        line-height: initial !important;
-
-        &.show {
-            opacity: 1;
-        }
-    }
-
     .legend {
         @extend .chart-sub-control;
 

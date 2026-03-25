@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, MutableRefObject, useEffect, useRef, useState} from "react";
 import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR} from "../App.tsx";
 import {createPath, debounce, hilbertEncode, mortonInterlace} from "../utils.ts";
 import {Chart} from "../Chart.tsx";
@@ -7,39 +7,86 @@ import {UploadButton} from "../buttons/UploadButton.tsx";
 import {DataRangeSlider} from "../data-range-slider/DataRangeSlider.tsx";
 import {ProcessingComponent} from "../ProcessingComponent.tsx";
 import {SelectColumnsDialog} from "../select-columns-dialog/SelectColumnsDialog.tsx";
-import {default_demo1} from "../Common.ts";
+import {default_demo2} from "../presets.ts";
 import './CspComparisonDemo.scss'
-import {Checkbox, FormControlLabel} from "@mui/material";
+import {Checkbox, FormControlLabel, IconButton, Zoom} from "@mui/material";
 import App from '../App.module.scss'
 import '../controls.scss'
 import {useSearchParams} from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {ChevronRight} from "@mui/icons-material";
 
 const {primaryColor} = App
 
-const preset = default_demo1
+const preset = default_demo2
 
-// TODO: Fix width, cspRange changing when other file is transformed, deleting/hiding files, more compact layout, presets... (later)
-// Good demo values:
-// accel_x: 4000 / 729
-// accel_y: 5000 / 729
-// sampleTimeStamp.microseconds: 5000 / 10
-// groundSpeed: 5005 / 10
+export const SMALL_SCREEN_LIMIT = 700
+
+// TODO:  more compact layout (show show-button, delete-button, upload file-button, filename, displayed signals (no controls)), presets... (later)
 
 interface CspComparisonDemoProps {
     onSectionClick: (path: string, sectionId: string) => void
 }
 
+function DataRangeContainer(props: {
+    fileIndex: number,
+    startLines: number[],
+    endLines: number[],
+    dataNumLines: number[],
+    setStartLines: (value: (((prevState: number[]) => number[]) | number[])) => void,
+    setEndLines: (value: (((prevState: number[]) => number[]) | number[])) => void,
+    onZoomSliderChange: (_: Event, newValue: (number[] | number), fileIndex: number) => void,
+    hide?: boolean,
+    className?: string,
+    lineColors: string[],
+    color: string
+}) {
+    const [idx, startLines, endLines, hide, setStartLines, setEndLines, onZoomSliderChange, className, lineColors, color] =
+        [props.fileIndex, props.startLines, props.endLines, props.hide, props.setStartLines, props.setEndLines,
+            props.onZoomSliderChange, props.className, props.lineColors, props.color]
+    return <div className={`control-container ${className} ${hide ? 'hide' : ''}`} id={"range-container"}>
+        <h3>Displayed range</h3>
+        <DataRangeSlider dataRangeChartStart={startLines[idx]}
+                         dataRangeChartEnd={endLines[idx]} color={color}
+                         numLines={props.dataNumLines[idx]} idx={idx} lineColors={lineColors}
+                         onChange={(e, newValue) => onZoomSliderChange(e, newValue, idx)}/>
+        <div className={"text-controls"}>
+            <label className={"input-label"}>
+                Start row
+                <input type="number" value={startLines[idx]}
+                       onChange={(e) => {
+                           startLines[idx] = Number(e.target.value)
+                           setStartLines([...startLines])
+                       }}/>
+            </label>
+            <label className={"input-label"}>
+                End row
+                <input type="number" value={endLines[idx]}
+                       onChange={(e) => {
+                           endLines[idx] = Number(e.target.value)
+                           setEndLines([...endLines])
+                       }}/>
+            </label>
+        </div>
+    </div>;
+}
+
 export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
     const EXAMPLE_FILE_PATHS = [preset.file1, preset.file2]
     const LINE_COLORS = [primaryColor, 'green', 'red', 'purple', 'brown', 'orange']
+    const LARGE_SCREEN_SIGNAL_ROW_HEIGHT = 1.7 // rem
+    const SMALL_SCREEN_SIGNAL_ROW_HEIGHT = 1.6 // rem
+    const FILLED_DISPLAY_LABELS = false // Minimized controls
+
+    const [lineColors, setLineColors] = useState(LINE_COLORS.slice(0, 2))
 
     const [filePaths, setFilePaths] = useState(EXAMPLE_FILE_PATHS)
     const [fileNames, setFileNames] = useState(EXAMPLE_FILE_PATHS)
     const DATA_POINT_INTERVAL = preset.dataPointInterval
 
     const [dataNumLines, setDataNumLines] = useState<number[]>([100, 100])
-    const [startLines, setStartLines] = useState<number[]>([0, 0])
-    const [endLines, setEndLines] = useState<number[]>([100, 100])
+    const [startLines, setStartLines] = useState<number[]>([20, 0])
+    const [endLines, setEndLines] = useState<number[]>([690, 590])
 
     const [encoder, setEncoder] = useState('morton')
 
@@ -48,6 +95,7 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
     const [initialMinSfcValues, setInitialMinSfcValues] = useState<number[]>([])
     const [initialMaxSfcValues, setInitialMaxSfcValues] = useState<number[]>([])
 
+    const allDataLabelsRef = useRef<string[][]>([])
     const [displayedDataLabels, setDisplayedDataLabels] = useState<string[][] | null>([
         preset.file1_signals,
         preset.file2_signals
@@ -63,8 +111,10 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
     const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(preset.bitsPerSignal)
 
     const [plotFile, setPlotFile] = useState([true, true])
+    const [minimizeFileControls, setMinimizeFileControls] = useState([true, true])
 
-    const allDataLabelsRef = useRef<string[][]>([])
+    const [deletedFileIndex, setDeletedFileIndex] = useState(-1)
+    const [fileCountIncreased, setFileCountIncreased] = useState(false)
 
     const [minChartValue, setMinChartValue] = useState<number>(-1)
     const [maxChartValue, setMaxChartValue] = useState<number>(-1)
@@ -185,7 +235,7 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
         })
     }
 
-    function uploadFile(e: ChangeEvent<HTMLInputElement>, fileIndex: number) {
+    function uploadFile(e: ChangeEvent<HTMLInputElement>, fileIndex: number, minimizeControls?: boolean) {
         const file = e.target.files?.item(0)
         if (file?.type === 'text/csv') {
             const reader = new FileReader();
@@ -199,11 +249,10 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
                         .split(/[,;]/)
                     formatDataLabels(dataLabels);
                     allDataLabelsRef.current[fileIndex] = dataLabels
-
                     setDisplayedDataLabels([
-                        ...allDataLabelsRef.current.slice(0, fileIndex),
-                        dataLabels.slice(dataLabels.length - 2),
-                        ...allDataLabelsRef.current.slice(fileIndex + 1)
+                        ...(displayedDataLabels ?? []).slice(0, fileIndex),
+                        dataLabels.slice(dataLabels.length - 2), // Use last two columns as default
+                        ...(displayedDataLabels ?? []).slice(fileIndex + 1)
                     ])
                     startLines[fileIndex] = 0
                     setStartLines([...startLines])
@@ -212,6 +261,18 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
                     const url = URL.createObjectURL(file)
                     setFileNames([...fileNames.slice(0, fileIndex), file.name, ...fileNames.slice(fileIndex + 1)])
                     setFilePaths([...filePaths.slice(0, fileIndex), url, ...filePaths.slice(fileIndex + 1)])
+                    setOffsets([...offsets.slice(0, fileIndex), Array(2).fill(DEFAULT_OFFSET), ...offsets.slice(fileIndex + 1)])
+                    setScales([...scales.slice(0, fileIndex), Array(2).fill(DEFAULT_SCALING_FACTOR), ...scales.slice(fileIndex + 1)])
+                    setPlotFile([...plotFile.slice(0, fileIndex), true, ...plotFile.slice(fileIndex + 1)])
+                    setMinimizeFileControls([...minimizeFileControls.slice(0, fileIndex), !!minimizeControls,
+                        ...minimizeFileControls.slice(fileIndex + 1)])
+
+                    // Only add new color if increasing number of files
+                    if (fileIndex === lineColors.length) {
+                        const availableColors = LINE_COLORS.filter(color => !lineColors.includes(color))
+                        const newColor = availableColors.length > 0 ? availableColors[0] : LINE_COLORS[lineColors.length % LINE_COLORS.length]
+                        setLineColors([...lineColors, newColor])
+                    }
                 } else {
                     alert("Error reading the file. Please try again.");
                 }
@@ -340,6 +401,75 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
         setPlotFile([...plotFile])
     }
 
+    function removeFileName(fileIndex: number) {
+        setLineColors([...lineColors.slice(0, fileIndex), ...lineColors.slice(fileIndex + 1)])
+        setFileNames([...fileNames.slice(0, fileIndex), ...fileNames.slice(fileIndex + 1)])
+        setFilePaths([...filePaths.slice(0, fileIndex), ...filePaths.slice(fileIndex + 1)])
+        setDataNumLines([...dataNumLines.slice(0, fileIndex), ...dataNumLines.slice(fileIndex + 1)])
+        setStartLines([...startLines.slice(0, fileIndex), ...startLines.slice(fileIndex + 1)])
+        setEndLines([...endLines.slice(0, fileIndex), ...endLines.slice(fileIndex + 1)])
+        setMinSfcValues([...minSfcValues.slice(0, fileIndex), ...minSfcValues.slice(fileIndex + 1)])
+        setMaxSfcValues([...maxSfcValues.slice(0, fileIndex), ...maxSfcValues.slice(fileIndex + 1)])
+        setInitialMaxSfcValues([...initialMaxSfcValues.slice(0, fileIndex), ...initialMaxSfcValues.slice(fileIndex + 1)])
+        setInitialMinSfcValues([...initialMinSfcValues.slice(0, fileIndex), ...initialMinSfcValues.slice(fileIndex + 1)])
+        setDisplayedDataLabels([...displayedDataLabels!.slice(0, fileIndex), ...displayedDataLabels!.slice(fileIndex + 1)])
+        setData([...data.slice(0, fileIndex), ...data.slice(fileIndex + 1)])
+        setTransformedData([...transformedData.slice(0, fileIndex), ...transformedData.slice(fileIndex + 1)])
+        setSfcData([...sfcData.slice(0, fileIndex), ...sfcData.slice(fileIndex + 1)])
+        setScales([...scales.slice(0, fileIndex), ...scales.slice(fileIndex + 1)])
+        setOffsets([...offsets.slice(0, fileIndex), ...offsets.slice(fileIndex + 1)])
+        setPlotFile([...plotFile.slice(0, fileIndex), ...plotFile.slice(fileIndex + 1)])
+        setMinimizeFileControls([...minimizeFileControls.slice(0, fileIndex), ...minimizeFileControls.slice(fileIndex + 1)])
+        allDataLabelsRef.current = [...allDataLabelsRef.current.slice(0, fileIndex), ...allDataLabelsRef.current.slice(fileIndex + 1)]
+
+        setDeletedFileIndex(-1)
+    }
+
+    const addExtraFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFileCountIncreased(true)
+        uploadFile(e, fileNames.length);
+    }
+    const onZoomAnimationFinished = (i: number) => {
+        removeFileName(i);
+        setFileCountIncreased(false)
+    }
+
+    function onDropDownBtnClick(fileIndex: number) {
+        const current = minimizeFileControls[fileIndex]
+        setMinimizeFileControls([...minimizeFileControls.slice(0, fileIndex),
+            !current, ...minimizeFileControls.slice(fileIndex + 1)])
+    }
+
+    function ShowCheckBox(props: { index: number }) {
+        return <FormControlLabel
+            control={<Checkbox checked={plotFile[props.index]} onChange={e => onShowCheckboxClick(e, props.index)}
+                               sx={{color: lineColors[props.index], '&.Mui-checked': {color: lineColors[props.index],}}}/>}
+            label="Show" className={'show-checkbox'}/>;
+    }
+
+    function DeleteButton(props: { index: number }) {
+        return <FormControlLabel control={<IconButton onClick={e => {
+        }}>
+            <DeleteIcon />
+        </IconButton>} onClick={() => filePaths.length > 1 && setDeletedFileIndex(props.index)}
+                                 label={'Delete'} className={'delete-row-button'} disabled={filePaths.length === 1}/>;
+    }
+
+    // Compute explicit control height for transitions
+    function getControlHeight(numOfSignals: number, minimize: boolean) {
+        if (window.innerWidth <= SMALL_SCREEN_LIMIT) {
+            return minimize ? '5.0rem'
+                : numOfSignals <= 3 ? '32rem'
+                : numOfSignals === 4 ? '33rem'
+                : `${33 + SMALL_SCREEN_SIGNAL_ROW_HEIGHT * (numOfSignals - 4)}rem`;
+        }
+
+        return minimize ? '6.8rem'
+            : numOfSignals <= 3 ? '13rem'
+            : numOfSignals === 4 ? '14.1rem'
+            : `${14.1 + LARGE_SCREEN_SIGNAL_ROW_HEIGHT * (numOfSignals - 4)}rem`;
+    }
+
     return <div id={'comparison-demo'}>
         <h1>
             <a href={createPath('#comparison-demo', searchParams)}
@@ -359,7 +489,7 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
                    scales={scales} id={'demo2'} totalNumLines={getMaxDisplayedNumLines()}
                    offsets={offsets} minValue={minChartValue} maxValue={maxChartValue} type={"scatter"}
                    xAxisName={"Sfc value"} bitsPerSignal={bitsPerSignal}
-                   yAxisName={"Time steps"} yAxisLabelPos={"right"} lineColors={LINE_COLORS}
+                   yAxisName={"Time steps"} yAxisLabelPos={"right"} lineColors={lineColors}
                    sfcData={sfcData} minSfcRange={minSfcValues} maxSfcRange={maxSfcValues} plotFile={plotFile}/>
         </div>
         <div className={'global-transform-div control-container'}>
@@ -378,69 +508,84 @@ export function CspComparisonDemo({onSectionClick}: CspComparisonDemoProps) {
             </>
         </div>
         {fileNames.map((fileName, i) => {
-            return <div className={"controls"} id={'demo2-controls'} key={i}>
-                <div className={'control-container comparison-row-div'}>
-                    <div className={'left-control-grid'}>
-                        <div className={'first-buttons-column'}>
-                            <FormControlLabel
-                                control={<Checkbox defaultChecked onChange={e => onShowCheckboxClick(e, i)}
-                                                   sx={{
-                                                       color: LINE_COLORS[i],
-                                                       '&.Mui-checked': {color: LINE_COLORS[i],}
-                                                   }}/>}
-                                label="Show" className={'show-checkbox'}/>
-                            {/*<FormControlLabel control={<IconButton onClick={e => {
-                            }}>
-                                <DeleteIcon/>
-                            </IconButton>} label={'Delete'} className={'delete-row-button'}/>*/}
-                        </div>
-                        <div className={"file-container"}>
-                            <UploadButton onClick={e => uploadFile(e, i)} label={"Upload file..."}
-                                          currentFile={fileName.replace(/.\//, "")}/>
-                        </div>
-                        <div className={"control-container"} id={"range-container"}>
-                            <h3>Displayed range</h3>
-                            <DataRangeSlider dataRangeChartStart={startLines[i]}
-                                             dataRangeChartEnd={endLines[i]}
-                                             numLines={dataNumLines[i]}
-                                             onChange={(e, newValue) => onZoomSliderChange(e, newValue, i)}/>
-                            <div className={"text-controls"}>
-                                <label className={"input-label"}>
-                                    Start row
-                                    <input type="number" value={startLines[i]}
-                                           onChange={(e) => {
-                                               startLines[i] = Number(e.target.value)
-                                               setStartLines([...startLines])
-                                           }}/>
-                                </label>
-                                <label className={"input-label"}>
-                                    End row
-                                    <input type="number" value={endLines[i]}
-                                           onChange={(e) => {
-                                               endLines[i] = Number(e.target.value)
-                                               setEndLines([...endLines])
-                                           }}/>
-                                </label>
+            return <>
+                <Zoom appear={i !== deletedFileIndex} in={i !== deletedFileIndex}
+                      timeout={i === deletedFileIndex || fileCountIncreased && i === filePaths.length - 1 ? 200 : 0}
+                      onExited={() => onZoomAnimationFinished(i)}>
+                    <div className={"controls"} id={'demo2-controls'} key={i}>
+                        <div className={'control-container comparison-row-div'}
+                             style={{height: getControlHeight(displayedDataLabels ? displayedDataLabels[i].length : 0, minimizeFileControls[i])}}>
+                            <div className={`left-control-grid ${minimizeFileControls[i] ? 'minimized' : ''}`}>
+                                <div className={'first-buttons-column'}>
+                                    <FormControlLabel className={'dropdown-button'} control={<IconButton disableRipple={true} aria-label="maximize/minimize"
+                                            onClick={() => onDropDownBtnClick(i)}>
+                                        <ChevronRight sx={{scale: 1.0, rotate: minimizeFileControls[i] ? '0' : '90deg'}}/>
+                                    </IconButton>} label={undefined}/>
+                                    <div className={`lower-buttons-div ${minimizeFileControls[i] ? 'hide' : ''}`}>
+                                        <ShowCheckBox index={i}/>
+                                        <DeleteButton index={i}/>
+                                    </div>
+                                </div>
+                                <div className={`file-container ${minimizeFileControls[i] ? 'hide' : ''}`}>
+                                    <UploadButton onClick={e => uploadFile(e, i, minimizeFileControls[i])} label={"Upload file..."}
+                                                  currentFile={fileName.replace(/.\//, "")}
+                                                  getWrappingDiv={true} getFileNameP={true}/>
+                                </div>
+                                <DataRangeContainer fileIndex={i} startLines={startLines} endLines={endLines} hide={minimizeFileControls[i]}
+                                                    dataNumLines={dataNumLines} setStartLines={setStartLines} lineColors={LINE_COLORS} color={lineColors[i]}
+                                                    setEndLines={setEndLines} onZoomSliderChange={onZoomSliderChange}/>
+
+                                {/*Minimized controls*/}
+                                <UploadButton onClick={e => uploadFile(e, i, minimizeFileControls[i])} label={"Upload file..."}
+                                              getFileNameP={false} getWrappingDiv={false}/>
+                                <h3 className={'upload-button-minimized-label'}>{fileName}</h3>
+                                <Checkbox id={`show-checkbox-${i}`} className={'show-checkbox-minimized'} checked={plotFile[i]} onChange={e => onShowCheckboxClick(e, i)}
+                                          sx={{color: lineColors[i], '&.Mui-checked': {color: lineColors[i],}}}/>
+                                <h3 className={'show-checkbox-minimized-label'}
+                                    onClick={() => (document.querySelector(`#show-checkbox-${i}`) as HTMLDivElement).click()}>Show</h3>
+                                <IconButton className={'delete-row-button-minimized'} onClick={() => filePaths.length > 1 && setDeletedFileIndex(i)}
+                                            disabled={filePaths.length === 1}>
+                                    <DeleteIcon />
+                                </IconButton>
+                                <h3 className={`delete-button-minimized-label ${filePaths.length === 1 ? 'disabled' : ''}`}
+                                    onClick={() => filePaths.length > 1 && setDeletedFileIndex(i)}>Delete</h3>
+                                <div className={'displayed-signals-wrapper-minimized-div'}
+                                     onClick={() => selectDataColumns(i)}>
+                                    <h3>Displayed signals</h3>
+                                    <p className={`legend-msg`}>Choose signals...</p>
+                                    <div className={'displayed-signals-div'}>
+                                        {displayedDataLabels ? displayedDataLabels[i].map(label =>
+                                            <span className={FILLED_DISPLAY_LABELS ? 'solid-bg' : ''} key={label}
+                                                  style={{background: FILLED_DISPLAY_LABELS ? lineColors[i] : 'white'}}>{label}
+                                            </span>) : null}
+                                    </div>
+                                </div>
+                                <DataRangeContainer fileIndex={i} startLines={startLines} endLines={endLines} hide={!minimizeFileControls[i]}
+                                                    dataNumLines={dataNumLines} setStartLines={setStartLines} className={'minimized'} color={lineColors[i % lineColors.length]}
+                                                    setEndLines={setEndLines} lineColors={LINE_COLORS} onZoomSliderChange={onZoomSliderChange}/>
+                            </div>
+
+                            <div className={`processing-component-wrapper ${minimizeFileControls[i] ? 'hide' : ''}`}>
+                                <ProcessingComponent variant={'reduced'}
+                                                     displayedDataLabels={displayedDataLabels ? displayedDataLabels[i] : null}
+                                                     scales={scales[i]} offsets={offsets[i]}
+                                                     onScalesChanged={(index: number, scale: number | undefined) => onScalesChanged(index, scale, i)}
+                                                     onOffsetsChanged={(index: number, offset: number | undefined) => onOffsetsChanged(index, offset, i)}
+                                                     minSfcValue={minSfcValues[i]}
+                                                     setMinSfcValue={(val: number) => onMinSfcValChanged(val, i)}
+                                                     setMaxSfcValue={(val: number) => onMaxSfcValuesChanged(val, i)}
+                                                     maxSfcValue={maxSfcValues[i]} initialMinSfcValue={initialMinSfcValues[i]}
+                                                     initialMaxSfcValue={initialMaxSfcValues[i]}
+                                                     onChooseColumnsClick={() => selectDataColumns(i)}
+                                                     resetBtnPos={'right'}/>
                             </div>
                         </div>
                     </div>
-                    <ProcessingComponent variant={'reduced'}
-                                         displayedDataLabels={displayedDataLabels ? displayedDataLabels[i] : null}
-                                         scales={scales[i]} offsets={offsets[i]}
-                                         onScalesChanged={(index: number, scale: number | undefined) => onScalesChanged(index, scale, i)}
-                                         onOffsetsChanged={(index: number, offset: number | undefined) => onOffsetsChanged(index, offset, i)}
-                                         minSfcValue={minSfcValues[i]}
-                                         setMinSfcValue={(val: number) => onMinSfcValChanged(val, i)}
-                                         setMaxSfcValue={(val: number) => onMaxSfcValuesChanged(val, i)}
-                                         maxSfcValue={maxSfcValues[i]} initialMinSfcValue={initialMinSfcValues[i]}
-                                         initialMaxSfcValue={initialMaxSfcValues[i]}
-                                         onChooseColumnsClick={() => selectDataColumns(i)}
-                                         resetBtnPos={'right'}/>
-                </div>
-            </div>
+                </Zoom>
+            </>
         })}
-        {/*<UploadButton onClick={e => uploadFile(e, fileNames.length)} label={"Upload file..."}
-                      currentFile={''}/>*/}
+        <UploadButton onClick={e => addExtraFile(e)} label={"Upload file..."}
+                      currentFile={''} getWrappingDiv={true} getFileNameP={true}/>
         <SelectColumnsDialog show={showDialog} setShow={setShowDialog} demoName={'comparison'}
                              currentLabels={displayedDataLabels && fileToSelectColumnsFor > -1
                                  ? displayedDataLabels[fileToSelectColumnsFor]
