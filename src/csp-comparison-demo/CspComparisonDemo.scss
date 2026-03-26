@@ -12,450 +12,455 @@
         margin-bottom: 0;
     }
 
-    #demo2-controls {
+    .controls-wrapper {
         width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         height: fit-content;
 
-        .control-container {
-            padding: 0.9rem;
-        }
-
-        .comparison-row-div {
-            display: flex;
-            flex-direction: row;
+        #demo2-controls {
             width: 100%;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 1.0rem;
-            flex: none;
-            justify-content: normal;
-            transition: height 0.2s;
+            height: fit-content;
 
-            .MuiTypography-root {
-                text-transform: uppercase;
-                line-height: 0.6rem !important;
-                letter-spacing: 0.02rem !important;
-                font-size: 0.6rem !important;
-                font-weight: 700 !important;
+            .control-container {
+                padding: 0.9rem;
             }
 
-            .hide {
-                display: none !important;
-                // opacity: 0;
-            }
+            .comparison-row-div {
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                align-items: center;
+                gap: 1.0rem;
+                flex: none;
+                justify-content: normal;
+                transition: height 0.2s;
 
-            .left-control-grid {
-                $separator-border: 1px solid rgb(0 0 0 / 0.15);
-                $separator-margin: 0.9rem;
-                $first-column-width: 4.5rem;
-
-                width: max-content;
-                display: grid;
-                grid-template-columns: $first-column-width auto;
-                flex: 1 1 fit-content;
-                height: 100%;
-                overflow: hidden;
-
-                &.minimized {
-                    grid-template-columns: $first-column-width max-content min-content min-content 1.0fr 1.0fr;
-                    column-gap: 0.5rem;
-                    row-gap: 0.2rem;
-                    height: 100%;
-
-                    .show-checkbox-minimized, .show-checkbox-minimized-label, .delete-row-button-minimized,
-                    .delete-button-minimized-label, .upload-button, .upload-button-minimized-label,
-                    .displayed-signals-wrapper-minimized-div {
-                        @extend .flex-display;
-                    }
-
-                    .upload-button {
-                        grid-column: 4;
-                        width: max-content !important;
-                        aspect-ratio: initial !important;
-                        justify-self: center;
-                    }
-
-                    .first-buttons-column {
-                        grid-row: 1 / 3;
-                    }
+                .MuiTypography-root {
+                    text-transform: uppercase;
+                    line-height: 0.6rem !important;
+                    letter-spacing: 0.02rem !important;
+                    font-size: 0.6rem !important;
+                    font-weight: 700 !important;
                 }
 
-                .displayed-signals-wrapper-minimized-div {
-                    display: none;
-                    flex-direction: column;
-                    justify-content: flex-start;
-                    grid-row: 1 / 3;
-                    grid-column: 5;
-                    margin-left: $separator-margin;
-                    border-left: $separator-border;
-                    padding: 0 $separator-margin;
-                    border-right: $separator-border;
-                    margin-right: $separator-margin;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                    position: relative;
+                .hide {
+                    display: none !important;
+                    // opacity: 0;
+                }
 
-                    .legend-msg {
-                        translate: -50% -150%;
-                    }
+                .left-control-grid {
+                    $separator-border: 1px solid rgb(0 0 0 / 0.15);
+                    $separator-margin: 0.9rem;
+                    $first-column-width: 4.5rem;
 
-                    &:hover {
-                        .legend-msg {
-                            opacity: 1;
+                    width: max-content;
+                    display: grid;
+                    grid-template-columns: $first-column-width auto;
+                    flex: 1 1 fit-content;
+                    height: 100%;
+                    overflow: hidden;
+
+                    &.minimized {
+                        grid-template-columns: $first-column-width max-content min-content min-content 1.0fr 1.0fr;
+                        column-gap: 0.5rem;
+                        row-gap: 0.2rem;
+                        height: 100%;
+
+                        .show-checkbox-minimized, .show-checkbox-minimized-label, .delete-row-button-minimized,
+                        .delete-button-minimized-label, .upload-button, .upload-button-minimized-label,
+                        .displayed-signals-wrapper-minimized-div {
+                            @extend .flex-display;
+                        }
+
+                        .upload-button {
+                            grid-column: 4;
+                            width: max-content !important;
+                            aspect-ratio: initial !important;
+                            justify-self: center;
+                        }
+
+                        .first-buttons-column {
+                            grid-row: 1 / 3;
                         }
                     }
 
-                    h3 {
-                        margin: 0;
-                        padding-bottom: 0.7rem;
-                    }
+                    .displayed-signals-wrapper-minimized-div {
+                        display: none;
+                        flex-direction: column;
+                        justify-content: flex-start;
+                        grid-row: 1 / 3;
+                        grid-column: 5;
+                        margin-left: $separator-margin;
+                        border-left: $separator-border;
+                        padding: 0 $separator-margin;
+                        border-right: $separator-border;
+                        margin-right: $separator-margin;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        position: relative;
 
-                    .displayed-signals-div {
-                        @extend .flex-display;
+                        .legend-msg {
+                            translate: -50% -150%;
+                        }
 
-                        gap: 0.6rem;
-                        flex-wrap: wrap;
-                        row-gap: 0.3rem;
-                        height: 3.2rem;
-                        overflow: auto;
-
-                        span {
-                            border-radius: 4px;
-                            border: 1px var(--input-border) solid;
-                            padding: 0.1rem 0.2rem;
-                            font-size: 0.7rem;
-                            white-space: nowrap;
-                            flex-wrap: wrap;
-                            color: var(--text-color);
-
-                            &.solid-bg {
-                                color: white;
-                                opacity: 0.8;
-                                border: none;
+                        &:hover {
+                            .legend-msg {
+                                opacity: 1;
                             }
                         }
-                    }
-                }
 
-                .delete-row-button-minimized {
-                    grid-column: 3;
-                }
-
-                .show-checkbox-minimized {
-                    grid-column: 2;
-                }
-
-                .show-checkbox-minimized, .delete-row-button-minimized, & > .upload-button {
-                    align-self: center;
-                    grid-row: 1 / 2;
-                    width: fit-content;
-                    aspect-ratio: 1;
-                    display: none;
-
-                    .MuiSvgIcon-root {
-                        width: 1.7rem !important;
-                        height: 1.7rem !important;
-                    }
-                }
-
-                .upload-button-minimized-label {
-                    grid-column: 4;
-                    white-space: nowrap;
-                }
-
-                .show-checkbox-minimized-label, .delete-button-minimized-label {
-                    cursor: pointer;
-                }
-
-                .show-checkbox-minimized-label {
-                    grid-column: 2;
-                }
-
-                .delete-button-minimized-label {
-                    grid-column: 3;
-
-                    &.disabled {
-                        color: App.$disabled-text-color;
-                    }
-                }
-
-                .show-checkbox-minimized-label, .delete-button-minimized-label, .upload-button-minimized-label {
-                    grid-row: 2 / 3;
-                    width: fit-content;
-                    margin: auto;
-                    align-self: center;
-                    display: none;
-                }
-
-                .first-buttons-column {
-                    grid-column: 1;
-                    grid-row: 1 / 4;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1.4rem;
-                    border-right: $separator-border;
-                    margin-right: $separator-margin;
-
-                    * {
-                        margin-right: 0;
-                    }
-
-                    .lower-buttons-div {
-                        margin-top: -1.0rem;
-
-                        .show-checkbox {
-                            flex-direction: column;
-                            align-self: center;
+                        h3 {
+                            margin: 0;
+                            padding-bottom: 0.7rem;
                         }
 
-                        .delete-row-button {
-                            display: flex;
-                            flex-direction: column;
-                            justify-content: center;
-                            align-items: center;
-                            margin-top: 0.5rem;
+                        .displayed-signals-div {
+                            @extend .flex-display;
 
-                            .MuiIconButton-root {
-                                display: flex;
-                                margin-bottom: 0;
+                            gap: 0.6rem;
+                            flex-wrap: wrap;
+                            row-gap: 0.3rem;
+                            height: 3.2rem;
+                            overflow: auto;
 
-                                .MuiSvgIcon-root {
-                                    width: 1.7rem !important;
-                                    height: 1.7rem !important;
+                            span {
+                                border-radius: 4px;
+                                border: 1px var(--input-border) solid;
+                                padding: 0.1rem 0.2rem;
+                                font-size: 0.7rem;
+                                white-space: nowrap;
+                                flex-wrap: wrap;
+                                color: var(--text-color);
+
+                                &.solid-bg {
+                                    color: white;
+                                    opacity: 0.8;
+                                    border: none;
                                 }
                             }
                         }
                     }
 
-                    .dropdown-button {
-                        aspect-ratio: 1;
-                        padding: 0;
-                        flex-direction: column;
+                    .delete-row-button-minimized {
+                        grid-column: 3;
+                    }
+
+                    .show-checkbox-minimized {
+                        grid-column: 2;
+                    }
+
+                    .show-checkbox-minimized, .delete-row-button-minimized, & > .upload-button {
                         align-self: center;
-                        align-items: center;
+                        grid-row: 1 / 2;
+                        width: fit-content;
+                        aspect-ratio: 1;
+                        display: none;
 
                         .MuiSvgIcon-root {
-                            scale: 1.0;
-                            transition: all 0.2s;
+                            width: 1.7rem !important;
+                            height: 1.7rem !important;
+                        }
+                    }
+
+                    .upload-button-minimized-label {
+                        grid-column: 4;
+                        white-space: nowrap;
+                    }
+
+                    .show-checkbox-minimized-label, .delete-button-minimized-label {
+                        cursor: pointer;
+                    }
+
+                    .show-checkbox-minimized-label {
+                        grid-column: 2;
+                    }
+
+                    .delete-button-minimized-label {
+                        grid-column: 3;
+
+                        &.disabled {
+                            color: App.$disabled-text-color;
+                        }
+                    }
+
+                    .show-checkbox-minimized-label, .delete-button-minimized-label, .upload-button-minimized-label {
+                        grid-row: 2 / 3;
+                        width: fit-content;
+                        margin: auto;
+                        align-self: center;
+                        display: none;
+                    }
+
+                    .first-buttons-column {
+                        grid-column: 1;
+                        grid-row: 1 / 4;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1.4rem;
+                        border-right: $separator-border;
+                        margin-right: $separator-margin;
+
+                        * {
+                            margin-right: 0;
                         }
 
+                        .lower-buttons-div {
+                            margin-top: -1.0rem;
+
+                            .show-checkbox {
+                                flex-direction: column;
+                                align-self: center;
+                            }
+
+                            .delete-row-button {
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: center;
+                                align-items: center;
+                                margin-top: 0.5rem;
+
+                                .MuiIconButton-root {
+                                    display: flex;
+                                    margin-bottom: 0;
+
+                                    .MuiSvgIcon-root {
+                                        width: 1.7rem !important;
+                                        height: 1.7rem !important;
+                                    }
+                                }
+                            }
+                        }
+
+                        .dropdown-button {
+                            aspect-ratio: 1;
+                            padding: 0;
+                            flex-direction: column;
+                            align-self: center;
+                            align-items: center;
+
+                            .MuiSvgIcon-root {
+                                scale: 1.0;
+                                transition: all 0.2s;
+                            }
+
+                        }
+
+                        .MuiSvgIcon-root {
+                            width: 1.7rem !important;
+                            height: 1.7rem !important;
+                            padding: 0;
+                        }
                     }
 
-                    .MuiSvgIcon-root {
-                        width: 1.7rem !important;
-                        height: 1.7rem !important;
-                        padding: 0;
-                    }
-                }
-
-                .file-container {
-                    grid-row: 1;
-                    grid-column: 2;
-                    align-self: center;
-
-                    .upload-button-container {
-                        margin-top: 0;
-                    }
-                }
-
-                #range-container {
-                    &.minimized {
-                        grid-row: 1 / 3;
-                        grid-column: 6;
-                        border-top: none;
-                        padding: 0;
-                        height: fit-content;
+                    .file-container {
+                        grid-row: 1;
+                        grid-column: 2;
                         align-self: center;
 
-                        h3 {
-                            padding-bottom: 0.7rem;
+                        .upload-button-container {
+                            margin-top: 0;
                         }
+                    }
+
+                    #range-container {
+                        &.minimized {
+                            grid-row: 1 / 3;
+                            grid-column: 6;
+                            border-top: none;
+                            padding: 0;
+                            height: fit-content;
+                            align-self: center;
+
+                            h3 {
+                                padding-bottom: 0.7rem;
+                            }
+
+                            .text-controls {
+                                flex-direction: row;
+                                flex-wrap: nowrap;
+                            }
+                        }
+
+                        grid-row: 2;
+                        grid-column: 2;
+                        box-shadow: none;
+                        border-radius: 0;
+                        border-top: 1px solid rgba(0 0 0 / 0.15);
 
                         .text-controls {
                             flex-direction: row;
-                            flex-wrap: nowrap;
-                        }
-                    }
 
-                    grid-row: 2;
-                    grid-column: 2;
-                    box-shadow: none;
-                    border-radius: 0;
-                    border-top: 1px solid rgba(0 0 0 / 0.15);
-
-                    .text-controls {
-                        flex-direction: row;
-
-                        label {
-                            display: flex;
-                            gap: 0.5rem;
-                            align-items: center;
+                            label {
+                                display: flex;
+                                gap: 0.5rem;
+                                align-items: center;
+                            }
                         }
                     }
                 }
-            }
 
-            .processing-component-wrapper {
-                height: 100%;
-                overflow-y: hidden;
-
-                #process-container {
-                    display: flex;
-                    justify-content: center;
-                    margin-right: 0;
-                    margin-left: 0;
-                    gap: 0.5rem;
-                    width: fit-content;
-                    border-radius: 0;
-                    border-left: 1px solid rgba(0 0 0 / 0.15);
-                    box-shadow: none;
+                .processing-component-wrapper {
                     height: 100%;
-                    padding: 0 0 0 1.2rem;
+                    overflow-y: hidden;
 
-                    h3 {
-                        line-height: initial;
-                        padding-bottom: 0.2rem;
-                    }
-
-                    .signals-grid {
-                        grid-template-columns: 15ch repeat(2, min-content) 1rem min-content min-content;
-                        position: relative;
-                        grid-template-rows: min-content;
-                        flex: 1 1;
+                    #process-container {
+                        display: flex;
+                        justify-content: center;
+                        margin-right: 0;
+                        margin-left: 0;
+                        gap: 0.5rem;
                         width: fit-content;
+                        border-radius: 0;
+                        border-left: 1px solid rgba(0 0 0 / 0.15);
+                        box-shadow: none;
+                        height: 100%;
+                        padding: 0 0 0 1.2rem;
 
-                        .offset-label, .scale-label {
-                            input {
-                                margin: 0.1rem;
-                            }
+                        h3 {
+                            line-height: initial;
+                            padding-bottom: 0.2rem;
                         }
 
-                        .signal-cell {
-                            grid-column: 1;
-
-                            .signal-name {
-                                padding-right: 0.2rem;
-                                white-space: nowrap;
-                            }
-                        }
-
-                        span {
-                            align-self: center;
-                        }
-
-                        span.bits-label, span.max-sfc-label, span.min-sfc-label {
-                            margin-right: 0.5rem;
-                        }
-
-                        span.bits-label {
-                            grid-row:  1;
-                            grid-column: 5;
-                            padding-top: 0;
-                            margin-top: 0;
-                            text-align: right;
-                        }
-
-                        label.bits-label {
-                            grid-row: 1;
-                            grid-column: 6;
-                            margin-top: 0;
-                            text-align: left;
-
-                            * {
-                                margin-left: 0;
-                                padding-left: 0;
-                                margin-right: 0;
-                                padding-right: 0;
-                            }
-                        }
-
-                        .choose-columns-button {
-                            @extend .gray-border-button;
-                            white-space: nowrap;
-                            grid-column: 1 / 4;
+                        .signals-grid {
+                            grid-template-columns: 15ch repeat(2, min-content) 1rem min-content min-content;
+                            position: relative;
+                            grid-template-rows: min-content;
+                            flex: 1 1;
                             width: fit-content;
-                            justify-self: center;
-                            align-self: end;
-                            margin-top: 0.5rem;
-                        }
 
-                        #sfc-header {
-                            grid-column: 5 / 7;
-                            align-self: center;
-                            margin-top: 0;
-                            padding: 0;
-                        }
-
-                        .MuiDivider-root {
-                            grid-column: 4;
-                            height: 100%;
-                            position: absolute;
-                            margin-left: 0.5rem;
-                        }
-
-                        .min-sfc-label {
-                            grid-row: 2;
-                        }
-
-                        .max-sfc-label {
-                            grid-row: 3;
-                        }
-
-                        span.max-sfc-label, span.min-sfc-label {
-                            grid-column: 5 / 6;
-                            justify-self: flex-end;
-                            white-space: nowrap;
-                        }
-
-                        label.max-sfc-label, label.min-sfc-label {
-                            grid-column: 6 / 7;
-                            width: 14ch;
-
-                            * {
-                                width: 100%;
-                                margin-left: 0;
-                                margin-right: 0;
+                            .offset-label, .scale-label {
+                                input {
+                                    margin: 0.1rem;
+                                }
                             }
 
-                        }
+                            .signal-cell {
+                                grid-column: 1;
 
-                        #reset-button {
-                            width: max-content;
-                            margin-top: 0.5rem;
-                            grid-column: 5 / 7;
-                            grid-row: 2 / 4;
-                            justify-self: center;
-                            align-self: end;
-                            padding: 5px 15px;
-                            height: fit-content !important;
-                        }
+                                .signal-name {
+                                    padding-right: 0.2rem;
+                                    white-space: nowrap;
+                                }
+                            }
 
-                        @media (max-width: 1200px) {
+                            span {
+                                align-self: center;
+                            }
+
+                            span.bits-label, span.max-sfc-label, span.min-sfc-label {
+                                margin-right: 0.5rem;
+                            }
+
+                            span.bits-label {
+                                grid-row:  1;
+                                grid-column: 5;
+                                padding-top: 0;
+                                margin-top: 0;
+                                text-align: right;
+                            }
+
+                            label.bits-label {
+                                grid-row: 1;
+                                grid-column: 6;
+                                margin-top: 0;
+                                text-align: left;
+
+                                * {
+                                    margin-left: 0;
+                                    padding-left: 0;
+                                    margin-right: 0;
+                                    padding-right: 0;
+                                }
+                            }
+
+                            .choose-columns-button {
+                                @extend .gray-border-button;
+                                white-space: nowrap;
+                                grid-column: 1 / 4;
+                                width: fit-content;
+                                justify-self: center;
+                                align-self: end;
+                                margin-top: 0.5rem;
+                            }
+
                             #sfc-header {
                                 grid-column: 5 / 7;
+                                align-self: center;
+                                margin-top: 0;
+                                padding: 0;
                             }
 
-                            label.max-sfc-label, label.min-sfc-label {
-                                grid-column: 6;
+                            .MuiDivider-root {
+                                grid-column: 4;
+                                height: 100%;
+                                position: absolute;
+                                margin-left: 0.5rem;
+                            }
+
+                            .min-sfc-label {
+                                grid-row: 2;
+                            }
+
+                            .max-sfc-label {
+                                grid-row: 3;
                             }
 
                             span.max-sfc-label, span.min-sfc-label {
-                                grid-column: 5;
+                                grid-column: 5 / 6;
+                                justify-self: flex-end;
+                                white-space: nowrap;
+                            }
+
+                            label.max-sfc-label, label.min-sfc-label {
+                                grid-column: 6 / 7;
+                                width: 14ch;
+
+                                * {
+                                    width: 100%;
+                                    margin-left: 0;
+                                    margin-right: 0;
+                                }
+
                             }
 
                             #reset-button {
-                                width: 100%;
-                                margin: 0 0.1rem;
+                                width: max-content;
+                                margin-top: 0.5rem;
                                 grid-column: 5 / 7;
-                                grid-row: 5 / 7;
+                                grid-row: 2 / 4;
+                                justify-self: center;
+                                align-self: end;
+                                padding: 5px 15px;
+                                height: fit-content !important;
                             }
-                        }
 
-                        .choose-columns-button, #reset-button {
-                            span {
-                                height: 100%;
+                            @media (max-width: 1200px) {
+                                #sfc-header {
+                                    grid-column: 5 / 7;
+                                }
+
+                                label.max-sfc-label, label.min-sfc-label {
+                                    grid-column: 6;
+                                }
+
+                                span.max-sfc-label, span.min-sfc-label {
+                                    grid-column: 5;
+                                }
+
+                                #reset-button {
+                                    width: 100%;
+                                    margin: 0 0.1rem;
+                                    grid-column: 5 / 7;
+                                    grid-row: 5 / 7;
+                                }
+                            }
+
+                            .choose-columns-button, #reset-button {
+                                span {
+                                    height: 100%;
+                                }
                             }
                         }
                     }
@@ -564,196 +569,199 @@
             }
         }
 
-        #demo2-controls {
-            .comparison-row-div {
-                flex-direction: column;
-                padding: 0;
-                gap: 0.5rem;
+        .controls-wrapper {
+            #demo2-controls {
 
-                &:has(.left-control-grid.minimized) {
+                .comparison-row-div {
+                    flex-direction: column;
                     padding: 0;
-                }
+                    gap: 0.5rem;
 
-                .left-control-grid {
-                    width: 100%;
-                    padding: 0.5rem 0.5rem 1.0rem;
-                    border-bottom: 1px solid rgba(0 0 0 / 0.15);
-                    grid-template-columns: min-content 1fr 1fr 9rem !important;
-                    column-gap: 0.5rem;
-                    row-gap: 0 !important;
-                    height: min-content;
-
-                    .upload-button {
-                        width: max-content;
-                        display: flex;
-                    }
-
-                    .upload-button, .upload-button-minimized-label {
-                        justify-self: center;
-                        align-self: center;
-                        grid-column: 4 !important;
-                        aspect-ratio: initial !important;
-                    }
-
-                    .upload-button-minimized-label {
-                        width: 144px;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        display: inline-block !important;
+                    &:has(.left-control-grid.minimized) {
                         padding: 0;
                     }
 
-                    .dropdown-button {
-                        margin: 0 0.5rem 0 0;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                    }
+                    .left-control-grid {
+                        width: 100%;
+                        padding: 0.5rem 0.5rem 1.0rem;
+                        border-bottom: 1px solid rgba(0 0 0 / 0.15);
+                        grid-template-columns: min-content 1fr 1fr 9rem !important;
+                        column-gap: 0.5rem;
+                        row-gap: 0 !important;
+                        height: min-content;
 
-                    .show-checkbox-minimized, .show-checkbox-minimized-label {
-                        grid-column: 2;
-                    }
-
-                    .delete-row-button-minimized, .delete-button-minimized-label {
-                        grid-column: 3
-                    }
-
-                    .show-checkbox-minimized-label, .delete-button-minimized-label, .upload-button-minimized-label {
-                        grid-row: 2;
-                        padding: 0;
-                        line-height: 0.5rem;
-                        margin-top: -0.2rem !important;
-                    }
-
-                    .show-checkbox-minimized, .delete-row-button-minimized, .show-checkbox-minimized-label,
-                    .delete-button-minimized-label {
-                        display: flex;
-                        margin: auto;
-                    }
-
-                    &.minimized {
-                        border: none;
-                        padding: 0.5rem 0.5rem 0.5rem;
-
-                        .displayed-signals-wrapper-minimized-div, .control-container {
-                            display: none;
-                        }
-                    }
-
-                    .first-buttons-column {
-                        grid-row: 1 / 3;
-                        gap: 0;
-                        width: fit-content;
-                        flex-direction: column;
-                        justify-content: flex-start;
-                        align-items: center;
-                        padding-top: 0.5rem;
-                        height: 4rem;
-
-                        .show-checkbox, .delete-row-button, {
-                            display: none !important;
-                        }
-                    }
-
-                    .file-container {
-                        display: none;
-                    }
-
-                    #range-container {
-                        margin-top: 0.5rem;
-                        grid-column: 1 / 5;
-                        padding-bottom: 0;
-                        grid-row: 3;
-
-                        h3 {
-                            padding-bottom: 0.2rem;
-                        }
-                    }
-                }
-            }
-
-            .processing-component-wrapper {
-                height: fit-content !important;
-
-                #process-container {
-                    border: none !important;
-                    padding: 0.5rem !important;
-                    width: 100% !important;
-
-                    .signals-grid {
-                        grid-template-columns: repeat(6, 1fr) !important;
-
-                        .choose-columns-button {
-                            grid-column: 2 / 6 !important;
+                        .upload-button {
+                            width: max-content;
+                            display: flex;
                         }
 
-                        .signal-cell {
-                            grid-column: 1 / 3 !important;
-                            padding-left: 1ch;
+                        .upload-button, .upload-button-minimized-label {
+                            justify-self: center;
+                            align-self: center;
+                            grid-column: 4 !important;
+                            aspect-ratio: initial !important;
+                        }
 
-                            .signal-name {
-                                width: 22ch;
-                                text-align: left;
+                        .upload-button-minimized-label {
+                            width: 144px;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            display: inline-block !important;
+                            padding: 0;
+                        }
+
+                        .dropdown-button {
+                            margin: 0 0.5rem 0 0;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+
+                        .show-checkbox-minimized, .show-checkbox-minimized-label {
+                            grid-column: 2;
+                        }
+
+                        .delete-row-button-minimized, .delete-button-minimized-label {
+                            grid-column: 3
+                        }
+
+                        .show-checkbox-minimized-label, .delete-button-minimized-label, .upload-button-minimized-label {
+                            grid-row: 2;
+                            padding: 0;
+                            line-height: 0.5rem;
+                            margin-top: -0.2rem !important;
+                        }
+
+                        .show-checkbox-minimized, .delete-row-button-minimized, .show-checkbox-minimized-label,
+                        .delete-button-minimized-label {
+                            display: flex;
+                            margin: auto;
+                        }
+
+                        &.minimized {
+                            border: none;
+                            padding: 0.5rem 0.5rem 0.5rem;
+
+                            .displayed-signals-wrapper-minimized-div, .control-container {
+                                display: none;
                             }
                         }
 
-                        .signal-label {
-                            grid-column: 1 / 3;
+                        .first-buttons-column {
+                            grid-row: 1 / 3;
+                            gap: 0;
+                            width: fit-content;
+                            flex-direction: column;
+                            justify-content: flex-start;
+                            align-items: center;
+                            padding-top: 0.5rem;
+                            height: 4rem;
+
+                            .show-checkbox, .delete-row-button, {
+                                display: none !important;
+                            }
                         }
 
-                        .offset-label {
-                            grid-column: 3 / 5;
-                        }
-
-                        .scale-label {
-                            grid-column: 5 / 7;
-                        }
-
-                        #reset-button {
-                            margin: 1rem 0 0 0 !important;
-                            grid-column: 1 / 7 !important;
-                            grid-row: unset !important;
-                            order: 5;
-                        }
-
-                        #sfc-header {
-                            border-top: 1px solid rgba(0 0 0 / 0.15);
-                            margin-top: 0.5rem !important;
-                            margin-bottom: 0;
-                            order: 2;
-                            grid-column: 1 / 7 !important;
-                            line-height: 2.0rem;
-                            padding-top: 0 !important;
-                        }
-
-                        .min-sfc-label {
-                            order: 3;
-                            grid-row: unset !important;
-                        }
-
-                        .max-sfc-label {
-                            order: 4;
-                            grid-row: unset !important;
-                        }
-
-                        span.min-sfc-label, span.max-sfc-label {
-                            grid-column: 1 / 3 !important;
-                            justify-self: left !important;
-                            padding-left: 1ch;
-                        }
-
-                        label.min-sfc-label, label.max-sfc-label {
-                            grid-column: 4 / 7 !important;
-                            justify-self: left !important;
-                        }
-
-                        .MuiDivider-vertical {
+                        .file-container {
                             display: none;
+                        }
+
+                        #range-container {
+                            margin-top: 0.5rem;
+                            grid-column: 1 / 5;
+                            padding-bottom: 0;
+                            grid-row: 3;
+
+                            h3 {
+                                padding-bottom: 0.2rem;
+                            }
                         }
                     }
                 }
 
+                .processing-component-wrapper {
+                    height: fit-content !important;
+
+                    #process-container {
+                        border: none !important;
+                        padding: 0.5rem !important;
+                        width: 100% !important;
+
+                        .signals-grid {
+                            grid-template-columns: repeat(6, 1fr) !important;
+
+                            .choose-columns-button {
+                                grid-column: 2 / 6 !important;
+                            }
+
+                            .signal-cell {
+                                grid-column: 1 / 3 !important;
+                                padding-left: 1ch;
+
+                                .signal-name {
+                                    width: 22ch;
+                                    text-align: left;
+                                }
+                            }
+
+                            .signal-label {
+                                grid-column: 1 / 3;
+                            }
+
+                            .offset-label {
+                                grid-column: 3 / 5;
+                            }
+
+                            .scale-label {
+                                grid-column: 5 / 7;
+                            }
+
+                            #reset-button {
+                                margin: 1rem 0 0 0 !important;
+                                grid-column: 1 / 7 !important;
+                                grid-row: unset !important;
+                                order: 5;
+                            }
+
+                            #sfc-header {
+                                border-top: 1px solid rgba(0 0 0 / 0.15);
+                                margin-top: 0.5rem !important;
+                                margin-bottom: 0;
+                                order: 2;
+                                grid-column: 1 / 7 !important;
+                                line-height: 2.0rem;
+                                padding-top: 0 !important;
+                            }
+
+                            .min-sfc-label {
+                                order: 3;
+                                grid-row: unset !important;
+                            }
+
+                            .max-sfc-label {
+                                order: 4;
+                                grid-row: unset !important;
+                            }
+
+                            span.min-sfc-label, span.max-sfc-label {
+                                grid-column: 1 / 3 !important;
+                                justify-self: left !important;
+                                padding-left: 1ch;
+                            }
+
+                            label.min-sfc-label, label.max-sfc-label {
+                                grid-column: 4 / 7 !important;
+                                justify-self: left !important;
+                            }
+
+                            .MuiDivider-vertical {
+                                display: none;
+                            }
+                        }
+                    }
+
+                }
             }
         }
     }
