@@ -5,7 +5,7 @@
   primaryColorMedium: #2699ff;
 }
 
-.flex-display {
+.flex-display, #encoding-demo .dialog-buttons {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -547,6 +547,66 @@ h1 + p {
     padding: 14px 2rem 28px;
   }
 }
+.button-text, .button, #encoding-demo .dialog-buttons .cancel-button, #encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
+  text-transform: uppercase;
+  letter-spacing: 0.02rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.button-shadow {
+  box-shadow: rgba(0, 0, 0, 0.1) 0 0 2px 2px;
+}
+
+.button, #encoding-demo .dialog-buttons .cancel-button, #encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
+  padding: 0 0.5rem;
+  height: 1.8rem;
+  background-color: white;
+  border: 2px solid var(--text-color-light);
+  border-radius: 6px;
+  transition: all 0.2s;
+  color: var(--text-color-light);
+}
+.button:hover, #encoding-demo .dialog-buttons .cancel-button:hover, #encoding-demo .dialog-buttons .take-screenshot-button:hover, #encoding-demo .dialog-buttons .add-label-button:hover, .link-button:hover, .no-border-button:hover, .gray-border-button:hover, .blue-border-button:hover {
+  background-color: var(--light-gray);
+  cursor: pointer;
+}
+.button:active, #encoding-demo .dialog-buttons .cancel-button:active, #encoding-demo .dialog-buttons .take-screenshot-button:active, #encoding-demo .dialog-buttons .add-label-button:active, .link-button:active, .no-border-button:active, .gray-border-button:active, .blue-border-button:active {
+  background-color: var(--button-active);
+}
+
+.blue-border-button {
+  border-color: rgba(25, 118, 210, 0.5019607843);
+}
+.blue-border-button:hover {
+  border-color: #1976d2;
+}
+
+.gray-border-button {
+  border-color: var(--button-active);
+}
+
+.no-border-button {
+  border-width: 0;
+}
+
+.link-button {
+  background-color: transparent;
+}
+.link-button a {
+  font-weight: 700;
+  color: var(--text-color-light);
+}
+.link-button:hover:not(:active) a {
+  color: #004c93;
+}
+.link-button:active {
+  background-color: initial;
+}
+.link-button:active a {
+  color: #2699ff;
+}
+
 #encoding-demo {
   display: flex;
   flex-direction: column;
@@ -580,6 +640,27 @@ h1 + p {
   #encoding-demo #process-container, #encoding-demo .vert-control-wrapper {
     height: 100%;
   }
+}
+#encoding-demo .dialog-buttons {
+  gap: 1rem;
+  width: 28ch;
+  margin-top: 1rem;
+}
+#encoding-demo .dialog-buttons .cancel-button {
+  border-color: var(--legend-border);
+}
+#encoding-demo .dialog-buttons .cancel-button:hover {
+  border-color: var(--input-border);
+}
+#encoding-demo .dialog-buttons .cancel-button, #encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button {
+  flex: 1 1;
+  transition: all 0.2s;
+}
+#encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button {
+  border-color: rgba(25, 118, 210, 0.5019607843);
+}
+#encoding-demo .dialog-buttons .take-screenshot-button:hover, #encoding-demo .dialog-buttons .add-label-button:hover {
+  border-color: #1976d2;
 }
 
 @media (max-width: 700px) {

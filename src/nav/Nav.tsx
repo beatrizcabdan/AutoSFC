@@ -1,6 +1,7 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {forwardRef, useEffect, useRef, useState} from "react";
 import './Nav.scss'
 import {createPath} from "../utils.ts";
+import {URLSearchParams} from "node:url";
 
 interface NavProps {
     scrollPos: number,
@@ -14,7 +15,8 @@ interface NavProps {
 
 function NavLink(props: {
     title: string, sectionId: string, onSectionClick: (path: string, sectionId: string) => void,
-    className?: string | undefined, searchParams: URLSearchParams, icon: string, id?: string }) {
+    className?: string | undefined, searchParams: URLSearchParams, icon: string, id?: string
+}) {
     const pathRef = useRef('')
 
     useEffect(() => {
@@ -40,8 +42,10 @@ interface HamburgerMenuProps {
 }
 
 function HamburgerMenu({onMenuClick, subMenuVisible}: HamburgerMenuProps) {
-    return <a id={`hamburger-menu-a`} onClick={e =>
-    {e.preventDefault();onMenuClick()}}>
+    return <a id={`hamburger-menu-a`} onClick={e => {
+        e.preventDefault();
+        onMenuClick()
+    }}>
         <div className={`navlink-div ${subMenuVisible ? 'active' : ''}`}>
             <span className="material-symbols-outlined">menu</span>More
         </div>
@@ -68,8 +72,15 @@ export function NavSubMenu(props: {
     </div>;
 }
 
-export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName, onSectionClick, searchParams,
-                        setShowSubMenu, showSubMenu}: NavProps) {
+export const Nav = forwardRef(function Nav({
+                        scrollPos,
+                        hideMobileNav,
+                        contactVisibilityClassName,
+                        onSectionClick,
+                        searchParams,
+                        setShowSubMenu,
+                        showSubMenu,
+                    }: NavProps, ref) {
     const [navHeight, setNavHeight] = useState(0)
 
     useEffect(() => {
@@ -80,7 +91,7 @@ export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName, onSec
     }, []);
 
     // @ts-ignore
-    return <div className={`topnav ${scrollPos < navHeight ? 'top-pos' : ''} ${hideMobileNav ? 'hide' : ''}`}>
+    return <div ref={ref} className={`topnav ${scrollPos < navHeight ? 'top-pos' : ''} ${hideMobileNav ? 'hide' : ''}`}>
         <div className={'link-container'}>
             <NavLink sectionId={"#encoding-demo"} onSectionClick={onSectionClick} icon={'swap_horiz'}
                      title={'Encoding Demo'} searchParams={searchParams}/>
@@ -95,4 +106,4 @@ export function Nav({scrollPos, hideMobileNav, contactVisibilityClassName, onSec
             <HamburgerMenu subMenuVisible={showSubMenu} onMenuClick={() => setShowSubMenu(prev => !prev)}/>
         </div>
     </div>
-}
+})

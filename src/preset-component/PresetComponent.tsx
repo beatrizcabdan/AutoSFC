@@ -35,11 +35,22 @@ export function PresetComponent(props: {
     maxSfcValue: number,
     encoder: string,
     displayedDataLabels: string[] | null,
-    currentPresetName: string
+    currentPresetName: string,
+    presets: Preset[] | null | undefined,
+    setPresets: (value: (((prevState: (Preset[] | null | undefined)) => (Preset[] | null | undefined)) | Preset[] | null | undefined)) => void,
+    createPresetFromCurrParams: (includeName?: boolean) => {
+        signalStartRow: number;
+        signalEndRow: number;
+        cspStartRow: number;
+        cspEndRow: number;
+        bitsPerSignal: number;
+        signalTransforms: { signalName: string; offset: number; scaling: number }[];
+        encoder: string;
+        plotTransformedSignals: boolean
+    }
 }) {
     const PRESET_FILE_SUFFIX = '_presets.json'
 
-    const [presets, setPresets] = useState<Preset[] | null>()
     const [editablePresetNameIdx, setEditablePresetNameIdx] = useState(-1)
     const [deletedIndex, setDeletedIndex] = useState(-1)
     const loadButtonRef = useRef<HTMLInputElement | null>(null)
@@ -49,7 +60,7 @@ export function PresetComponent(props: {
         const presArray = JSON.parse(content)
         presArray.sort((p1: Preset, p2: Preset) =>
             p1.name.localeCompare(p2.name))
-        setPresets(presArray)
+        props.setPresets(presArray)
         if (presArray.length > 0 && selectPresetIndex > -1) {
             props.onPresetSelect(presArray[selectPresetIndex])
         }
@@ -57,15 +68,15 @@ export function PresetComponent(props: {
 
     useEffect(() => {
         const paramPresetName = searchParams.get('preset')
-        if (presets && paramPresetName) {
-            const idx = presets?.findIndex(p => p.name === paramPresetName)
+        if (props.presets && paramPresetName) {
+            const idx = props.presets?.findIndex(p => p.name === paramPresetName)
             if (idx === undefined) {
                 console.error(`No preset with name ${paramPresetName} found.`)
             } else {
-                props.onPresetSelect(presets[idx])
+                props.onPresetSelect(props.presets[idx])
             }
         }
-    }, [searchParams, presets]);
+    }, [searchParams, props.presets]);
 
     // Load initial presets from file
     useEffect(() => {
@@ -78,13 +89,13 @@ export function PresetComponent(props: {
 
     // Don't show a preset as selected after user changed any parameter
     useEffect(() => {
-        const currentPreset = presets?.find(p => p.name == props.currentPresetName)
+        const currentPreset = props.presets?.find(p => p.name == props.currentPresetName)
         if (currentPreset) {
             let currPresStr = JSON.stringify(currentPreset)
             currPresStr = currPresStr.replace(`"name":"${props.currentPresetName}"`, '')
                 .replace(/^\{,/, '{')
                 .replace(/,}/, '}')
-            const currParamStr = JSON.stringify(createPresetFromCurrParams(false))
+            const currParamStr = JSON.stringify(props.createPresetFromCurrParams(false))
             if (currPresStr !== currParamStr) {
                 props.onPresetSelect(null)
             }
@@ -93,7 +104,7 @@ export function PresetComponent(props: {
         props.bitsPerSignal, props.minSfcValue, props.maxSfcValue, props.encoder, props.displayedDataLabels]);
 
     function onPresetClick(index: number) {
-        const preset = presets![index]
+        const preset = props.presets![index]
         console.log(searchParams)
         setSearchParams(searchParams => {
             searchParams.set('preset', preset.name)
@@ -102,42 +113,11 @@ export function PresetComponent(props: {
         props.onPresetSelect(preset)
     }
 
-    function createPresetName() {
-        let presetSuffix = 1
-        while (presets?.some(p => p.name === `preset_0${presetSuffix}`)) {
-            presetSuffix++
-        }
-        return `preset_0${presetSuffix}`;
-    }
-
-    function createPresetFromCurrParams(includeName = true) {
-        const obj = {
-            signalStartRow: props.displayedStartRow,
-            signalEndRow: props.displayedEndRow,
-            cspStartRow: props.minSfcValue,
-            cspEndRow: props.maxSfcValue,
-            bitsPerSignal: props.bitsPerSignal === '' ? DEFAULT_BITS_PER_SIGNAL : Number(props.bitsPerSignal),
-            signalTransforms: props.displayedDataLabels?.map((name, i) => {
-                return {
-                    signalName: String(name),
-                    offset: props.offsets[i] ?? DEFAULT_OFFSET,
-                    scaling: props.scales[i] ?? DEFAULT_SCALING_FACTOR
-                }
-            }) ?? [],
-            encoder: props.encoder,
-            plotTransformedSignals: props.plotTransformedSignals
-        };
-        if (includeName) {
-            Object.assign(obj, {name: createPresetName()})
-        }
-        return obj
-    }
-
     function addPreset() {
-        const newPreset: Preset = createPresetFromCurrParams() as Preset
-        const newPresets = [...(presets ?? []), newPreset]
+        const newPreset: Preset = props.createPresetFromCurrParams() as Preset
+        const newPresets = [...(props.presets ?? []), newPreset]
             .sort((p1, p2) => p1.name.localeCompare(p2.name))
-        setPresets(newPresets)
+        props.setPresets(newPresets)
         props.onPresetSelect(newPreset)
         setSearchParams(searchParams => {
             searchParams.set('preset', newPreset.name)
@@ -182,7 +162,7 @@ export function PresetComponent(props: {
 
     function savePresets() {
         // https://stackoverflow.com/a/72490299/23995082
-        const textContent = presets?.map(p => JSON.stringify(p, undefined, ' ')).join(',\n') ?? ''
+        const textContent = props.presets?.map(p => JSON.stringify(p, undefined, ' ')).join(',\n') ?? ''
         const hiddenElement = document.createElement('a');
         hiddenElement.href = 'data:attachment/text,' + encodeURI(textContent ? `[${textContent}]` : '');
         hiddenElement.target = '_blank';
@@ -190,14 +170,15 @@ export function PresetComponent(props: {
         hiddenElement.click();
     }
 
+
     function removePreset(index: number) {
-        if (searchParams.get('preset') !== undefined && presets![index].name === searchParams.get('preset')) {
+        if (searchParams.get('preset') !== undefined && props.presets![index].name === searchParams.get('preset')) {
             setSearchParams(searchParams => {
                 searchParams.delete('preset')
                 return searchParams
             })
         }
-        setPresets(presets => [...presets!.slice(0, index), ...presets!.slice(index + 1)])
+        props.setPresets(presets => [...presets!.slice(0, index), ...presets!.slice(index + 1)])
         setDeletedIndex(-1)
     }
 
@@ -206,18 +187,18 @@ export function PresetComponent(props: {
         // @ts-expect-error
         const targetVal = e.target.value
         // Don't allow multiple presets with same name
-        if (e.key === 'Enter' && !presets?.some((p, i) => i != presetIndex && p.name === targetVal)) {
+        if (e.key === 'Enter' && !props.presets?.some((p, i) => i != presetIndex && p.name === targetVal)) {
             setEditablePresetNameIdx(-1)
-            if (props.currentPresetName === presets![presetIndex].name) {
+            if (props.currentPresetName === props.presets![presetIndex].name) {
                 setSearchParams(searchParams => {
                     searchParams.set('preset', targetVal)
                     return searchParams
                 })
             }
 
-            const newPresets = [...presets!]
+            const newPresets = [...props.presets!]
             newPresets[presetIndex].name = targetVal
-            setPresets(newPresets)
+            props.setPresets(newPresets)
         }
     }
 
@@ -237,7 +218,7 @@ export function PresetComponent(props: {
 
     return <div className={'preset-list-container'}>
         <List id={'preset-list'}>
-            {presets?.map((p, i) => <ListItem key={i}>
+            {props.presets?.map((p, i) => <ListItem key={i}>
                  <Zoom appear={i == deletedIndex || p.name === props.currentPresetName}
                        in={i !== deletedIndex} onExited={() => removePreset(i)}>
                     <ListItemButton selected={p.name === props.currentPresetName} onClick={() => onPresetClick(i)}>
@@ -260,7 +241,7 @@ export function PresetComponent(props: {
             <input ref={loadButtonRef} type="file" className="file-input" onInput={uploadFile} accept={'application/json'}/>
             <Button className={'button'} id={'add-preset-button'} variant={'outlined'}
                     onClick={addPreset}>Create preset</Button>
-            <Button className={'button'} id={'save-preset-button'} onClick={savePresets} disabled={!presets || presets.length === 0}>Save presets</Button>
+            <Button className={'button'} id={'save-preset-button'} onClick={savePresets} disabled={!props.presets || props.presets.length === 0}>Save presets</Button>
             <Button className={'button'} id={'load-preset-button'} onClick={onLoadClick}>Load presets</Button>
         </div>
     </div>

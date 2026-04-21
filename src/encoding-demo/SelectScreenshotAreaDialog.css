@@ -5,7 +5,7 @@
   primaryColorMedium: #2699ff;
 }
 
-.flex-display, .controls #process-container .last-transform-row {
+.flex-display {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -547,7 +547,7 @@ h1 + p {
     padding: 14px 2rem 28px;
   }
 }
-.button-text, .button, .link-button, .no-border-button, .gray-border-button, .controls #process-container .last-transform-row .download-button, .blue-border-button, .controls #process-container #reset-button {
+.button-text, .button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
   text-transform: uppercase;
   letter-spacing: 0.02rem;
   font-size: 0.6rem;
@@ -558,7 +558,7 @@ h1 + p {
   box-shadow: rgba(0, 0, 0, 0.1) 0 0 2px 2px;
 }
 
-.button, .link-button, .no-border-button, .gray-border-button, .controls #process-container .last-transform-row .download-button, .blue-border-button, .controls #process-container #reset-button {
+.button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
   padding: 0 0.5rem;
   height: 1.8rem;
   background-color: white;
@@ -567,22 +567,22 @@ h1 + p {
   transition: all 0.2s;
   color: var(--text-color-light);
 }
-.button:hover, .link-button:hover, .no-border-button:hover, .gray-border-button:hover, .controls #process-container .last-transform-row .download-button:hover, .blue-border-button:hover, .controls #process-container #reset-button:hover {
+.button:hover, .link-button:hover, .no-border-button:hover, .gray-border-button:hover, .blue-border-button:hover {
   background-color: var(--light-gray);
   cursor: pointer;
 }
-.button:active, .link-button:active, .no-border-button:active, .gray-border-button:active, .controls #process-container .last-transform-row .download-button:active, .blue-border-button:active, .controls #process-container #reset-button:active {
+.button:active, .link-button:active, .no-border-button:active, .gray-border-button:active, .blue-border-button:active {
   background-color: var(--button-active);
 }
 
-.blue-border-button, .controls #process-container #reset-button {
+.blue-border-button {
   border-color: rgba(25, 118, 210, 0.5019607843);
 }
-.blue-border-button:hover, .controls #process-container #reset-button:hover {
+.blue-border-button:hover {
   border-color: #1976d2;
 }
 
-.gray-border-button, .controls #process-container .last-transform-row .download-button {
+.gray-border-button {
   border-color: var(--button-active);
 }
 
@@ -607,295 +607,39 @@ h1 + p {
   color: #2699ff;
 }
 
-.controls {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-start;
-  --gap: 20px;
-  gap: var(--gap);
+.select-screenshot-area-dialog h2 {
+  line-height: 1.4rem !important;
+  margin-bottom: 1rem !important;
 }
-.controls #sfcrangecontrol {
-  flex: 1 1 7rem;
-}
-.controls #sfcrangecontrol .text-controls {
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-}
-.controls #sfcrangecontrol label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-.controls #sfcrangecontrol label input {
-  width: 15ch;
-}
-.controls #process-container {
-  height: fit-content;
-  flex: none;
-}
-.controls #process-container h3 {
-  margin-bottom: initial;
-}
-.controls #process-container .signals-grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto repeat(2, min-content);
-  gap: 0.2rem;
-  grid-auto-rows: auto;
-}
-.controls #process-container .signals-grid .MuiDivider-root {
-  grid-column: 1/4;
-  height: 1rem;
-}
-.controls #process-container .signals-grid .MuiDivider-root #sfc-header {
+.select-screenshot-area-dialog p {
   margin: 0;
-  line-height: initial;
-  padding: 0.1rem 0 0;
+  text-align: start;
 }
-.controls #process-container .signals-grid .signal-cell {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: fit-content;
+.select-screenshot-area-dialog.dark {
+  background: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.9);
 }
-.controls #process-container .signals-grid .signal-cell .color-line {
-  display: flex;
-  width: 32px;
-  max-width: 32px;
-  height: 4px;
-  padding: 0;
-  margin-right: 3px;
+.select-screenshot-area-dialog.dark h2 {
+  color: rgba(255, 255, 255, 0.9);
 }
-.controls #process-container .signals-grid .signal-cell .signal-name {
-  font-size: 0.9rem;
-  padding-right: 2rem;
-  max-width: 22ch;
-  text-overflow: ellipsis;
-  overflow: hidden;
+.select-screenshot-area-dialog.dark .dialog-buttons .cancel-button, .select-screenshot-area-dialog.dark .dialog-buttons .take-screenshot-button {
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.9) !important;
 }
-.controls #process-container .signals-grid .signal-label {
-  grid-column: 1;
+.select-screenshot-area-dialog.dark .dialog-buttons .cancel-button:hover, .select-screenshot-area-dialog.dark .dialog-buttons .take-screenshot-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
 }
-.controls #process-container .signals-grid .offset-label {
-  grid-column: 2;
+.select-screenshot-area-dialog.dark .dialog-buttons .cancel-button:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
 }
-.controls #process-container .signals-grid .scale-label {
-  grid-column: 3;
+.select-screenshot-area-dialog.dark .dialog-buttons .take-screenshot-button {
+  border-color: #1976d2 !important;
 }
-.controls #process-container .signals-grid .encoder-label {
-  margin-top: 0.7rem !important;
-  align-items: flex-start;
-  padding-top: 0.2rem;
-}
-.controls #process-container .signals-grid .encoder-switch {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-}
-.controls #process-container .signals-grid .bits-label {
-  text-align: center;
-}
-.controls #process-container .signals-grid span.bits-label, .controls #process-container .signals-grid span.show-transforms-label, .controls #process-container .signals-grid span.encoder-label {
-  grid-column: 1;
-  text-align: left;
-  padding-top: 0.2rem;
-}
-.controls #process-container .signals-grid label.bits-label, .controls #process-container .signals-grid div.show-transforms-label, .controls #process-container .signals-grid .encoder-switch {
-  grid-column: 2;
-  text-align: left;
-}
-.controls #process-container .signals-grid .bits-label, .controls #process-container .signals-grid .show-transforms-label, .controls #process-container .signals-grid .encoder-label {
-  min-height: 1.3rem;
-}
-.controls #process-container .signals-grid div.show-transforms-label {
-  display: flex;
-  justify-content: left;
-  width: 100%;
-  pointer-events: none;
-  margin-left: -0.2rem;
-}
-.controls #process-container .signals-grid div.show-transforms-label .MuiButtonBase-root {
-  aspect-ratio: 1;
-  height: fit-content;
-  width: fit-content;
-  pointer-events: auto;
-}
-.controls #process-container .signals-grid .variant-full.min-sfc-label {
-  margin-top: 0.7rem;
-}
-.controls #process-container .signals-grid span.bits-label {
-  padding-top: 0.2rem;
-}
-.controls #process-container .signals-grid span.min-sfc-label, .controls #process-container .signals-grid span.max-sfc-label {
-  grid-column: 1;
-  text-align: left;
-  display: flex;
-  align-items: center;
-}
-.controls #process-container .signals-grid label.min-sfc-label, .controls #process-container .signals-grid label.max-sfc-label {
-  grid-column: 2/4;
-  display: flex;
-}
-.controls #process-container .signals-grid label.min-sfc-label input, .controls #process-container .signals-grid label.max-sfc-label input {
-  width: 15ch;
-}
-.controls #process-container .signals-grid #sfc-header {
-  margin-top: 1.7rem;
-  grid-column: 1/4;
-}
-.controls #process-container .signals-grid input {
-  width: 9ch;
-  margin: 0 0.5rem;
-}
-.controls #process-container .signals-grid .empty-row {
-  content: " ";
-  grid-column: 1/4;
-}
-.controls #process-container #reset-button.Mui-disabled {
-  color: var(--button-active);
-}
-.controls #process-container .last-transform-row {
-  margin-top: 1rem;
-  grid-column: 1/4;
-  align-self: end;
-  width: 100%;
-  gap: 1rem;
-}
-.controls #process-container .last-transform-row #reset-button, .controls #process-container .last-transform-row .download-button {
-  white-space: nowrap;
-  flex: 1 1;
-}
-@media (max-width: 700px) {
-  .controls #process-container .last-transform-row .download-button {
-    display: none;
-  }
-}
-.controls .vert-control-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  flex-wrap: wrap;
-  gap: var(--gap);
-}
-.controls .vert-control-wrapper:nth-of-type(2) {
-  height: 100%;
-  justify-content: flex-start;
-  width: fit-content;
-}
-.controls .vert-control-wrapper .control-row {
-  display: flex;
-  gap: var(--gap);
-  width: 100%;
-  justify-content: flex-end;
-}
-.controls .vert-control-wrapper .control-row #range-container {
-  height: fit-content;
-  flex: 1 1 50rem;
-  max-width: none;
-}
-.controls .vert-control-wrapper .control-row #range-container .input-label {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-}
-@media (max-width: 1080px) {
-  .controls .vert-control-wrapper .file-container, .controls .vert-control-wrapper .position-container {
-    width: 100% !important;
-    border-radius: 10px;
-    border: 0 solid black;
-    box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px 1px;
-    padding: 1.2rem 1.8rem;
-  }
-  .controls .vert-control-wrapper .file-container {
-    order: 2;
-  }
-  .controls .vert-control-wrapper .control-row {
-    flex-direction: column;
-    max-width: 100%;
-    width: 100%;
-  }
-  .controls .vert-control-wrapper .control-container {
-    max-height: fit-content;
-  }
-  .controls .vert-control-wrapper #range-container, .controls .vert-control-wrapper #presets-container {
-    max-width: 100%;
-    width: 100%;
-  }
-  .controls .vert-control-wrapper #presets-container {
-    width: fit-content;
-  }
-  .controls .vert-control-wrapper #first-control-row {
-    flex-direction: column !important;
-    border: none;
-    padding: 0;
-    box-shadow: none;
-  }
-}
-.controls .vert-control-wrapper #first-control-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex: initial;
-  gap: var(--gap);
-}
-.controls .vert-control-wrapper #first-control-row .file-container {
-  width: 10rem;
-}
-.controls .vert-control-wrapper #first-control-row .position-container {
-  flex: 1 1 auto;
-  width: auto;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
+.select-screenshot-area-dialog.dark .dialog-buttons .take-screenshot-button:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: #2699ff !important;
 }
 
-.control-container {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  border-radius: 10px;
-  border: 0 solid black;
-  box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px 1px;
-  padding: 1.2rem 1.8rem;
-  flex: 1 1 27rem;
-  justify-content: center;
-}
-.control-container .input-label {
-  text-transform: uppercase;
-  font-size: 0.6rem;
-  letter-spacing: 0.02rem;
-  font-weight: 700;
-}
-.control-container h3 {
-  margin-top: 0;
-  padding-bottom: 1rem;
-  margin-bottom: auto;
-}
-.control-container > :last-child {
-  margin-bottom: auto;
-}
-@media (max-width: 1280px) {
-  .control-container .text-controls {
-    align-items: flex-end;
-  }
-}
-.control-container .text-controls {
-  display: flex;
-  column-gap: 1rem;
-  row-gap: 0.5rem;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-.control-container .text-controls input {
-  width: 8ch;
-}
-
-/*# sourceMappingURL=controls.css.map */
+/*# sourceMappingURL=SelectScreenshotAreaDialog.css.map */

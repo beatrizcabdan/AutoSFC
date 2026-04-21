@@ -1,4 +1,7 @@
 @use '../App.module';
+@use '../buttons/buttons';
+
+$dialog-input-width: 28ch;
 
 #encoding-demo {
     display: flex;
@@ -38,6 +41,36 @@
     @media (min-width: 1081px) {
         #process-container, .vert-control-wrapper {
             height: 100%;
+        }
+    }
+
+    .dialog-buttons {
+        @extend .flex-display;
+        gap: 1.0rem;
+
+        width: $dialog-input-width;
+        margin-top: 1rem;
+
+        .cancel-button {
+            border-color: var(--legend-border);
+
+            &:hover {
+                border-color: var(--input-border);
+            }
+        }
+
+        .cancel-button, .take-screenshot-button, .add-label-button {
+            @extend .button;
+            flex: 1 1;
+            transition: all 0.2s;
+        }
+
+        .take-screenshot-button, .add-label-button {
+            border-color: App.$primary-color-border;
+
+            &:hover {
+                border-color: App.$primary-color-border-hover;
+            }
         }
     }
 }

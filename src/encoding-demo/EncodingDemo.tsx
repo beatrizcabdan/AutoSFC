@@ -15,22 +15,30 @@ import './EncodingDemo.scss'
 import '../controls.scss'
 import App from '../App.module.scss'
 import {useSearchParams} from "react-router-dom";
+import {downloadZip} from "client-zip";
+import {SelectScreenshotAreaDialog} from "./SelectScreenshotAreaDialog.tsx";
+import html2canvas from "html2canvas";
+import {ChooseDownloadLabelDialog} from "./ChooseDownloadLabelDialog.tsx";
 
 const {primaryColor} = App
 
 const preset = demoPreset5
 
 interface EncodingDemoProps {
-    onSectionClick: (path: string, sectionId: string) => void
+    onSectionClick: (path: string, sectionId: string) => void,
+    navRef: React.MutableRefObject<HTMLDivElement | undefined>
 }
 
-export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
+export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
     const SLIDER_START_VAL = 100
-    const EXAMPLE_FILE_PATH = './emergency_braking.csv'
+    const EXAMPLE_FILE_PATH = 'emergency_braking.csv'
     const LINE_COLORS = [primaryColor, 'orange', 'green', 'red', 'purple', 'brown']
+    const MAKE_SCREENSHOT_WITH_SCREEN_CAPTURE = true
+    const AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS = true
 
     const [filePath, setFilePath] = useState(EXAMPLE_FILE_PATH)
     const [fileName, setFileName] = useState(EXAMPLE_FILE_PATH)
+    const uploadedFileRef = useRef<File | undefined>()
     const DATA_POINT_INTERVAL = preset.dataPointInterval
 
     const [dataNumLines, setDataNumLines] = useState(-1)
@@ -67,15 +75,25 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
     const [playStatus, setPlayStatus] = useState(PlayStatus.REACHED_END)
     const playbackIntervalRef = useRef(-1)
 
-    const [showDialog, setShowDialog] = useState(false)
+    const [showSelectColumnsDialog, setShowSelectColumnsDialog] = useState(false)
 
     const [currentPresetName, setCurrentPresetName] = useState('')
+    const [presets, setPresets] = useState<Preset[] | null>()
 
     const [searchParams] = useSearchParams()
+
+    const chartsRef = useRef<HTMLDivElement>()
+    const demoRef = useRef<HTMLDivElement>()
+
+    const [showSelectScreenshotArea, setShowSelectScreenshotArea] = useState(false)
+    const [showChooseLabelDialog, setShowChooseLabelDialog] = useState(false)
+    const screenshotBlobRef = useRef<Blob | null>()
+    const [downloadedDataLabel, setDownLoadedDataLabel] = useState('')
 
     const loadFile = () => {
         fetch(filePath).then(r => {
             r.text().then(t => {
+                uploadedFileRef.current = new File([t], fileName)
                 const lines = t
                     .trim()
                     .split(/[;,]?\n/)
@@ -200,14 +218,14 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
     }
 
     const selectDataColumns = () => {
-        if (!showDialog) {
-            setShowDialog(true)
+        if (!showSelectColumnsDialog) {
+            setShowSelectColumnsDialog(true)
         }
     };
 
     const setDataLabels = (labels: string[]) => {
         setDisplayedDataLabels(labels)
-        setShowDialog(false)
+        setShowSelectColumnsDialog(false)
     }
 
     // Only append to duplicates
@@ -236,6 +254,7 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
             reader.onload = () => {
                 const text = reader.result?.toString();
                 if (text) {
+                    uploadedFileRef.current = new File([text], file.name)
                     const lines = text
                         .trim()
                         .split(/[,;]?\n/)
@@ -362,20 +381,167 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
         const newEncoder = encoder === 'morton' ? 'hilbert' : 'morton'
         computeSetSFCData(transformedData, bitsPerSignal, newEncoder, true)
         setEncoder(newEncoder)
-    };
-    return <div id={'encoding-demo'}>
+    }
+
+    // Resume download after ChooseDownloadLabelDialog
+    useEffect(() => {
+        if (showChooseLabelDialog || !screenshotBlobRef.current) {
+            return
+        }
+
+        // Uploaded file
+        const uploadedFileBlob = uploadedFileRef.current
+
+        // Encoded data
+        const dataBlob = new Blob(sfcData.map(n => `${String(n)}\n`), {type: 'text/csv'})
+
+        // Create preset from current transforms
+        const newPreset = createPresetFromCurrParams()
+        const presetBlob = new Blob([`[${JSON.stringify(newPreset, undefined, 1)}]`], {type: 'application/json'})
+
+        // Zip data
+        const baseFileName = fileName.replace('.csv', '')
+        const date = new Date().toLocaleDateString('sv-SE').replace(/-/g, '')
+            .slice(2) // Short year
+        const dataFileName = `${date}_${baseFileName}_transformed_${encoder}_${bitsPerSignal}bps${downloadedDataLabel}.csv`
+        const presetFileName = `${date}_${baseFileName}_transformations${downloadedDataLabel}.json`
+        const screenshotFileName = `${date}_screenshot${downloadedDataLabel}.png`
+
+        const downloadData = async () => {
+            const zipped = await downloadZip([
+                {name: dataFileName, input: new File([dataBlob], dataFileName)},
+                {name: presetFileName, input: new File([presetBlob], presetFileName)},
+                {name: fileName, input: uploadedFileBlob},
+                // @ts-ignore
+                {name: screenshotFileName, input: new File([screenshotBlobRef.current], screenshotFileName)}
+            ]).blob()
+            const zippedUrl = URL.createObjectURL(zipped)
+
+            // Download
+            const link = document.createElement("a");
+            link.href = zippedUrl;
+            link.download = `${date}_${baseFileName}${downloadedDataLabel}.zip`;
+            link.click()
+        }
+
+        downloadData().then(() => {
+            screenshotBlobRef.current = null
+            setDownLoadedDataLabel('')
+        })
+
+    }, [showChooseLabelDialog]);
+
+    const onDownloadData = async () => {
+        // Screenshot
+        let canvas: HTMLCanvasElement
+        const captureScreenshot = async () => {
+            if (MAKE_SCREENSHOT_WITH_SCREEN_CAPTURE) {
+                canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                const video = document.createElement("video");
+
+                try {
+                    if (AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS) {
+                        const chartsYCoord = chartsRef.current?.getBoundingClientRect().top
+                        // Need to scroll up [nav height] pixels more to not have charts occluded
+                        const navHeight = navRef.current?.clientHeight ?? 0
+                        if (chartsYCoord !== undefined) {
+                            window.scrollBy({top: chartsYCoord - navHeight, behavior: 'smooth'})
+                        }
+                    }
+
+                    video.srcObject = await navigator.mediaDevices.getDisplayMedia({
+                        // @ts-ignore
+                        preferCurrentTab: false, selfBrowserSurface: "exclude",
+                        systemAudio: 'exclude', displaySurface: 'window', monitorTypeSurfaces: 'exclude',
+                        surfaceSwitching: 'exclude', windowAudio: 'exclude'
+                    });
+                    await video.play()
+
+                    const scaling = window.devicePixelRatio
+
+                    canvas.width = window.innerWidth * scaling;
+                    canvas.height = window.innerHeight * scaling;
+
+                    const sy = (window.outerHeight - window.innerHeight) * scaling
+                    const width = window.innerWidth * scaling
+                    const height = window.innerHeight * scaling
+
+                    context?.drawImage(video, 0, sy, width, height, 0, 0, width, height);
+                } catch (err) {
+                    console.error("Screenshot error: " + err);
+                }
+            } else {
+                if (demoRef.current) {
+                    canvas = await html2canvas(demoRef.current,
+                        {ignoreElements: el => el.classList.contains('light-box')})
+                } else {
+                    console.error("chartsRef.current is undefined")
+                }
+            }
+
+            canvas.toBlob(async screenshotBlob => {
+                screenshotBlobRef.current = screenshotBlob
+                setShowChooseLabelDialog(true)
+            }, 'image/png', 1)
+        };
+        await captureScreenshot();
+    }
+
+    function createPresetName() {
+        let presetSuffix = 1
+        while (presets?.some(p => p.name === `preset_0${presetSuffix}`)) {
+            presetSuffix++
+        }
+        return `preset_0${presetSuffix}`;
+    }
+
+    function createPresetFromCurrParams(includeName = true) {
+        const obj = {
+            signalStartRow: startLine,
+            signalEndRow: endLine,
+            cspStartRow: minSFCvalue,
+            cspEndRow: maxSFCvalue,
+            bitsPerSignal: bitsPerSignal === '' ? DEFAULT_BITS_PER_SIGNAL : Number(bitsPerSignal),
+            signalTransforms: displayedDataLabels?.map((name, i) => {
+                return {
+                    signalName: String(name),
+                    offset: offsets[i] ?? DEFAULT_OFFSET,
+                    scaling: scales[i] ?? DEFAULT_SCALING_FACTOR
+                }
+            }) ?? [],
+            encoder: encoder,
+            plotTransformedSignals: showSignalTransforms
+        };
+        if (includeName) {
+            Object.assign(obj, {name: createPresetName()})
+        }
+        return obj
+    }
+
+    const onChooseLabelDialogClick = (label?: string) => {
+        if (label) {
+            setDownLoadedDataLabel(`_${label}`)
+        }
+        setShowChooseLabelDialog(false);
+    }
+
+    // @ts-ignore
+    return <div id={'encoding-demo'} ref={demoRef}>
         <h1>
             <a href={createPath('#encoding-demo', searchParams)}
                onClick={e => e.preventDefault()}>
-                <span className={'section-hash-span'} onClick={() => onSectionClick(createPath('#encoding-demo', searchParams),
-                    '#encoding-demo')}>#</span></a>Encoding demo
+                <span className={'section-hash-span'}
+                      onClick={() => onSectionClick(createPath('#encoding-demo', searchParams),
+                          '#encoding-demo')}>#</span></a>Encoding demo
         </h1>
         <p className={'demo-description-p'}>The AutoSFC encoding demo allows researchers to visualize and adjust
             parameters in real time, and to apply transformations on the input signal in real time. Once a file is
             uploaded, the tool parses the CSV data and loads the signals into memory. After loading, it activates the
             interactive plotting components and parameter controls. For all details on how to use this demo, please
             check our <a href="https://www.youtube.com/watch?v=8JFxoLYusc0">video tutorial</a>.</p>
-        <div className={"charts"}>
+        { /* @ts-ignore */}
+        <div className={"charts"} ref={chartsRef}>
             <Chart name={"Original signals plot"} data={showSignalTransforms ? transformedData : data}
                    scales={scales} offsets={offsets}
                    minValue={minChartValue} maxValue={maxChartValue} type={"line"} xAxisName={"Time"}
@@ -396,7 +562,8 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
                 <div className={"control-container"} id={"first-control-row"}>
                     <div className={"file-container"}>
                         <h3>Current file</h3>
-                        <UploadButton onClick={uploadFile} label={"Upload file..."} getWrappingDiv={true} getFileNameP={true}
+                        <UploadButton onClick={uploadFile} label={"Upload file..."} getWrappingDiv={true}
+                                      getFileNameP={true}
                                       currentFile={fileName.replace(/.\//, "")}/>
                     </div>
                     <div className={"position-container"}>
@@ -437,6 +604,8 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
                                          encoder={encoder}
                                          displayedDataLabels={displayedDataLabels}
                                          currentPresetName={currentPresetName}
+                                         presets={presets} setPresets={setPresets}
+                                         createPresetFromCurrParams={createPresetFromCurrParams}
                                          currentDataFile={fileName.replace(/.\//, "")}/>
                     </div>
                 </div>
@@ -455,6 +624,7 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
                                          initialMinSfcValue={initialMinSFCvalue}
                                          initialMaxSfcValue={initialMaxSFCvalue}
                                          onBitsPerSignalChanged={onBitsPerSignalChanged}
+                                         onDownloadData={() => setShowSelectScreenshotArea(true)}
                                          encoderSwitch={<EncoderSwitch encoder={encoder} onSwitch={onEncoderSwitch}
                                                                        size={'small'}
                                                                        className={'encoder-label'}/>}
@@ -463,8 +633,17 @@ export function EncodingDemo({onSectionClick}: EncodingDemoProps) {
             </div>
         </div>
 
-        <SelectColumnsDialog show={showDialog} setShow={setShowDialog} currentLabels={displayedDataLabels}
+        <SelectColumnsDialog show={showSelectColumnsDialog} setShow={setShowSelectColumnsDialog}
+                             currentLabels={displayedDataLabels}
                              demoName={'encoding'}
                              allDataLabels={allDataLabelsRef.current ?? []} setDataLabels={setDataLabels}/>
+        <SelectScreenshotAreaDialog autoScroll={AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS}
+                                    blurBackground={AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS}
+                            show={showSelectScreenshotArea} onClick={async () => {
+            setShowSelectScreenshotArea(false)
+            await onDownloadData()
+        }} onCancel={() => setShowSelectScreenshotArea(false)}/>
+        <ChooseDownloadLabelDialog show={showChooseLabelDialog} onChoose={(label: string) => onChooseLabelDialogClick(label)}
+                                   onCancel={() => onChooseLabelDialogClick()}/>
     </div>;
 }

@@ -558,6 +558,8 @@ h1 + p {
   top: 0;
   left: 0;
   z-index: 3000;
+}
+.light-box.blur {
   backdrop-filter: blur(1px);
 }
 .light-box.show {

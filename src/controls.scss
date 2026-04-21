@@ -178,15 +178,33 @@
 
         #reset-button {
             @extend .blue-border-button;
-            margin-top: 1rem;
-            grid-column: 1 / 4;
-            width: fit-content;
-            justify-self: center;
-            padding: 0 5.0rem;
-            align-self: end;
 
             &.Mui-disabled {
                 color: var(--button-active);
+            }
+        }
+
+        .last-transform-row {
+            @extend .flex-display;
+
+            margin-top: 1rem;
+            grid-column: 1 / 4;
+            align-self: end;
+            width: 100%;
+            gap: 1rem;
+
+            #reset-button, .download-button {
+                white-space: nowrap;
+                flex: 1 1;
+            }
+
+            .download-button {
+                @extend .gray-border-button;
+
+                @media (max-width: App.$small-screen-limit) {
+                    display: none;
+                }
+
             }
         }
     }

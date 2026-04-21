@@ -1,0 +1,51 @@
+@use '../buttons/buttons';
+@use '../App.module';
+
+.select-screenshot-area-dialog {
+    h2 {
+        line-height: 1.4rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    p {
+        margin: 0;
+        text-align: start;
+    }
+
+    &.dark {
+        background: rgb(0 0 0 / 0.6);
+        color: rgb(255 255 255 / 0.9);
+
+        h2 {
+            color: rgb(255 255 255 / 0.9);
+        }
+
+        .dialog-buttons {
+            .cancel-button, .take-screenshot-button {
+                background: transparent !important;
+                color: rgb(255 255 255 / 0.9) !important;
+
+                &:hover {
+                    background: rgba(255 255 255 / 0.2);
+                    color: white;
+                }
+            }
+
+            .cancel-button {
+                &:hover {
+                    background: rgba(255 255 255 / 0.2) !important;
+                    color: white !important;
+                }
+            }
+
+            .take-screenshot-button {
+                border-color: App.$primary-color-border-hover !important;
+
+                &:hover {
+                    background: rgba(255 255 255 / 0.2) !important;
+                    border-color: App.$primary-color-medium !important;
+                }
+            }
+        }
+    }
+}

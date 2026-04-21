@@ -24,7 +24,8 @@ export function ProcessingComponent(props: {
     resetBtnPos?: string,
     encoderSwitch?: React.JSX.Element,
     variant?: 'full' | 'reduced',
-    onChooseColumnsClick?: () => void
+    onChooseColumnsClick?: () => void,
+    onDownloadData?: () => void
 }) {
 
     // TODO: Decide on how reset should work when presets are used
@@ -64,6 +65,10 @@ export function ProcessingComponent(props: {
         return props.variant === 'reduced' && window.innerWidth > SMALL_SCREEN_LIMIT
             ? `min-content ${Array(numOfRows).fill('min-content').join(' ')} auto`
             : 'initial'
+    }
+
+    function DownloadDataButton() {
+        return <Button onClick={props.onDownloadData} className={'download-button'}>Download data...</Button>;
     }
 
     return <div className={'control-container'} id={'process-container'}>
@@ -135,7 +140,13 @@ export function ProcessingComponent(props: {
                 <input type="number" value={props.maxSfcValue}
                        onChange={(e) => props.setMaxSfcValue(Number(e.target.value))}/>
             </label>
-            {getResetButton()}
+            {props.variant === 'full'
+                ? <div className={'last-transform-row'}>
+                    {getResetButton()}
+                    <DownloadDataButton/>
+                  </div>
+                : getResetButton()}
+
         </div>
     </div>;
 }

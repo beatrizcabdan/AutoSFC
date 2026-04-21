@@ -30,6 +30,7 @@ const HIDE_MOBILE_NAV_WHEN_SCROLLING_DOWN = true
 
 function App() {
     const [hideMobileNav, setHideMobileNav] = useState(false)
+    const navRef = useRef<HTMLDivElement>()
     const [showSubMenu, setShowSubMenu] = useState(false)
 
     const scrollPosRef = useRef<number>(0)
@@ -105,12 +106,12 @@ function App() {
 
             <Nav scrollPos={scrollPosRef.current} hideMobileNav={hideMobileNav} onSectionClick={onSectionClick}
                  contactVisibilityClassName={contactClass} searchParams={searchParams} setShowSubMenu={setShowSubMenu}
-                 showSubMenu={showSubMenu}/>
+                 showSubMenu={showSubMenu} ref={navRef}/>
             <NavSubMenu contactClassName={contactClass} onContactClick={onSectionClick} searchParams={searchParams}
                         show={showSubMenu && !hideMobileNav} onFeedbackBtnClick={() => setShowFeedbackForm(true)}/>
 
             <div id={'main'}>
-                <EncodingDemo onSectionClick={onSectionClick}/>
+                <EncodingDemo onSectionClick={onSectionClick} navRef={navRef}/>
                 <CspComparisonDemo onSectionClick={onSectionClick}/>
             </div>
 
@@ -155,6 +156,7 @@ function App() {
 
             <FeedbackDialog show={showFeedbackForm} setShow={setShowFeedbackForm}/>
 
+            {/*Scroll-to-top button*/}
             <Fab variant="extended" color={'primary'} className={scrollButtonClass} size={'small'}
                  onClick={onScrollButtonClick}>
                 <ArrowUpwardIcon sx={{mr: 0, ml: 0}}/>
