@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
-import {createPath, debounce, hilbertEncode, mortonInterlace} from "../utils.ts";
+import {createPath, debounce, hilbertEncode, mortonInterlace, scrollToSection} from "../utils.ts";
 import {Preset, PresetComponent} from "../preset-component/PresetComponent.tsx";
 import {Chart} from "../Chart.tsx";
 import {EncoderSwitch} from "../EncoderSwitch.tsx";
@@ -9,12 +9,14 @@ import {PlayButton} from "../buttons/PlayButton.tsx";
 import {DataRangeSlider} from "../data-range-slider/DataRangeSlider.tsx";
 import {ProcessingComponent} from "../ProcessingComponent.tsx";
 import {SelectColumnsDialog} from "../select-columns-dialog/SelectColumnsDialog.tsx";
-import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR, PlayStatus} from "../App.tsx";
+import {API_BASE_URL, DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR, PlayStatus} from "../App.tsx";
 import {demoPreset5} from "../presets.ts";
 import './EncodingDemo.scss'
 import '../controls.scss'
 import App from '../App.module.scss'
 import {useSearchParams} from "react-router-dom";
+import axios from "axios";
+import {SnackBar} from "../snackbar/SnackBar.tsx";
 import {downloadZip} from "client-zip";
 import {SelectScreenshotAreaDialog} from "./SelectScreenshotAreaDialog.tsx";
 import html2canvas from "html2canvas";
@@ -81,6 +83,8 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
     const [presets, setPresets] = useState<Preset[] | null>()
 
     const [searchParams] = useSearchParams()
+
+    const [snackbarMessage, setSnackbarMessage] = useState('')
 
     const chartsRef = useRef<HTMLDivElement>()
     const demoRef = useRef<HTMLDivElement>()
@@ -162,8 +166,42 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
     onresize = debounce(loadFile)
 
     useEffect(() => {
+        // Don't load default file if params has external file url
+        if (searchParams.has('file') && filePath === EXAMPLE_FILE_PATH) {
+            return
+        }
         loadFile()
     }, [startLine, endLine, displayedDataLabels, filePath]);
+
+    useEffect(() => {
+        if (searchParams.has('file')) {
+            getFileFromURL(searchParams.get('file'))
+        }
+    }, [searchParams]);
+
+    function getFileFromURL(url: string | null) {
+        if (url) {
+            axios.post(API_BASE_URL, {'url': url},
+                {headers: {'Content-Type': 'application/json'}})
+                .then(r => {
+                        if (r.data.error) {
+                            console.error(r.data.error)
+                        } else {
+                            console.log(r.data)
+                            const urlParts = url.split('/')
+                            const fileName = urlParts[urlParts.length - 1]
+                            const file = new File([r.data.fileContent], fileName)
+                            readFile(r.data.fileContent, file)
+                            scrollToSection('#encoding-demo')
+                            setSnackbarMessage(r.data.msg)
+                        }
+                    },
+                    error => {
+                        console.error(`Remote file error: ${error.message}`)
+                        alert(`Remote file error: ${error.message}`)
+                    })
+        }
+    }
 
     const onSliderDrag = (e: Event, value: number | number[]) => {
         if (playStatus === PlayStatus.PLAYING) {
@@ -247,6 +285,24 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
         })
     }
 
+    const readFile = (text: string, file: File) => {
+        const lines = text
+            .trim()
+            .split(/[,;]?\n/)
+        const dataLabels = lines[0]
+            .split(/[,;]/)
+        formatDataLabels(dataLabels);
+        allDataLabelsRef.current = dataLabels
+
+        setDisplayedDataLabels(dataLabels.slice(dataLabels.length - 2))
+        setStartLine(0)
+        setEndLine(lines.length - 2) // -1 due to header row
+        const url = URL.createObjectURL(file)
+        setFilePath(url)
+        setFileName(file.name)
+        setCurrentPresetName('')
+    }
+
     function uploadFile(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.item(0)
         if (file?.type === 'text/csv') {
@@ -254,22 +310,7 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
             reader.onload = () => {
                 const text = reader.result?.toString();
                 if (text) {
-                    uploadedFileRef.current = new File([text], file.name)
-                    const lines = text
-                        .trim()
-                        .split(/[,;]?\n/)
-                    const dataLabels = lines[0]
-                        .split(/[,;]/)
-                    formatDataLabels(dataLabels);
-                    allDataLabelsRef.current = dataLabels
-
-                    setDisplayedDataLabels(dataLabels.slice(dataLabels.length - 2))
-                    setStartLine(0)
-                    setEndLine(lines.length - 2) // -1 due to header row
-                    const url = URL.createObjectURL(file)
-                    setFileName(file.name)
-                    setFilePath(url)
-                    setCurrentPresetName('')
+                    readFile(text, file);
                 } else {
                     alert("Error reading the file. Please try again.");
                 }
@@ -637,6 +678,7 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
                              currentLabels={displayedDataLabels}
                              demoName={'encoding'}
                              allDataLabels={allDataLabelsRef.current ?? []} setDataLabels={setDataLabels}/>
+        <SnackBar msg={snackbarMessage}/>
         <SelectScreenshotAreaDialog autoScroll={AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS}
                                     blurBackground={AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS}
                             show={showSelectScreenshotArea} onClick={async () => {

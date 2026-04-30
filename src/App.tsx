@@ -14,7 +14,7 @@ import {FeedbackDialog, OpenFeedbackWinBtn} from "./feedback/Feedback.tsx";
 import {LandingSection} from "./landing-section/LandingSection.tsx";
 import {PaperSection} from "./Papers.tsx";
 
-export const API_BASE_URL = 'http://129.16.216.72:80'
+export const API_BASE_URL = 'http://129.16.216.72:48985'
 export const DEV_PROJECT_NAME = 'AutoSFC-dev'
 
 // eslint-disable-next-line react-refresh/only-export-components

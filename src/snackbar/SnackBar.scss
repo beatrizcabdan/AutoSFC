@@ -1,0 +1,10 @@
+@use '../App.module.css';
+
+.MuiSnackbar-root {
+    opacity: 0.9;
+
+    .MuiPaper-root {
+        justify-content: center;
+        letter-spacing: 0.03rem;
+    }
+}

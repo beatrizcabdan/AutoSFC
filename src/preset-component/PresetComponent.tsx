@@ -78,8 +78,12 @@ export function PresetComponent(props: {
         }
     }, [searchParams, props.presets]);
 
-    // Load initial presets from file
+    // Load initial presets from file, unless file in URL params
     useEffect(() => {
+        if (searchParams.has('file')) {
+            return
+        }
+
         const presetPath = `${props.initialDataPath.replace('.csv', '')}${PRESET_FILE_SUFFIX}`
         fetch(presetPath).then(r => {
             r.text().then(t => setPresetsFromFileString(t, 0))
