@@ -59,13 +59,13 @@ $dialog-input-width: 28ch;
             }
         }
 
-        .cancel-button, .take-screenshot-button, .add-label-button {
+        .cancel-button, .take-screenshot-button, .add-label-button, .load-url-button {
             @extend .button;
             flex: 1 1;
             transition: all 0.2s;
         }
 
-        .take-screenshot-button, .add-label-button {
+        .take-screenshot-button, .add-label-button, .load-url-button {
             border-color: App.$primary-color-border;
 
             &:hover {

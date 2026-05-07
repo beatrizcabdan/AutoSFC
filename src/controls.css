@@ -844,9 +844,6 @@ h1 + p {
   flex: initial;
   gap: var(--gap);
 }
-.controls .vert-control-wrapper #first-control-row .file-container {
-  width: 10rem;
-}
 .controls .vert-control-wrapper #first-control-row .position-container {
   flex: 1 1 auto;
   width: auto;

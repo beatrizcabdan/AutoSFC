@@ -11,6 +11,10 @@ interface DialogProps {
         blurBackground?: boolean
 }
 
+// noinspection JSCommentMatchesSignature
+/**
+ * @param setHide Handle to call when dialog should hide
+ */
 export const Dialog = (props: DialogProps) => {
     const scrollCallback = useCallback((e: Event) => {
         e.preventDefault()

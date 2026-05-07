@@ -547,7 +547,7 @@ h1 + p {
     padding: 14px 2rem 28px;
   }
 }
-.button-text, .button, #encoding-demo .dialog-buttons .cancel-button, #encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
+.button-text, .button, #encoding-demo .dialog-buttons .cancel-button, #encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button, #encoding-demo .dialog-buttons .load-url-button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
   text-transform: uppercase;
   letter-spacing: 0.02rem;
   font-size: 0.6rem;
@@ -558,7 +558,7 @@ h1 + p {
   box-shadow: rgba(0, 0, 0, 0.1) 0 0 2px 2px;
 }
 
-.button, #encoding-demo .dialog-buttons .cancel-button, #encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
+.button, #encoding-demo .dialog-buttons .cancel-button, #encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button, #encoding-demo .dialog-buttons .load-url-button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
   padding: 0 0.5rem;
   height: 1.8rem;
   background-color: white;
@@ -567,11 +567,11 @@ h1 + p {
   transition: all 0.2s;
   color: var(--text-color-light);
 }
-.button:hover, #encoding-demo .dialog-buttons .cancel-button:hover, #encoding-demo .dialog-buttons .take-screenshot-button:hover, #encoding-demo .dialog-buttons .add-label-button:hover, .link-button:hover, .no-border-button:hover, .gray-border-button:hover, .blue-border-button:hover {
+.button:hover, #encoding-demo .dialog-buttons .cancel-button:hover, #encoding-demo .dialog-buttons .take-screenshot-button:hover, #encoding-demo .dialog-buttons .add-label-button:hover, #encoding-demo .dialog-buttons .load-url-button:hover, .link-button:hover, .no-border-button:hover, .gray-border-button:hover, .blue-border-button:hover {
   background-color: var(--light-gray);
   cursor: pointer;
 }
-.button:active, #encoding-demo .dialog-buttons .cancel-button:active, #encoding-demo .dialog-buttons .take-screenshot-button:active, #encoding-demo .dialog-buttons .add-label-button:active, .link-button:active, .no-border-button:active, .gray-border-button:active, .blue-border-button:active {
+.button:active, #encoding-demo .dialog-buttons .cancel-button:active, #encoding-demo .dialog-buttons .take-screenshot-button:active, #encoding-demo .dialog-buttons .add-label-button:active, #encoding-demo .dialog-buttons .load-url-button:active, .link-button:active, .no-border-button:active, .gray-border-button:active, .blue-border-button:active {
   background-color: var(--button-active);
 }
 
@@ -652,14 +652,14 @@ h1 + p {
 #encoding-demo .dialog-buttons .cancel-button:hover {
   border-color: var(--input-border);
 }
-#encoding-demo .dialog-buttons .cancel-button, #encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button {
+#encoding-demo .dialog-buttons .cancel-button, #encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button, #encoding-demo .dialog-buttons .load-url-button {
   flex: 1 1;
   transition: all 0.2s;
 }
-#encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button {
+#encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button, #encoding-demo .dialog-buttons .load-url-button {
   border-color: rgba(25, 118, 210, 0.5019607843);
 }
-#encoding-demo .dialog-buttons .take-screenshot-button:hover, #encoding-demo .dialog-buttons .add-label-button:hover {
+#encoding-demo .dialog-buttons .take-screenshot-button:hover, #encoding-demo .dialog-buttons .add-label-button:hover, #encoding-demo .dialog-buttons .load-url-button:hover {
   border-color: #1976d2;
 }
 

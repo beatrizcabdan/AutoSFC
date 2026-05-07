@@ -1,0 +1,9 @@
+@use '../buttons/buttons';
+
+.load-file-buttons {
+    @extend .button-shadow;
+
+    .button {
+        width: 20ch;
+    }
+}
