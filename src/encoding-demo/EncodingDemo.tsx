@@ -22,6 +22,7 @@ import html2canvas from "html2canvas";
 import {ChooseDownloadLabelDialog} from "./ChooseDownloadLabelDialog.tsx";
 import {LoadFileButtons} from "./LoadFileButtons.tsx";
 import {LoadRemoteFileDialog} from "./LoadRemoteFileDialog.tsx";
+import {AlertColor} from "@mui/material";
 
 const {primaryColor} = App
 
@@ -86,6 +87,7 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
     const [searchParams, setSearchParams] = useSearchParams()
 
     const [snackbarMessage, setSnackbarMessage] = useState('')
+    const [snackbarStatus, setSnackbarStatus] = useState<AlertColor>('success')
 
     const chartsRef = useRef<HTMLDivElement>()
     const demoRef = useRef<HTMLDivElement>()
@@ -96,6 +98,8 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
     const [downloadedDataLabel, setDownLoadedDataLabel] = useState('')
 
     const [showLoadRemoteFileDialog, setShowLoadRemoteFileDialog] = useState(false)
+    const contentHashRef = useRef('')
+    const urlHashRef = useRef('')
 
     const loadFile = () => {
         fetch(filePath).then(r => {
@@ -178,11 +182,19 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
 
     useEffect(() => {
         if (searchParams.has('file')) {
-            getFileFromURL(searchParams.get('file'))
+            if (!searchParams.has('contentHash')) {
+                getFileFromURL(searchParams.get('file'))
+            } else if (searchParams.get('contentHash') !== contentHashRef.current) {
+                contentHashRef.current = searchParams.get('contentHash')!
+                getFileFromURL(searchParams.get('file'), contentHashRef.current)
+            } else if (searchParams.get('file') !== urlHashRef.current) {
+                urlHashRef.current = searchParams.get('file')!
+                getFileFromURL(searchParams.get('file'), contentHashRef.current)
+            }
         }
     }, [searchParams]);
 
-    function getFileFromURL(url: string | null) {
+    function getFileFromURL(url: string | null, oldContentHash?: string) {
         if (url) {
             axios.post(API_BASE_URL, {'url': decodeURIComponent(url)},
                 {headers: {'Content-Type': 'application/json'}})
@@ -190,14 +202,25 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
                         if (r.data.error) {
                             console.error(r.data.error)
                         } else {
-                            console.log(r.data)
+                            console.info(r.data)
                             const urlParts = url.split('/')
                             const fileName = urlParts[urlParts.length - 1]
                             const file = new File([r.data.fileContent], fileName)
                             readFile(r.data.fileContent, file)
                             scrollToSection('#encoding-demo')
-                            setSnackbarMessage(r.data.msg)
+
+                            contentHashRef.current = r.data.hash
+                            searchParams.set('contentHash', r.data.hash)
+                            setSearchParams(searchParams)
+                            if (!oldContentHash || r.data.hash === oldContentHash) {
+                                setSnackbarMessage(r.data.msg)
+                            } else {
+                                setSnackbarMessage(`Remote file read successfully. Warning: Actual content hash (${r.data.hash}) ` +
+                                `doesn't match given hash: ${oldContentHash}. File content may have changed!`)
+                                setSnackbarStatus('warning')
+                            }
                         }
+
                     },
                     error => {
                         console.error(`Remote file error: ${error.message}`)
@@ -571,8 +594,26 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
     }
 
     function onRemoteFileChosen(url: string) {
-        setSearchParams({file: url.toString()})
+        url = decodeURIComponent(url)
+
+        const hashReArr = url.match(/contentHash=(\w+)/)
+        const urlReArr = url.match(/(https:.+\.csv)(&|$)/)
+        if (urlReArr && urlReArr.length >= 2) {
+            searchParams.set('file', decodeURI(urlReArr[1]))
+            if (hashReArr && hashReArr[1]) {
+                searchParams.set('contentHash', hashReArr[1])
+            } else {
+                searchParams.delete('contentHash')
+            }
+            setSearchParams(searchParams)
+        }
+
         setShowLoadRemoteFileDialog(false)
+    }
+
+    const getCurrentFileName = (): string => {
+        const decodedUri = decodeURIComponent(fileName)
+        return decodedUri.replace(/.*\//, "") + (searchParams.has('file') ? ' (remote)' : '');
     }
 
     // @ts-ignore
@@ -612,7 +653,7 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
                     <div className={"file-container"}>
                         <h3>Current file</h3>
                             <LoadFileButtons onUploadButtonClick={uploadFile} onLoadUrlButtonClick={() => setShowLoadRemoteFileDialog(true)}
-                                             currentFile={fileName.replace(/.\//, "") + (searchParams.has('file') ? ' (remote)' : '')}/>
+                                             currentFile={getCurrentFileName()}/>
 
                     </div>
                     <div className={"position-container"}>
@@ -686,7 +727,9 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
                              currentLabels={displayedDataLabels}
                              demoName={'encoding'}
                              allDataLabels={allDataLabelsRef.current ?? []} setDataLabels={setDataLabels}/>
-        <SnackBar msg={snackbarMessage}/>
+
+        <SnackBar snackbarMessage={snackbarMessage} setSnackbarMessage={setSnackbarMessage} status={snackbarStatus}
+                  setStatus={setSnackbarStatus}/>
 
         <SelectScreenshotAreaDialog autoScroll={AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS}
                                     blurBackground={AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS}
