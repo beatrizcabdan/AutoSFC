@@ -183,11 +183,14 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
     useEffect(() => {
         if (searchParams.has('file')) {
             if (!searchParams.has('contentHash')) {
+                console.log('!searchParams.has(\'contentHash\')')
                 getFileFromURL(searchParams.get('file'))
             } else if (searchParams.get('contentHash') !== contentHashRef.current) {
+                console.log('searchParams.get(\'contentHash\') !== contentHashRef.current')
                 contentHashRef.current = searchParams.get('contentHash')!
                 getFileFromURL(searchParams.get('file'), contentHashRef.current)
             } else if (searchParams.get('file') !== urlHashRef.current) {
+                console.log('searchParams.get(\'file\') !== urlHashRef.current')
                 urlHashRef.current = searchParams.get('file')!
                 getFileFromURL(searchParams.get('file'), contentHashRef.current)
             }
