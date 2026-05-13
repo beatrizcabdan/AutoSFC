@@ -574,6 +574,10 @@ h1 + p {
 .button:active, #encoding-demo .dialog-buttons .cancel-button:active, #encoding-demo .dialog-buttons .take-screenshot-button:active, #encoding-demo .dialog-buttons .add-label-button:active, #encoding-demo .dialog-buttons .load-url-button:active, .link-button:active, .no-border-button:active, .gray-border-button:active, .blue-border-button:active {
   background-color: var(--button-active);
 }
+.button.Mui-disabled, #encoding-demo .dialog-buttons .Mui-disabled.cancel-button, #encoding-demo .dialog-buttons .Mui-disabled.take-screenshot-button, #encoding-demo .dialog-buttons .Mui-disabled.add-label-button, #encoding-demo .dialog-buttons .Mui-disabled.load-url-button, .Mui-disabled.link-button, .Mui-disabled.no-border-button, .Mui-disabled.gray-border-button, .Mui-disabled.blue-border-button {
+  color: var(--button-active);
+  border-color: var(--button-active);
+}
 
 .blue-border-button {
   border-color: rgba(25, 118, 210, 0.5019607843);
