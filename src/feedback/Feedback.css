@@ -630,6 +630,11 @@ h1 + p {
   background-color: var(--button-active);
 }
 
+.button.Mui-disabled, .Mui-disabled.link-button, .Mui-disabled.no-border-button, .Mui-disabled#open-feedback-win-btn, .Mui-disabled.gray-border-button, .Mui-disabled.blue-border-button {
+  color: var(--button-active);
+  border-color: var(--button-active);
+}
+
 .blue-border-button {
   border-color: rgba(25, 118, 210, 0.5019607843);
 }

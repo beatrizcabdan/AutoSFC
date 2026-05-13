@@ -111,7 +111,7 @@ function App() {
                         show={showSubMenu && !hideMobileNav} onFeedbackBtnClick={() => setShowFeedbackForm(true)}/>
 
             <div id={'main'}>
-                <EncodingDemo onSectionClick={onSectionClick} navRef={navRef}/>
+                <EncodingDemo onSectionClick={onSectionClick} navRef={navRef} hideMobileNav={hideMobileNav}/>
                 <CspComparisonDemo onSectionClick={onSectionClick}/>
             </div>
 

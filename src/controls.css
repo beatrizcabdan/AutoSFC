@@ -675,10 +675,16 @@ h1 + p {
 }
 .controls #process-container .signals-grid .signal-cell .signal-name {
   font-size: 0.9rem;
-  padding-right: 2rem;
+  padding-right: 0.2rem;
   max-width: 22ch;
   text-overflow: ellipsis;
   overflow: hidden;
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .controls #process-container .signals-grid .signal-cell .signal-name {
+    max-width: 10ch;
+  }
 }
 .controls #process-container .signals-grid .signal-label {
   grid-column: 1;

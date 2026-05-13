@@ -1182,6 +1182,11 @@ h1 + p {
   background-color: var(--button-active);
 }
 
+.button.Mui-disabled, .Mui-disabled.link-button, .Mui-disabled.no-border-button, .Mui-disabled.gray-border-button, #comparison-demo .controls-wrapper #demo2-controls .comparison-row-div .processing-component-wrapper #process-container .signals-grid .Mui-disabled.choose-columns-button, .Mui-disabled.blue-border-button {
+  color: var(--button-active);
+  border-color: var(--button-active);
+}
+
 .blue-border-button {
   border-color: rgba(25, 118, 210, 0.5019607843);
 }

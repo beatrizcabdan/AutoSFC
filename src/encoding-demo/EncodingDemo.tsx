@@ -30,10 +30,11 @@ const preset = demoPreset5
 
 interface EncodingDemoProps {
     onSectionClick: (path: string, sectionId: string) => void,
-    navRef: React.MutableRefObject<HTMLDivElement | undefined>
+    navRef: React.MutableRefObject<HTMLDivElement | undefined>,
+    hideMobileNav: boolean
 }
 
-export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
+export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDemoProps) {
     const SLIDER_START_VAL = 100
     const EXAMPLE_FILE_PATH = 'emergency_braking.csv'
     const LINE_COLORS = [primaryColor, 'orange', 'green', 'red', 'purple', 'brown']
@@ -218,7 +219,7 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
                                 setSnackbarMessage(r.data.msg)
                             } else {
                                 setSnackbarMessage(`Remote file read successfully. Warning: Actual content hash (${r.data.hash}) ` +
-                                `doesn't match given hash: ${oldContentHash}. File content may have changed!`)
+                                    `doesn't match given hash: ${oldContentHash}. File content may have changed!`)
                                 setSnackbarStatus('warning')
                             }
                         }
@@ -654,8 +655,9 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
                 <div className={"control-container"} id={"first-control-row"}>
                     <div className={"file-container"}>
                         <h3>Current file</h3>
-                            <LoadFileButtons onUploadButtonClick={uploadFile} onLoadUrlButtonClick={() => setShowLoadRemoteFileDialog(true)}
-                                             currentFile={getCurrentFileName()}/>
+                        <LoadFileButtons onUploadButtonClick={uploadFile}
+                                         onLoadUrlButtonClick={() => setShowLoadRemoteFileDialog(true)}
+                                         currentFile={getCurrentFileName()}/>
 
                     </div>
                     <div className={"position-container"}>
@@ -731,19 +733,21 @@ export function EncodingDemo({onSectionClick, navRef}: EncodingDemoProps) {
                              allDataLabels={allDataLabelsRef.current ?? []} setDataLabels={setDataLabels}/>
 
         <SnackBar snackbarMessage={snackbarMessage} setSnackbarMessage={setSnackbarMessage} status={snackbarStatus}
-                  setStatus={setSnackbarStatus}/>
+                  setStatus={setSnackbarStatus} navRef={navRef} mobileNavVisible={!hideMobileNav}/>
 
         <SelectScreenshotAreaDialog autoScroll={AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS}
                                     blurBackground={AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS}
-                            show={showSelectScreenshotArea} onClick={async () => {
+                                    show={showSelectScreenshotArea} onClick={async () => {
             setShowSelectScreenshotArea(false)
             await onDownloadData()
         }} onCancel={() => setShowSelectScreenshotArea(false)}/>
 
-        <ChooseDownloadLabelDialog show={showChooseLabelDialog} onChoose={(label: string) => onChooseLabelDialogClick(label)}
+        <ChooseDownloadLabelDialog show={showChooseLabelDialog}
+                                   onChoose={(label: string) => onChooseLabelDialogClick(label)}
                                    onCancel={() => onChooseLabelDialogClick()}/>
 
-        <LoadRemoteFileDialog show={showLoadRemoteFileDialog} onFileChosen={onRemoteFileChosen} onCancel={() => setShowLoadRemoteFileDialog(false)}
+        <LoadRemoteFileDialog show={showLoadRemoteFileDialog} onFileChosen={onRemoteFileChosen}
+                              onCancel={() => setShowLoadRemoteFileDialog(false)}
                               hide={() => setShowLoadRemoteFileDialog(false)}/>
     </div>;
 }

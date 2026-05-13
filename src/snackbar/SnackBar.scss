@@ -2,6 +2,7 @@
 
 .MuiSnackbar-root {
     opacity: 0.9;
+    transition: translate 0.2s;
 
     .MuiPaper-root {
         justify-content: center;

@@ -72,10 +72,15 @@
 
                 .signal-name {
                     font-size: 0.9rem;
-                    padding-right: 2rem;
+                    padding-right: 0.2rem;
                     max-width: 22ch;
                     text-overflow: ellipsis;
                     overflow: hidden;
+                    white-space: nowrap;
+
+                    @media (max-width: App.$small-screen-limit) {
+                        max-width: 10ch;
+                    }
                 }
             }
 
