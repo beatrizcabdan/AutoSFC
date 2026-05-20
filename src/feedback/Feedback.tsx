@@ -130,9 +130,9 @@ export const FeedbackDialog = (props: { show: boolean,
                         </RadioGroup>
                     </FormControl>
                     <div className={'form-buttons'}>
+                        <Button onClick={onCancel} className={'button'}>Cancel</Button>
                         <Button type={'submit'} className={`ok-button button ${submittable ? 'enabled' : 'disabled'}`}
                                 disabled={!submittable}>OK</Button>
-                        <Button onClick={onCancel} className={'button'}>Cancel</Button>
                     </div>
                 </form>
             </div>
