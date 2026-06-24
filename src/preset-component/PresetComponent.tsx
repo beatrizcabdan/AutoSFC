@@ -109,7 +109,6 @@ export function PresetComponent(props: {
 
     function onPresetClick(index: number) {
         const preset = props.presets![index]
-        console.log(searchParams)
         setSearchParams(searchParams => {
             searchParams.set('preset', preset.name)
             return searchParams

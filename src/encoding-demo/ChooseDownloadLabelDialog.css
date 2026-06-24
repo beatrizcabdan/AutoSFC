@@ -616,6 +616,7 @@ h1 + p {
   flex-direction: column;
   gap: 1rem;
   width: 100%;
+  align-items: center;
 }
 #encoding-demo .charts {
   width: 100%;

@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
-import {createPath, debounce, hilbertEncode, mortonInterlace, scrollToSection} from "../utils.ts";
+import {computeUrlHash, createPath, debounce, hilbertEncode, mortonInterlace, scrollToSection} from "../utils.ts";
 import {Preset, PresetComponent} from "../preset-component/PresetComponent.tsx";
 import {Chart} from "../Chart.tsx";
 import {EncoderSwitch} from "../EncoderSwitch.tsx";
@@ -15,14 +15,15 @@ import '../controls.scss'
 import App from '../App.module.scss'
 import {useSearchParams} from "react-router-dom";
 import axios from "axios";
-import {SnackBar} from "../snackbar/SnackBar.tsx";
+import {SnackBar, ISnackbarMessage} from "../snackbar/SnackBar.tsx";
 import {downloadZip} from "client-zip";
 import {SelectScreenshotAreaDialog} from "./SelectScreenshotAreaDialog.tsx";
 import html2canvas from "html2canvas";
 import {ChooseDownloadLabelDialog} from "./ChooseDownloadLabelDialog.tsx";
 import {LoadFileButtons} from "./LoadFileButtons.tsx";
 import {LoadRemoteFileDialog} from "./LoadRemoteFileDialog.tsx";
-import {AlertColor} from "@mui/material";
+import {ShareDataButton} from "./ShareDataButton.tsx";
+import {ShareDataDialog} from "./ShareDataDialog.tsx";
 import {InfoButton} from "../info-button/InfoButton.tsx";
 
 const {primaryColor} = App
@@ -35,12 +36,31 @@ interface EncodingDemoProps {
     hideMobileNav: boolean
 }
 
+const getDisplayedDataLabelsFromUrl = (searchParams: URLSearchParams) => {
+    if (searchParams.has('displayedSignals')) {
+        return decodeURIComponent(searchParams.get('displayedSignals')!)
+            .replace(/\+/g, ' ')
+            .split(',')
+    }
+    // TODO: Revert to 'accel_x', 'accel_y', 'speed'
+    return ['accel_x', 'accel_y'];
+}
+
+const getScalingsOrOffsetsFromUrl = (label: string, searchParams: URLSearchParams) => {
+    if (searchParams.has(label)) {
+        return decodeURIComponent(searchParams.get(label)!).split(',').map(s => Number(s));
+    }
+    return []
+}
+
 export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDemoProps) {
     const SLIDER_START_VAL = 100
     const EXAMPLE_FILE_PATH = 'emergency_braking.csv'
     const LINE_COLORS = [primaryColor, 'orange', 'green', 'red', 'purple', 'brown']
     const MAKE_SCREENSHOT_WITH_SCREEN_CAPTURE = true
     const AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS = true
+
+    const [searchParams, setSearchParams] = useSearchParams()
 
     const [filePath, setFilePath] = useState(EXAMPLE_FILE_PATH)
     const [fileName, setFileName] = useState(EXAMPLE_FILE_PATH)
@@ -51,25 +71,31 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
     const [startLine, setStartLine] = useState(preset.dataRangeStart)
     const [endLine, setEndLine] = useState(preset.dataRangeEnd)
 
-    const [encoder, setEncoder] = useState('morton')
+    const [encoder, setEncoder] = useState(searchParams.get('encoder') ?? 'morton')
 
     const [minSFCvalue, setMinSFCvalue] = useState(preset.sfcRangeMin)
     const [maxSFCvalue, setMaxSFCvalue] = useState(preset.sfcRangeMax)
     const [initialMinSFCvalue, setInitialMinSFCvalue] = useState(preset.sfcRangeMin)
     const [initialMaxSFCvalue, setInitialMaxSFCvalue] = useState(preset.sfcRangeMax)
 
-    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>(['accel_x', 'accel_y']) // TODO: Revert to 'accel_x', 'accel_y', 'speed'
+    const [displayedDataLabels, setDisplayedDataLabels] = useState<string[] | null>
+        (getDisplayedDataLabelsFromUrl(searchParams))
 
     const [data, setData] = useState<number[][]>([])
     const [transformedData, setTransformedData] = useState<number[][]>([]) // Transformed in "Transform" panel
     const [sfcData, setSfcData] = useState<number[]>([])
 
     // Use default scaling factor when scale is undefined (this to allow removing all digits in inputs)
-    const [scales, setScales] = useState<(number | undefined)[]>([])
-    const [offsets, setOffsets] = useState<(number | undefined)[]>([])
-    const [bitsPerSignal, setBitsPerSignal] = useState<number | string>(DEFAULT_BITS_PER_SIGNAL)
+    const [scales, setScales] = useState<(number | undefined)[]>
+        (getScalingsOrOffsetsFromUrl('scalings', searchParams))
+    const [offsets, setOffsets] = useState<(number | undefined)[]>
+        (getScalingsOrOffsetsFromUrl('offsets', searchParams))
+    // TODO: bitsPerSignal seems to cause bugs as string, require number type?
+    const [bitsPerSignal, setBitsPerSignal] =
+        useState<number | string>(Number(searchParams.get('bitsPerSignal') ?? DEFAULT_BITS_PER_SIGNAL))
     // Show transformed signals in signal chart
-    const [showSignalTransforms, setShowSignalTransforms] = useState(false)
+    const [showSignalTransforms, setShowSignalTransforms] =
+        useState(searchParams.get('plotTransformedSignals') !== 'false')
 
     const [startTimeXTicks, setStartTimeXTicks] = useState<number>()
     const [finishTimeXTicks, setFinishTimeXTicks] = useState<number>()
@@ -86,10 +112,7 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
     const [currentPresetName, setCurrentPresetName] = useState('')
     const [presets, setPresets] = useState<Preset[] | null>()
 
-    const [searchParams, setSearchParams] = useSearchParams()
-
-    const [snackbarMessage, setSnackbarMessage] = useState('')
-    const [snackbarStatus, setSnackbarStatus] = useState<AlertColor>('success')
+    const [snackbarMessage, setSnackbarMessage] = useState<ISnackbarMessage>({message: '', status: 'success'})
 
     const chartsRef = useRef<HTMLDivElement>()
     const demoRef = useRef<HTMLDivElement>()
@@ -101,7 +124,11 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
 
     const [showLoadRemoteFileDialog, setShowLoadRemoteFileDialog] = useState(false)
     const contentHashRef = useRef('')
-    const urlHashRef = useRef('')
+    const fileHashRef = useRef('')
+
+    const [showShareDataDialog, setShowShareDataDialog] = useState(false)
+
+    const pageLoadedRef = useRef(false)
 
     const loadFile = () => {
         fetch(filePath).then(r => {
@@ -153,7 +180,9 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
                     maxData = Math.max(maxData, sortedData[sortedData.length - 1])
                 })
 
-                computeSetSFCData(newTransformedData, bitsPerSignal, encoder, true, true);
+                // Don't set SFC min/max values if search params has specific values and page is loading
+                const setMinMaxValues = !searchParams.has('sfcRange') || pageLoadedRef.current
+                computeSetSFCData(newTransformedData, bitsPerSignal, encoder, setMinMaxValues, setMinMaxValues);
 
                 setData(newData)
                 setTransformedData(newTransformedData)
@@ -170,6 +199,12 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
                 setDataNumLines(lines.length - 1)
             })
         })
+
+        pageLoadedRef.current = true
+        const hash = window.location.hash.replace(/\/\?.+/, '')
+        if (hash) {
+            scrollToSection(hash, 'instant')
+        }
     }
 
     onresize = debounce(loadFile)
@@ -185,16 +220,56 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
     useEffect(() => {
         if (searchParams.has('file')) {
             if (!searchParams.has('contentHash')) {
-                urlHashRef.current = searchParams.get('file')!
+                fileHashRef.current = searchParams.get('file')!
                 getFileFromURL(searchParams.get('file'))
             } else if (searchParams.get('contentHash') !== contentHashRef.current) {
                 contentHashRef.current = searchParams.get('contentHash')!
-                urlHashRef.current = searchParams.get('file')!
+                fileHashRef.current = searchParams.get('file')!
                 getFileFromURL(searchParams.get('file'), contentHashRef.current)
-            } else if (searchParams.get('file') !== urlHashRef.current) {
-                urlHashRef.current = searchParams.get('file')!
+            } else if (searchParams.get('file') !== fileHashRef.current) {
+                fileHashRef.current = searchParams.get('file')!
                 getFileFromURL(searchParams.get('file'), contentHashRef.current)
             }
+        }
+        if (searchParams.has('displayedRange')) {
+            const range = searchParams.get('displayedRange')!.split('-')
+            if (range.length === 2) {
+                setStartLine(Number(range[0]))
+                setEndLine(Number(range[1]))
+            }
+        }
+        if (searchParams.has('sfcRange')) {
+            const range = searchParams.get('sfcRange')!.split('-')
+            if (range.length === 2) {
+                setMinSFCvalue(Number(range[0]))
+                setMaxSFCvalue(Number(range[1]))
+
+                setInitialMinSFCvalue(Number(range[0]))
+                setInitialMaxSFCvalue(Number(range[1]))
+            }
+        }
+        if (searchParams.has('autoSfcVersion')) {
+            const version = searchParams.get('autoSfcVersion')
+            if (version !== APP_VERSION) {
+                const msg = `AutoSFC version in URL params (${version}) is different to current version (${APP_VERSION})!\n` +
+                    'Behavior and appearance might differ from what is intended.'
+                console.warn(msg)
+                setSnackbarMessage({message: msg, status: 'warning'})
+            }
+        }
+        if (searchParams.has('urlHash')) {
+            const expectedHash = searchParams.get('urlHash')!
+            const url = window.location.href.replace(/&urlHash=.+/, '')
+
+            computeUrlHash(url).then(actualHash => {
+                if (expectedHash !== actualHash) {
+                    const msg = 'Hash of current URL does not match expected one. Some parameters may have changed!\n' +
+                        `Expected: ${expectedHash}\nActual: ${actualHash}`
+                    console.warn(msg)
+                    setSnackbarMessage({message: msg, status: 'warning'})
+                }
+            })
+
         }
     }, [searchParams]);
 
@@ -210,21 +285,28 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
                             const urlParts = url.split('/')
                             const fileName = urlParts[urlParts.length - 1]
                             const file = new File([r.data.fileContent], fileName)
+
+                            setCurrentPresetName('')
+
                             readFile(r.data.fileContent, file)
                             scrollToSection('#encoding-demo')
+
+                            // Decode all URL params to not get double encoded by setSearchParams
+                            Array.from(searchParams.keys()).forEach(k => {
+                                const val = searchParams.get(k)!
+                                searchParams.set(k, decodeURIComponent(val))
+                            })
 
                             contentHashRef.current = r.data.hash
                             searchParams.set('contentHash', r.data.hash)
                             setSearchParams(searchParams)
                             if (!oldContentHash || r.data.hash === oldContentHash) {
-                                setSnackbarMessage(r.data.msg)
+                                setSnackbarMessage({message: r.data.msg, status: 'success'})
                             } else {
-                                setSnackbarMessage(`Remote file read successfully. Warning: Actual content hash (${r.data.hash}) ` +
-                                    `doesn't match given hash: ${oldContentHash}. File content may have changed!`)
-                                setSnackbarStatus('warning')
+                                setSnackbarMessage({message: `Remote file read successfully. Warning: Actual content hash (${r.data.hash}) ` +
+                                    `doesn't match given hash: ${oldContentHash}. File content may have changed!`, status: 'warning'})
                             }
                         }
-
                     },
                     error => {
                         console.error(`Remote file error: ${error.message}`)
@@ -292,7 +374,31 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
     };
 
     const setDataLabels = (labels: string[]) => {
+        const labelsToScalingsMap = new Map<string, number>()
+        const labelsToOffsetsMap = new Map<string, number>()
+        displayedDataLabels?.forEach(((l, i) => {
+            labelsToScalingsMap.set(l, scales[i] ?? DEFAULT_SCALING_FACTOR)
+            labelsToOffsetsMap.set(l, offsets[i] ?? DEFAULT_OFFSET)
+        }))
+
+        const newScalings: number[] = []
+        const newOffsets: number[] = []
+
+        labels.forEach(l => {
+            newScalings.push(labelsToScalingsMap.get(l) ?? DEFAULT_SCALING_FACTOR)
+            newOffsets.push(labelsToOffsetsMap.get(l) ?? DEFAULT_OFFSET)
+        })
+        if (labels.length !== newScalings.length) {
+            throw new Error('Number of signals does not equal number of scalings!')
+        }
+        if (labels.length !== newOffsets.length) {
+            throw new Error('Number of signals does not equal number of offsets!')
+        }
+
         setDisplayedDataLabels(labels)
+        setScales(newScalings)
+        setOffsets(newOffsets)
+
         setShowSelectColumnsDialog(false)
     }
 
@@ -315,7 +421,8 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
         })
     }
 
-    const readFile = (text: string, file: File) => {
+    // Only called when uploading file or loading from URL
+    const readFile = (text: string, file: File, resetState?: boolean) => {
         const lines = text
             .trim()
             .split(/[,;]?\n/)
@@ -324,9 +431,29 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
         formatDataLabels(dataLabels);
         allDataLabelsRef.current = dataLabels
 
-        setDisplayedDataLabels(dataLabels.slice(dataLabels.length - 2))
-        setStartLine(0)
-        setEndLine(lines.length - 2) // -1 due to header row
+        if (resetState || !searchParams.has('displayedSignals')) {
+            setDisplayedDataLabels(dataLabels.slice(dataLabels.length - 2))
+        }
+        if (resetState || !searchParams.has('bitsPerSignal')) {
+            setBitsPerSignal(DEFAULT_BITS_PER_SIGNAL)
+        }
+        if (resetState || !searchParams.has('displayedRange')) {
+            setStartLine(0)
+            setEndLine(lines.length - 2) // -1 due to header row}
+        }
+        if (resetState || !searchParams.has('offsets')) {
+            setOffsets([])
+        }
+        if (resetState || !searchParams.has('scalings')) {
+            setScales([])
+        }
+        if (resetState || !searchParams.has('encoder')) {
+            setEncoder('morton')
+        }
+        if (resetState || !searchParams.has('showSignalTransforms')) {
+            setShowSignalTransforms(true)
+        }
+
         const url = URL.createObjectURL(file)
         setFilePath(url)
         setFileName(file.name)
@@ -340,7 +467,17 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
             reader.onload = () => {
                 const text = reader.result?.toString();
                 if (text) {
-                    readFile(text, file);
+                    pageLoadedRef.current = false
+
+                    Array.from(searchParams.keys()).forEach(k => {
+                        if (k !== 'preset' && k !== 'anonymize') {
+                            searchParams.delete(k)
+                        }
+                    })
+
+                    setSearchParams(searchParams)
+
+                    readFile(text, file, true);
                 } else {
                     alert("Error reading the file. Please try again.");
                 }
@@ -357,6 +494,7 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
         setEndLine((newValue as number[])[1])
     };
 
+    //TODO: Determine how presets should work if contradicting search parameters are present
     const presetSelected = (preset: Preset | null) => {
         if (!preset) {
             setCurrentPresetName('')
@@ -371,17 +509,31 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
         }
 
         setCurrentPresetName(preset.name)
-        setBitsPerSignal(preset.bitsPerSignal)
-        setStartLine(preset.signalStartRow)
-        setEndLine(preset.signalEndRow)
-        setShowSignalTransforms(preset.plotTransformedSignals)
-        setMaxSFCvalue(preset.cspEndRow)
-        setMinSFCvalue(preset.cspStartRow)
-        setEncoder(preset.encoder)
+        if (!searchParams.has('bitsPerSignal')) {
+            setBitsPerSignal(preset.bitsPerSignal)
+        }
+        if (!searchParams.has('displayedRange')) {
+            setStartLine(preset.signalStartRow)
+            setEndLine(preset.signalEndRow)
+        }
+        if (!searchParams.has('plotTransformedSignals')) {
+            setShowSignalTransforms(preset.plotTransformedSignals)
+        }
+        if (!searchParams.has('sfcRange')) {
+            setMaxSFCvalue(preset.cspEndRow)
+            setMinSFCvalue(preset.cspStartRow)
+        }
+        setEncoder(searchParams.has('encoder') ? searchParams.get('encoder')! : preset.encoder)
         // Assume order is the same in signalTransforms, scales & offsets
-        setOffsets(preset.signalTransforms.map(s => s.offset))
-        setScales(preset.signalTransforms.map(s => s.scaling))
-        setDisplayedDataLabels(preset.signalTransforms.map(s => s.signalName))
+        if (!searchParams.has('offsets')) {
+            setOffsets(preset.signalTransforms.map(s => s.offset))
+        }
+        if (!searchParams.has('scalings')) {
+            setScales(preset.signalTransforms.map(s => s.scaling))
+        }
+        if (!searchParams.has('displayedSignals')) {
+            setDisplayedDataLabels(preset.signalTransforms.map(s => s.signalName))
+        }
     }
 
     const setMinMaxChartValues = (data: number[][]) => {
@@ -425,7 +577,7 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
     }
 
     const computeSetSFCData = (transformedData: number[][], bitsPerSignal: number | string,
-                               newEncoder?: string, setMinMaxValues?: boolean, initialMinMaxValues?: boolean) => {
+                               newEncoder?: string, setMinMaxValues?: boolean, setInitialMinMaxValues?: boolean) => {
         const truncatedData = transformedData.map(column => column.map(value =>
             Math.trunc(value))) // Add truncating processing
         const currentEncoder = newEncoder ?? encoder
@@ -436,7 +588,7 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
             setMinSFCvalue(sfcSorted[0])
             setMaxSFCvalue(sfcSorted[sfcSorted.length - 1])
 
-            if (initialMinMaxValues) {
+            if (setInitialMinMaxValues) {
                 setInitialMinSFCvalue(sfcSorted[0])
                 setInitialMaxSFCvalue(sfcSorted[sfcSorted.length - 1])
             }
@@ -599,6 +751,9 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
 
     function onRemoteFileChosen(url: string) {
         url = decodeURIComponent(url)
+        if (!url.startsWith('https://') && !url.startsWith('http://')) {
+            url = 'https://' + url
+        }
 
         const hashReArr = url.match(/contentHash=(\w+)/)
         const urlReArr = url.match(/(https:.+\.csv)(&|$)/)
@@ -609,6 +764,13 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
             } else {
                 searchParams.delete('contentHash')
             }
+
+            Array.from(searchParams.keys()).forEach(k => {
+                if (k !== 'anonymize' && k !== 'file' && k !== 'contentHash') {
+                    searchParams.delete(k)
+                }
+            })
+
             setSearchParams(searchParams)
         }
 
@@ -737,13 +899,22 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
             </div>
         </div>
 
+        <ShareDataButton onShareClick={() => setShowShareDataDialog(true)}/>
+
+        <ShareDataDialog show={showShareDataDialog} setShowShareDataDialog={setShowShareDataDialog}
+                         searchParams={searchParams} startLine={startLine} endLine={endLine} encoder={encoder}
+                         setSnackbarMessage={setSnackbarMessage} bitsPerSignal={bitsPerSignal}
+                         plotTransformedSignals={showSignalTransforms} minSfcValue={minSFCvalue}
+                         maxSfcValue={maxSFCvalue} displayedSignals={displayedDataLabels} offsets={offsets}
+                         scales={scales} autoSfcVersion={APP_VERSION}/>
+
         <SelectColumnsDialog show={showSelectColumnsDialog} setShow={setShowSelectColumnsDialog}
                              currentLabels={displayedDataLabels}
                              demoName={'encoding'}
                              allDataLabels={allDataLabelsRef.current ?? []} setDataLabels={setDataLabels}/>
 
-        <SnackBar snackbarMessage={snackbarMessage} setSnackbarMessage={setSnackbarMessage} status={snackbarStatus}
-                  setStatus={setSnackbarStatus} navRef={navRef} mobileNavVisible={!hideMobileNav}/>
+        <SnackBar snackbarMessage={snackbarMessage} setSnackbarMessage={setSnackbarMessage}
+                  navRef={navRef} mobileNavVisible={!hideMobileNav}/>
 
         <SelectScreenshotAreaDialog autoScroll={AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS}
                                     blurBackground={AUTO_SCROLL_TO_DEMO_TOP_BEFORE_SCREENSHOTS}

@@ -5,7 +5,7 @@
   primaryColorMedium: #2699ff;
 }
 
-.flex-display, #encoding-demo .dialog-buttons {
+.flex-display {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -547,7 +547,7 @@ h1 + p {
     padding: 14px 2rem 28px;
   }
 }
-.button-text, .button, #encoding-demo .dialog-buttons .cancel-button, #encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button, #encoding-demo .dialog-buttons .load-url-button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
+.button-text, .button, .link-button, .no-border-button, .gray-border-button, .share-data-button, .blue-border-button {
   text-transform: uppercase;
   letter-spacing: 0.02rem;
   font-size: 0.6rem;
@@ -558,7 +558,7 @@ h1 + p {
   box-shadow: rgba(0, 0, 0, 0.1) 0 0 2px 2px;
 }
 
-.button, #encoding-demo .dialog-buttons .cancel-button, #encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button, #encoding-demo .dialog-buttons .load-url-button, .link-button, .no-border-button, .gray-border-button, .blue-border-button {
+.button, .link-button, .no-border-button, .gray-border-button, .share-data-button, .blue-border-button {
   padding: 0 0.5rem;
   height: 1.8rem;
   background-color: white;
@@ -567,14 +567,14 @@ h1 + p {
   transition: all 0.2s;
   color: var(--text-color-light);
 }
-.button:hover, #encoding-demo .dialog-buttons .cancel-button:hover, #encoding-demo .dialog-buttons .take-screenshot-button:hover, #encoding-demo .dialog-buttons .add-label-button:hover, #encoding-demo .dialog-buttons .load-url-button:hover, .link-button:hover, .no-border-button:hover, .gray-border-button:hover, .blue-border-button:hover {
+.button:hover, .link-button:hover, .no-border-button:hover, .gray-border-button:hover, .share-data-button:hover, .blue-border-button:hover {
   background-color: var(--light-gray);
   cursor: pointer;
 }
-.button:active, #encoding-demo .dialog-buttons .cancel-button:active, #encoding-demo .dialog-buttons .take-screenshot-button:active, #encoding-demo .dialog-buttons .add-label-button:active, #encoding-demo .dialog-buttons .load-url-button:active, .link-button:active, .no-border-button:active, .gray-border-button:active, .blue-border-button:active {
+.button:active, .link-button:active, .no-border-button:active, .gray-border-button:active, .share-data-button:active, .blue-border-button:active {
   background-color: var(--button-active);
 }
-.button.Mui-disabled, #encoding-demo .dialog-buttons .Mui-disabled.cancel-button, #encoding-demo .dialog-buttons .Mui-disabled.take-screenshot-button, #encoding-demo .dialog-buttons .Mui-disabled.add-label-button, #encoding-demo .dialog-buttons .Mui-disabled.load-url-button, .Mui-disabled.link-button, .Mui-disabled.no-border-button, .Mui-disabled.gray-border-button, .Mui-disabled.blue-border-button {
+.button.Mui-disabled, .Mui-disabled.link-button, .Mui-disabled.no-border-button, .Mui-disabled.gray-border-button, .Mui-disabled.share-data-button, .Mui-disabled.blue-border-button {
   color: var(--button-active);
   border-color: var(--button-active);
 }
@@ -586,7 +586,7 @@ h1 + p {
   border-color: #1976d2;
 }
 
-.gray-border-button {
+.gray-border-button, .share-data-button {
   border-color: var(--button-active);
 }
 
@@ -611,199 +611,15 @@ h1 + p {
   color: #2699ff;
 }
 
-#encoding-demo {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.share-data-button {
+  max-width: 18rem;
   width: 100%;
-  align-items: center;
-}
-#encoding-demo .charts {
-  width: 100%;
-  gap: 4vw;
-}
-#encoding-demo h1 {
-  margin-bottom: 0.5rem;
-}
-#encoding-demo #presets-container {
-  width: auto;
-}
-#encoding-demo #presets-container .preset-list-container, #encoding-demo #presets-container #preset-list {
-  width: 100%;
-}
-@media (max-width: 1280px) {
-  #encoding-demo .text-controls {
-    flex-direction: column !important;
-  }
-}
-@media (max-width: 1080px) {
-  #encoding-demo .chartitle {
-    font-size: 2.2vw;
-  }
-}
-@media (min-width: 1081px) {
-  #encoding-demo #process-container, #encoding-demo .vert-control-wrapper {
-    height: 100%;
-  }
-}
-#encoding-demo .dialog-buttons {
-  gap: 1rem;
-  width: 28ch;
   margin-top: 1rem;
 }
-#encoding-demo .dialog-buttons .cancel-button {
-  border-color: var(--legend-border);
-}
-#encoding-demo .dialog-buttons .cancel-button:hover {
-  border-color: var(--input-border);
-}
-#encoding-demo .dialog-buttons .cancel-button, #encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button, #encoding-demo .dialog-buttons .load-url-button {
-  flex: 1 1;
-  transition: all 0.2s;
-}
-#encoding-demo .dialog-buttons .take-screenshot-button, #encoding-demo .dialog-buttons .add-label-button, #encoding-demo .dialog-buttons .load-url-button {
-  border-color: rgba(25, 118, 210, 0.5019607843);
-}
-#encoding-demo .dialog-buttons .take-screenshot-button:hover, #encoding-demo .dialog-buttons .add-label-button:hover, #encoding-demo .dialog-buttons .load-url-button:hover {
-  border-color: #1976d2;
-}
-
 @media (max-width: 700px) {
-  #encoding-demo .charts {
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0;
-  }
-  #encoding-demo .charts .chart {
-    align-self: unset !important;
-  }
-  #encoding-demo .charts .chart .canvas-container .canvas-wrapper .chartYTicks {
-    width: 100% !important;
-  }
-  #encoding-demo .charts .chart .canvas-container .canvas-wrapper .x-tick-mark:not(:nth-child(2n+1)) .x-tick-mark-label {
-    display: none !important;
-  }
-  #encoding-demo .charts .chart .canvas-container .canvas-wrapper#left-canvas {
-    grid-template-columns: 5vw 8vw 70vw 13vw !important;
-  }
-  #encoding-demo .charts .chart .canvas-container .canvas-wrapper#right-canvas {
-    grid-template-columns: 13vw 70vw 8vw 5vw !important;
-  }
-  #encoding-demo .charts .chart .canvas-container .canvas-wrapper#right-canvas .chartYTicks:first-of-type {
-    margin: 0;
-  }
-  #encoding-demo .charts .chart .canvas-container .canvas-wrapper#right-canvas .y-axis-label {
-    height: max-content;
-  }
-  #encoding-demo .charts .chart .canvas-container .canvas-wrapper#right-canvas .chartitle {
-    text-align: center;
-    margin: 1rem auto 0.5rem;
-    grid-column: 1/5;
-  }
-  #encoding-demo .charts .chart .canvas-container .canvas-wrapper canvas {
-    width: 70vw !important;
-    height: 52vw !important;
-  }
-  #encoding-demo .charts .chart .canvas-container .canvas-wrapper .chartitle {
-    font-size: 1.5rem !important;
-  }
-  #encoding-demo .charts .chart .canvas-container .canvas-wrapper .chartitle:first-of-type {
-    margin-top: 0;
-  }
-  #encoding-demo .charts .chart .canvas-container .canvas-wrapper .chart-x-axis-name {
-    margin-top: 1.5rem;
-  }
-  #encoding-demo .controls {
-    flex-direction: column;
-    gap: 0;
-  }
-  #encoding-demo .controls .vert-control-wrapper {
-    width: 100%;
-  }
-  #encoding-demo .controls .vert-control-wrapper:nth-of-type(1), #encoding-demo .controls .vert-control-wrapper #first-control-row, #encoding-demo .controls .vert-control-wrapper .control-row {
-    gap: 0;
-  }
-  #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) .separator, #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) .position-container:after, #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) .file-container:after, #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) #range-container:after, #encoding-demo .controls .vert-control-wrapper #first-control-row .separator, #encoding-demo .controls .vert-control-wrapper #first-control-row .position-container:after, #encoding-demo .controls .vert-control-wrapper #first-control-row .file-container:after, #encoding-demo .controls .vert-control-wrapper #first-control-row #range-container:after, #encoding-demo .controls .vert-control-wrapper .control-row .separator, #encoding-demo .controls .vert-control-wrapper .control-row .position-container:after, #encoding-demo .controls .vert-control-wrapper .control-row .file-container:after, #encoding-demo .controls .vert-control-wrapper .control-row #range-container:after {
-    content: "";
-    position: absolute;
-    border-top: 1px solid rgba(0, 0, 0, 0.12);
-    bottom: 0;
-    left: 1rem;
-    width: calc(100% - 2rem);
-  }
-  #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) .file-container, #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) .position-container, #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) #range-container, #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) #presets-container, #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) #process-container, #encoding-demo .controls .vert-control-wrapper #first-control-row .file-container, #encoding-demo .controls .vert-control-wrapper #first-control-row .position-container, #encoding-demo .controls .vert-control-wrapper #first-control-row #range-container, #encoding-demo .controls .vert-control-wrapper #first-control-row #presets-container, #encoding-demo .controls .vert-control-wrapper #first-control-row #process-container, #encoding-demo .controls .vert-control-wrapper .control-row .file-container, #encoding-demo .controls .vert-control-wrapper .control-row .position-container, #encoding-demo .controls .vert-control-wrapper .control-row #range-container, #encoding-demo .controls .vert-control-wrapper .control-row #presets-container, #encoding-demo .controls .vert-control-wrapper .control-row #process-container {
-    box-shadow: none;
-    border-left: 1px solid rgba(0, 0, 0, 0.12);
-    border-right: 1px solid rgba(0, 0, 0, 0.12);
-  }
-  #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) .file-container, #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) #range-container, #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) #presets-container, #encoding-demo .controls .vert-control-wrapper #first-control-row .file-container, #encoding-demo .controls .vert-control-wrapper #first-control-row #range-container, #encoding-demo .controls .vert-control-wrapper #first-control-row #presets-container, #encoding-demo .controls .vert-control-wrapper .control-row .file-container, #encoding-demo .controls .vert-control-wrapper .control-row #range-container, #encoding-demo .controls .vert-control-wrapper .control-row #presets-container {
-    border-radius: 0;
-    position: relative;
-  }
-  #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) .position-container, #encoding-demo .controls .vert-control-wrapper #first-control-row .position-container, #encoding-demo .controls .vert-control-wrapper .control-row .position-container {
-    border-top: 1px solid rgba(0, 0, 0, 0.12);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    position: relative;
-    display: grid;
-    grid-template-columns: min-content auto;
-    grid-column-gap: 0.5rem;
-  }
-  #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) .position-container h3, #encoding-demo .controls .vert-control-wrapper #first-control-row .position-container h3, #encoding-demo .controls .vert-control-wrapper .control-row .position-container h3 {
-    grid-column: 1/3;
-    grid-row: 1;
-  }
-  #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) .position-container button, #encoding-demo .controls .vert-control-wrapper #first-control-row .position-container button, #encoding-demo .controls .vert-control-wrapper .control-row .position-container button {
-    grid-column: 1;
-    grid-row: 2;
-  }
-  #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) .position-container .MuiSlider-root, #encoding-demo .controls .vert-control-wrapper #first-control-row .position-container .MuiSlider-root, #encoding-demo .controls .vert-control-wrapper .control-row .position-container .MuiSlider-root {
-    grid-column: 2;
-    grid-row: 2;
-  }
-  #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) #range-container .text-controls, #encoding-demo .controls .vert-control-wrapper #first-control-row #range-container .text-controls, #encoding-demo .controls .vert-control-wrapper .control-row #range-container .text-controls {
-    flex-direction: row !important;
-  }
-  #encoding-demo .controls .vert-control-wrapper:nth-of-type(1) #process-container, #encoding-demo .controls .vert-control-wrapper #first-control-row #process-container, #encoding-demo .controls .vert-control-wrapper .control-row #process-container {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
-  #encoding-demo .controls .vert-control-wrapper #process-container {
-    width: 100%;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    padding: 1rem;
-  }
-  #encoding-demo .controls .vert-control-wrapper #process-container .encoder-switch {
-    display: grid;
-    grid-auto-rows: min-content min-content;
-    gap: 0.1rem 0.5rem;
-    margin: 0;
-  }
-  #encoding-demo .controls .vert-control-wrapper #process-container .encoder-switch .encoding-label {
-    grid-column: 1;
-  }
-  #encoding-demo .controls .vert-control-wrapper #process-container .encoder-switch .MuiSwitch-root {
-    rotate: 90deg;
-    grid-column: 2;
-    grid-row: 1/3;
-    align-self: center;
-  }
-  #encoding-demo .controls .vert-control-wrapper #process-container .signals-grid span.input-label {
-    width: 100%;
-  }
-  #encoding-demo .controls .vert-control-wrapper #process-container .signals-grid label.input-label {
-    width: fit-content;
-  }
-  #encoding-demo .controls .vert-control-wrapper #process-container .signals-grid label.input-label input {
-    margin-left: 0;
-    justify-self: left;
-    width: 10ch;
-  }
-  #encoding-demo .controls .vert-control-wrapper #process-container .signals-grid .show-transforms-label span {
-    padding-left: 0;
+  .share-data-button {
+    max-width: unset;
   }
 }
 
-/*# sourceMappingURL=EncodingDemo.css.map */
+/*# sourceMappingURL=ShareDataButton.css.map */

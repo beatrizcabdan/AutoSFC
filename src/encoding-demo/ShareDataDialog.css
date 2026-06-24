@@ -1,0 +1,9 @@
+.share-data-dialog {
+  width: 40rem;
+  max-width: 95%;
+}
+.share-data-dialog .MuiTextField-root {
+  width: 100%;
+}
+
+/*# sourceMappingURL=ShareDataDialog.css.map */

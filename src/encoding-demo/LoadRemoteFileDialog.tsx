@@ -21,7 +21,7 @@ export function LoadRemoteFileDialog(props: {
 
     function inputIsCorrect() {
         // URL
-        // TODO: contentHash only allowed search param?
+        // TODO: Doesn't allow ending with contentHash
         return currentUrl === '' || !!currentUrl.match(/(?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._+~#=]{2,256}\.[a-z]{2,6}\b[-a-zA-Z0-9@:%_+.~#?&\/=]*(?:\.csv|txt)/)
     }
 

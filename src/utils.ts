@@ -242,13 +242,13 @@ function bigUint64ToNumberArray(bigArray: BigUint64Array): number[] {
     });
 }
 
-export function scrollToSection(section: string) {
+export function scrollToSection(section: string, behavior = 'smooth') {
     const element = document.querySelector(section)!
     const topPos = element.getBoundingClientRect().top + window.scrollY
 
     window.scrollTo({
         top: topPos,
-        behavior: 'smooth'
+        behavior: behavior as ScrollBehavior
     })
 }
 
@@ -257,3 +257,14 @@ export const createPath =
         const queryString = searchParams.toString()
         return `${queryString ? ('?' + queryString) : ''}${sectionId}`
     }
+
+export const computeUrlHash = async (params: string): Promise<string> => {
+    const subtle = window.crypto.subtle
+    const paramsAsBuffer = new TextEncoder().encode(params);
+    return await subtle.digest('sha-1', paramsAsBuffer).then(r => {
+        const hashArray = Array.from(new Uint8Array(r));
+        return hashArray
+            .map((item) => item.toString(16).padStart(2, "0"))
+            .join("")
+    })
+}

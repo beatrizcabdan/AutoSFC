@@ -2,34 +2,32 @@ import {Alert, AlertColor, Button, Slide, Snackbar, SnackbarContent} from "@mui/
 import React, {useEffect, useState} from "react";
 import './SnackBar.scss'
 
-interface SnackBarProps {
-    snackbarMessage: string,
-    status: AlertColor,
-    setStatus: (value: (((prevState: AlertColor) => AlertColor) | AlertColor)) => void,
-    setSnackbarMessage: (value: (((prevState: string) => string) | string)) => void,
+export interface ISnackbarMessage {
+    message: string,
+    status: AlertColor
+}
+
+interface ISnackBarProps {
+    snackbarMessage: ISnackbarMessage,
+    setSnackbarMessage: (value: (((prevState: ISnackbarMessage) => ISnackbarMessage) | ISnackbarMessage)) => void,
     navRef: React.MutableRefObject<HTMLDivElement | undefined>,
     mobileNavVisible?: boolean
 }
 
 /**
- * Toast/snackbar. Will show unless msg is empty string.
+ * Toast/snackbar. Will show unless snackbarMessage.message is empty string. TODO: Allow multiple snackbars at once.
  */
-export function SnackBar({
-                             snackbarMessage,
-                             status,
-                             setStatus,
-                             setSnackbarMessage,
-                             navRef,
-                             mobileNavVisible
-                         }: SnackBarProps) {
+export function SnackBar({snackbarMessage, setSnackbarMessage, navRef, mobileNavVisible}: ISnackBarProps) {
     const AUTO_HIDE_DURATION = 5000
 
+    const [message, setMessage] = useState<ISnackbarMessage>({message: '', status: 'success'})
     const [show, setShow] = useState(true)
     const [verticalOffset, setVerticalOffset] = useState<number>(0)
 
     useEffect(() => {
-        setShow(!!snackbarMessage)
-        if (!!snackbarMessage) {
+        setShow(!!message.message)
+        if (!!message.message) {
+            console.log(message.message)
             const rect = navRef.current?.getBoundingClientRect()
             if (mobileNavVisible && rect?.top !== undefined && rect.top > 0) {
                 setVerticalOffset(rect.height)
@@ -39,13 +37,27 @@ export function SnackBar({
         } else {
             setVerticalOffset(0)
         }
-    }, [snackbarMessage, navRef, mobileNavVisible]);
+    }, [message, navRef, mobileNavVisible]);
+
+    // Only change current message if new message is empty (i.e. hide message), or new message has same or higher severity
+    // level.
+    useEffect(() => {
+        if (!snackbarMessage.message) {
+            setMessage({message: '', status: 'success'})
+        } else if (!message.message
+            || message.status === 'success'
+            || message.status === 'warning' && snackbarMessage.status === 'warning'
+            || snackbarMessage.status === 'error') {
+            setMessage(snackbarMessage)
+        }
+
+    }, [snackbarMessage]);
 
     const onClose = () => {
         setShow(false)
         setTimeout(() => {
-            setSnackbarMessage('')
-            setStatus('success')
+            setSnackbarMessage({message: '', status: 'success'})
+            setMessage({message: '', status: 'success'})
         }, 1000)
     }
 
@@ -53,12 +65,13 @@ export function SnackBar({
         open={show}
         onClose={onClose}
         slots={{transition: Slide}}
-        autoHideDuration={status === 'success' ? AUTO_HIDE_DURATION : undefined}
+        autoHideDuration={message.status === 'success' ? AUTO_HIDE_DURATION : undefined}
         anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
         sx={{translate: `0 -${verticalOffset}px`}}
         action={<Button>OK</Button>}>
-        <Alert variant="filled" severity={status} onClose={status === 'warning' ? onClose : undefined}>
-            {snackbarMessage}
+        <Alert variant="filled" severity={message.status}
+               onClose={(message.status === 'warning' || message.status === 'error') ? onClose : undefined}>
+            {message.message}
         </Alert>
     </Snackbar>
 }
