@@ -2,10 +2,20 @@
     color: var(--info-icon);
     scale: 0.7;
     transition: all 0.2s;
-    position: absolute;
-    translate: -50% -50%;
+    translate: 0% -50%;
+    cursor: pointer;
 
     &:hover {
         color: var(--text-color);
     }
+}
+
+.control-container-title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#comparison-demo .MuiSvgIcon-root.info-icon {
+    translate: 0% -15%;
 }

@@ -8,8 +8,7 @@ export function InfoButton(props: { msg: string, translateTooltip?: string, top?
     const [showTooltip, setShowTooltip] = useState(false)
     return <>
         <Tooltip msg={props.msg} showMsg={showTooltip} anchorRef={iconRef} translate={props.translateTooltip ?? '-50% -160%'}/>
-        <InfoOutlinedIcon fontSize={'small'} className={'info-icon'} ref={iconRef} style={{top: props.top ?? 'initial',
-            left: props.left ?? 'initial'}}
+        <InfoOutlinedIcon fontSize={'small'} className={'info-icon'} ref={iconRef}
                           onMouseOver={() => setShowTooltip(true)}
                           onMouseOut={() => setShowTooltip(false)}/>
     </>;

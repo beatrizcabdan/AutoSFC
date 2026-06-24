@@ -3,6 +3,7 @@ import {DEFAULT_BITS_PER_SIGNAL, DEFAULT_OFFSET, DEFAULT_SCALING_FACTOR} from ".
 import {Button, Checkbox, Divider} from "@mui/material";
 import './controls.scss'
 import {SMALL_SCREEN_LIMIT} from "./csp-comparison-demo/CspComparisonDemo.tsx";
+import {InfoButton} from "./info-button/InfoButton.tsx";
 
 export function ProcessingComponent(props: {
     displayedDataLabels: string[] | null,
@@ -72,12 +73,15 @@ export function ProcessingComponent(props: {
     }
 
     return <div className={'control-container'} id={'process-container'}>
-        <h3>Transform</h3>
+        <div className={"control-container-title"}>
+            <h3>Transform</h3>
+            <InfoButton msg={'Order: first scaling, then offsetting the original time series (left plot), finally encoding them (right plot).'}/>
+        </div>
         <div className={'signals-grid'} style={{gridTemplateRows: setGridTemplateRows(Number(props.displayedDataLabels?.length))}}>
             <span className={'input-label signal-label'}>Signal</span>
             <span className={'input-label offset-label'}>Offset</span>
             <span className={'input-label scale-label'}>Scale</span>
-            {props.variant === 'reduced' && <h3 id={'sfc-header'}>CSP range</h3>}
+            {props.variant === 'reduced' && <h3 id={'sfc-header'}>CSP range</h3> }
             {props.displayedDataLabels?.map((signal, i) =>
                 <React.Fragment key={i}>
                     <div className={'signal-cell'} key={i}>

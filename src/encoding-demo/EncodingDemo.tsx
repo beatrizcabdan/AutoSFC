@@ -662,7 +662,10 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
 
                     </div>
                     <div className={"position-container"}>
-                        <h3>Current datapoint</h3>
+                        <div className={"control-container-title"}>
+                            <h3>Current datapoint</h3>
+                            <InfoButton msg={'Explore the original signal values (left plot) and their 1D representation (right plot).'}/>
+                        </div>
                         <PlaySlider min={0} max={data?.length} onDrag={onSliderDrag}
                                     value={signalMarkerPos}/>
                         <PlayButton onClick={onPlayClick} status={playStatus}/>
@@ -670,9 +673,9 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
                 </div>
                 <div className={"control-row"}>
                     <div className={"control-container"} id={"range-container"}>
-                        <div id={'displayed-range-h3-container-div'}>
+                        <div className={"control-container-title"}>
                             <h3>Displayed range</h3>
-                            <InfoButton msg={'The displayed rows of the original signal.'} left={'115%'}/>
+                            <InfoButton msg={'Clip your data to explore specific time events.'}/>
                         </div>
                         <DataRangeSlider dataRangeChartStart={startLine}
                                          dataRangeChartEnd={endLine}
@@ -692,7 +695,10 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
                         </div>
                     </div>
                     <div className={"control-container"} id={"presets-container"}>
-                        <h3>Presets</h3>
+                        <div className={"control-container-title"}>
+                            <h3>Presets</h3>
+                            <InfoButton msg={'Switch between configurations (ranges, transformations, etc.) or save them for later.'}/>
+                        </div>
                         <PresetComponent initialDataPath={EXAMPLE_FILE_PATH} onPresetSelect={presetSelected}
                                          plotTransformedSignals={showSignalTransforms} scales={scales}
                                          offsets={offsets}
