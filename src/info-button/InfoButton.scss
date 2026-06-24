@@ -1,0 +1,11 @@
+.MuiSvgIcon-root.info-icon {
+    color: var(--info-icon);
+    scale: 0.7;
+    transition: all 0.2s;
+    position: absolute;
+    translate: -50% -50%;
+
+    &:hover {
+        color: var(--text-color);
+    }
+}

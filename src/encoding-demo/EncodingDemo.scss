@@ -18,6 +18,18 @@ $dialog-input-width: 28ch;
         margin-bottom: 0.5rem;
     }
 
+    .control-row #range-container #displayed-range-h3-container-div {
+        position: relative;
+        padding-bottom: 1rem;
+        margin-bottom: auto;
+        gap: 0.3rem;
+
+        h3 {
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+    }
+
     #presets-container {
         width: auto;
 

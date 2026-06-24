@@ -1,15 +1,16 @@
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import './Legend.scss'
-import {useState} from "react";
+import {Tooltip} from "../tooltip/Tooltip.tsx";
 
 export function Legend(props: { labels: string[], onClick: () => void, lineColors: string[] | undefined }) {
     const [showMsg, setShowMsg] = useState(false)
+    const toolTipRef= useRef<HTMLDivElement | null>(null)
     return <div className={'legend-container'}>
-            <p className={`legend-msg ${showMsg ? 'show' : ''}`}>Choose columns...</p>
-            <div className={'legend control-container '}
-                 onClick={props.onClick}
-                 onMouseOver={() => setShowMsg(showMsg => !showMsg)}
-                 onMouseOut={() => setShowMsg(showMsg => !showMsg)}>
+        <Tooltip msg={'Choose columns...'} showMsg={showMsg} anchorRef={toolTipRef}/>
+        <div className={'legend control-container '} ref={toolTipRef}
+             onClick={props.onClick}
+             onMouseOver={() => setShowMsg(showMsg => !showMsg)}
+             onMouseOut={() => setShowMsg(showMsg => !showMsg)}>
             {props.labels.map((label, i) => <React.Fragment key={i}>
                 <div style={{
                     content: ' ',
@@ -17,8 +18,8 @@ export function Legend(props: { labels: string[], onClick: () => void, lineColor
                     height: '4px',
                     background: `${props.lineColors![i % props.lineColors!.length]}`
                 }}></div>
-                <p >{label}</p>
+                <p>{label}</p>
             </React.Fragment>)}
-            </div>
         </div>
+    </div>
 }

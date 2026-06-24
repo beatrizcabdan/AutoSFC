@@ -1,0 +1,20 @@
+.tooltip {
+    position: fixed;
+    translate: -0% -0%;
+    text-transform: none;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    background: white;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 0 6px 1px;
+    padding: 0.7rem 0.4rem;
+    height: fit-content;
+    line-height: initial !important;
+    font-family: sans-serif;
+    z-index: 100;
+
+    &.show {
+        opacity: 1;
+    }
+}

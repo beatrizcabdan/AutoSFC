@@ -104,6 +104,7 @@ html {
   --light-gray: #e8e8e8;
   --button-active: #d3d3d3;
   --input-border: #c3c3c3;
+  --info-icon: #b7b7b7;
 
   --primary-color: $primary-color;
   --primary-color-medium: #2699ff;
@@ -413,29 +414,6 @@ input[type="number"] {
 .MuiSlider-thumb {
   width: 17px !important;
   height: 17px !important;
-}
-
-.legend-msg {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  translate: -50% -210%;
-  text-transform: uppercase;
-  font-size: 0.6rem;
-  opacity: 0;
-  transition: opacity 0.3s;
-  background: white;
-  border-radius: 5px;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 0 6px 1px;
-  padding: 0.7rem 0.4rem;
-  height: fit-content;
-  letter-spacing: 0.07rem;
-  line-height: initial !important;
-  font-family: sans-serif;
-
-  &.show {
-    opacity: 1;
-  }
 }
 
 /* HEADER AND FOOTER */

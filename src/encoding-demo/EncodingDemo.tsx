@@ -23,6 +23,7 @@ import {ChooseDownloadLabelDialog} from "./ChooseDownloadLabelDialog.tsx";
 import {LoadFileButtons} from "./LoadFileButtons.tsx";
 import {LoadRemoteFileDialog} from "./LoadRemoteFileDialog.tsx";
 import {AlertColor} from "@mui/material";
+import {InfoButton} from "../info-button/InfoButton.tsx";
 
 const {primaryColor} = App
 
@@ -669,7 +670,10 @@ export function EncodingDemo({onSectionClick, navRef, hideMobileNav}: EncodingDe
                 </div>
                 <div className={"control-row"}>
                     <div className={"control-container"} id={"range-container"}>
-                        <h3>Displayed range</h3>
+                        <div id={'displayed-range-h3-container-div'}>
+                            <h3>Displayed range</h3>
+                            <InfoButton msg={'The displayed rows of the original signal.'} left={'115%'}/>
+                        </div>
                         <DataRangeSlider dataRangeChartStart={startLine}
                                          dataRangeChartEnd={endLine}
                                          numLines={dataNumLines}
