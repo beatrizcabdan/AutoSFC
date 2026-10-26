@@ -8,7 +8,7 @@ const projName = execSync('git rev-parse --show-toplevel')
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/",
+  base: "/AutoSFC/",
   plugins: [react()],
   define: {
     APP_VERSION: JSON.stringify(process.env.npm_package_version),
